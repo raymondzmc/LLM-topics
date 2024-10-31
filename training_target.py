@@ -57,6 +57,7 @@ for example in tqdm(training_set):
         print("Embedding shape:", len(embeddings))
     example['input_embeddings'] = embeddings
     example['next_token_probs'] = word_probs
+    break
 
 save_path = 'dbpedia_14_processed'
 training_set.save_to_disk(save_path)

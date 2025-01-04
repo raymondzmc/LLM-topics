@@ -17,4 +17,5 @@ python process_dataset.py --dataset fancyzhx/dbpedia_14 \
                           --examples_per_vocab 100 \
                           --word_prob_method subword \
                           --model_name meta-llama/Llama-3.2-1B \
-                          --data_path data
+                          --data_path data \
+                          --batch_size 8

@@ -242,6 +242,3 @@ if __name__ == '__main__':
         os.makedirs(args.data_path, exist_ok=True)
 
     main(args)
-    
-    
-    

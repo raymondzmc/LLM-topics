@@ -25,14 +25,16 @@ if tokenizer.pad_token_id is None:
     tokenizer.pad_token_id = tokenizer.eos_token_id
 
 dataset_path = 'dbpedia_14'
-training_set = load_from_disk(dataset_path)
+training_set = load_from_disk(dataset_path).shuffle()
+training_set = training_set.select(range(10000))
+
 with open(os.path.join(dataset_path, 'vocab.json'), 'r') as f:
     vocab = json.load(f)
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model.to(device)
 debug = True
-
+processed_examples = []
 for example in tqdm(training_set):
     context = example['context']
     next_word = example['next_word']
@@ -40,8 +42,10 @@ for example in tqdm(training_set):
     context_length = context_input_ids.shape[1]
     word_token_ids = [tokenizer.encode(context + word)[context_length:] for word in vocab]
     token_lengths = [len(token_ids) for token_ids in word_token_ids]
-    assert all(token_len == 1 for token_len in token_lengths),\
-        "Token length should be context length + 1!"
+
+    if not all(token_len == 1 for token_len in token_lengths):
+        continue
+
     word_token_ids = torch.tensor([token_ids[0] for token_ids in word_token_ids]).to(device)
 
     with torch.no_grad():
@@ -56,10 +60,8 @@ for example in tqdm(training_set):
         print("Top 5 next tokens:", list(word_probs.keys())[:5], "Actual next token:", next_word)
         print("Embedding shape:", len(embeddings))
     example['input_embeddings'] = embeddings
-    example['next_token_probs'] = word_probs
-    break
+    example['next_token_probs'] = next_token_probs
+    processed_examples.append(example)
 
-save_path = 'dbpedia_14_processed'
-training_set.save_to_disk(save_path)
-with open(os.path.join(save_path, 'vocab.json'), 'w') as f:
-    json.dump(list(vocab), f)
+save_path = os.path.join('dbpedia_14', 'processed_dataset.pt')
+torch.save(processed_examples, save_path)

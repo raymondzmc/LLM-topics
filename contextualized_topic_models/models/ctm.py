@@ -12,11 +12,12 @@ from torch import optim
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torch.utils.data import DataLoader
 from tqdm import tqdm
+import torch.nn.functional as F
 from contextualized_topic_models.utils.early_stopping.early_stopping import (
     EarlyStopping,
 )
 from contextualized_topic_models.networks.decoding_network import DecoderNetwork
-
+import pdb
 
 class CTM:
     """Class to train the contextualized topic model. This is the more general class that we are keeping to
@@ -64,6 +65,7 @@ class CTM:
         num_data_loader_workers=mp.cpu_count(),
         label_size=0,
         loss_weights=None,
+        loss_type="ct"
     ):
 
         self.device = (
@@ -173,6 +175,7 @@ class CTM:
             self.USE_CUDA = False
 
         self.model = self.model.to(self.device)
+        self.loss_type = loss_type
 
     def _loss(
         self,
@@ -199,7 +202,13 @@ class CTM:
         KL = 0.5 * (var_division + diff_term - self.n_components + logvar_det_division)
 
         # Reconstruction term
-        RL = -torch.sum(inputs * torch.log(word_dists + 1e-10), dim=1)
+        if self.loss_type == "generative":
+            temperature = 0.7
+            student_out = torch.log(word_dists / temperature)
+            teacher_out = inputs / temperature
+            RL = torch.sum(F.kl_div(student_out, teacher_out, reduction="none"), dim=1)
+        else:
+            RL = -torch.sum(inputs * torch.log(word_dists + 1e-10), dim=1)
 
         # loss = self.weights["beta"]*KL + RL
 
@@ -801,3 +810,11 @@ class CombinedTM(CTM):
     def __init__(self, **kwargs):
         inference_type = "combined"
         super().__init__(**kwargs, inference_type=inference_type)
+
+class GenerativeTM(CTM):
+    """ZeroShotTM, as described in https://arxiv.org/pdf/2004.07737v1.pdf"""
+
+    def __init__(self, **kwargs):
+        inference_type = "zeroshot"
+        loss_type = "generative"
+        super().__init__(**kwargs, inference_type=inference_type, loss_type=loss_type)

@@ -40,6 +40,9 @@ def get_dataset(args):
     else:
         dataset = load_dataset(args.dataset, trust_remote_code=True)
         dataset = dataset[args.split] if args.split else dataset
+
+    if args.dataset == 'google-research-datasets/newsgroup':
+        dataset = dataset.map(lambda x: {'text': x['text'].split('\n\n')[1]})
     return dataset
 
 
@@ -49,12 +52,21 @@ def tokenize_dataset(batch, tokenizer, content_key: str, single_token_only: bool
     offsets = []
     
     for text in batch[content_key]:
-        text = text.split('\n\n')[1]
         doc = nlp(text)
         encoding = tokenizer(text, return_offsets_mapping=True, return_attention_mask=False)
         word_list, token_list, word_offsets = [], [], []
         for word in doc:
-            if (len(vocab) and (word.text in vocab)) or (vocab is None and word.is_alpha and not word.is_stop and not word.is_sent_start and len(word.text) > 2):
+                # Start of Selection
+            if (
+                (vocab and word.text in vocab)
+                or (
+                    vocab is None
+                    and word.is_alpha
+                    and not word.is_stop
+                    and not word.is_sent_start
+                    and len(word.text) > 2
+                )
+            ):
                 start, end = word.idx, word.idx + len(word)
 
                 # Get all token offsets that overlap with the word span

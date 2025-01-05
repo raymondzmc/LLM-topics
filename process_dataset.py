@@ -175,7 +175,7 @@ def main(args):
                     combined_ids = context_input_ids[0].tolist() + word_token_ids[idx]
                     chunk_input_ids.append(combined_ids)
                 padded_batch = tokenizer.pad(
-                    [{"input_ids":  } for seq in chunk_input_ids],
+                    [{"input_ids": seq} for seq in chunk_input_ids],
                     return_tensors='pt'
                 ).to(device)
 
@@ -200,12 +200,14 @@ def main(args):
                     word_probability = float(torch.exp(torch.tensor(log_p)))
                     multi_token_probs[vocab[idx]] = word_probability
         next_word_probs = {**single_token_probs, **multi_token_probs}
+        total_prob = sum(next_word_probs.values())
+        normalized_next_word_probs = {word: prob / total_prob for word, prob in next_word_probs.items()}
 
     # Then store or process these probabilities as needed
     processed_examples.append({
         'context': context,
         'next_word': next_word,
-        'next_word_probs': next_word_probs,
+        'next_word_probs': normalized_next_word_probs,
         'input_embeddings': embeddings,
     })
     # Build a dict of lists from the list of dicts

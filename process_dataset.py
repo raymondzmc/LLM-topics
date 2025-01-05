@@ -27,12 +27,29 @@ except OSError:
     nlp = spacy.load("en_core_web_lg")
 
 
+def get_dataset(args):
+    configs = get_dataset_config_names(args.dataset, trust_remote_code=True)
+    if len(configs) > 0:
+        datasets = []
+        if args.split is None:
+            raise ValueError("Split must be specified when combining multiple configs")
+        for cfg in configs:
+            dataset = load_dataset(args.dataset, cfg, trust_remote_code=True)
+            datasets.append(dataset[args.split])
+        dataset = concatenate_datasets(datasets)
+    else:
+        dataset = load_dataset(args.dataset, trust_remote_code=True)
+        dataset = dataset[args.split] if args.split else dataset
+    return dataset
+
+
 def tokenize_dataset(batch, tokenizer, content_key: str, single_token_only: bool = False, vocab: list[str] = None):
     words = []
     token_ids = []
     offsets = []
     
     for text in batch[content_key]:
+        text = text.split('\n\n')[1]
         doc = nlp(text)
         encoding = tokenizer(text, return_offsets_mapping=True, return_attention_mask=False)
         word_list, token_list, word_offsets = [], [], []
@@ -89,19 +106,6 @@ def create_inference_examples(batch, vocab, content_key):
 def main(args):
     token = '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'
     login(token)
-    configs = get_dataset_config_names(args.dataset, trust_remote_code=True)
-    if len(configs) > 0:
-        datasets = []
-        if args.split is None:
-            raise ValueError("Split must be specified when combining multiple configs")
-        for cfg in configs:
-            dataset = load_dataset(args.dataset, cfg, trust_remote_code=True)
-            datasets.append(dataset[args.split])
-        dataset = concatenate_datasets(datasets)
-    else:
-        dataset = load_dataset(args.dataset, trust_remote_code=True)
-        dataset = dataset[args.split] if args.split else dataset
-
     model = AutoModelForCausalLM.from_pretrained(
         args.model_name,
         torch_dtype=torch.bfloat16,
@@ -126,6 +130,7 @@ def main(args):
         with open(vocab_path, 'r') as f:
             vocab = json.load(f)
     else:
+        dataset = get_dataset(args)
         dataset = dataset.map(
             lambda x: tokenize_dataset(
                 x,
@@ -188,7 +193,7 @@ def main(args):
         single_token_word_idx = [i for i, token_len in enumerate(token_lengths) if token_len == 1]
         multi_token_word_idx = [i for i, token_len in enumerate(token_lengths) if token_len > 1]
         if (len(single_token_word_idx) + len(multi_token_word_idx)) != len(vocab):
-            pdb.set_trace()
+            continue
 
         # Skip multi-token words if single_token_only is True
         if args.single_token_only and len(multi_token_word_idx) > 0:

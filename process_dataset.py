@@ -109,7 +109,7 @@ def main(args):
     model = AutoModelForCausalLM.from_pretrained(
         args.model_name,
         torch_dtype=torch.bfloat16,
-        use_flash_attention_2=True,
+        use_flash_attention_2=args.use_flash_attention_2,
     ).eval()
     tokenizer = AutoTokenizer.from_pretrained(args.model_name)
     if tokenizer.pad_token_id is None:
@@ -285,6 +285,7 @@ if __name__ == '__main__':
     parser.add_argument('--split', type=str, default='test')
     parser.add_argument('--vocab_size', type=int, default=2000)
     parser.add_argument('--model_name', type=str, default='meta-llama/Llama-3.2-1B')
+    parser.add_argument('--use_flash_attention_2', action='store_true')
     parser.add_argument('--single_token_only', action='store_true', help="Whether to only include single token words.")
     parser.add_argument('--examples_per_vocab', type=int, default=None, help="Number of examples to sample per vocab word.")
     parser.add_argument('--data_path', type=str, default='data')

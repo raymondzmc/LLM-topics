@@ -3,7 +3,6 @@ import json
 import argparse
 import multiprocessing
 from collections import Counter
-
 import torch
 import spacy
 from tqdm import tqdm
@@ -16,6 +15,8 @@ from datasets import (
     concatenate_datasets,
 )
 from transformers import AutoTokenizer, AutoModelForCausalLM
+from llm import compute_word_log_prob
+from utils.io import save_processed_dataset
 import pdb
 
 try:
@@ -195,21 +196,30 @@ def main(args):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model.to(device)
     processed_examples = []
+    vocab_token_ids = [tokenizer.encode(f" {word}") for word in vocab]
+    vocab_token_prefix = [ids[0] for ids in vocab_token_ids]
+    token_lengths = [len(token_ids) for token_ids in vocab_token_ids]
+    single_token_word_idx = [i for i, token_len in enumerate(token_lengths) if token_len == 1]
+    multi_token_word_idx = [i for i, token_len in enumerate(token_lengths) if token_len > 1]
+
+    if (len(single_token_word_idx) + len(multi_token_word_idx)) != len(vocab):
+        raise ValueError(
+            "The total number of single-token and multi-token words does not match the vocabulary size. Please check the vocabulary and tokenization process.")
+
+    if args.word_prob_method == 'prefix' and len(vocab_token_prefix) > len(set(vocab_token_prefix)):
+        print(
+            "Warning: Vocab token prefix is not unique.",
+            "Consider using 'product' method to compute word probabilities."
+        )
+    
+    if args.single_token_only and len(multi_token_word_idx) > 0:
+        raise ValueError("Single token only is set to True, but there are multi-token words in the vocabulary.")
+    
     for example in tqdm(sampled_inference_dataset):
         context = example['context']
         next_word = example['next_word']
         context_input_ids = tokenizer.encode(context.rstrip(), return_tensors='pt').to(device)
         context_length = context_input_ids.shape[1]
-        word_token_ids = [tokenizer.encode(context + word)[context_length:] for word in vocab]
-        token_lengths = [len(token_ids) for token_ids in word_token_ids]
-        single_token_word_idx = [i for i, token_len in enumerate(token_lengths) if token_len == 1]
-        multi_token_word_idx = [i for i, token_len in enumerate(token_lengths) if token_len > 1]
-        if (len(single_token_word_idx) + len(multi_token_word_idx)) != len(vocab):
-            continue
-
-        # Skip multi-token words if single_token_only is True
-        if args.single_token_only and len(multi_token_word_idx) > 0:
-            continue
 
         # Compute the probabilities for single token words
         single_token_probs = {}
@@ -226,65 +236,45 @@ def main(args):
 
         single_token_probs = {}
         for i in single_token_word_idx:
-            prob = next_token_probs[word_token_ids[i][0]].item()
-            single_token_probs[vocab[i]] = prob
+            single_token_probs[vocab[i]] = next_token_probs[vocab_token_prefix[i]].item()
 
         multi_token_probs = {}
-        if len(multi_token_word_idx) > 0:
-            for start in range(0, len(multi_token_word_idx), args.batch_size):
-                end = start + args.batch_size
-                chunk_indices = multi_token_word_idx[start:end]
+        if not args.single_token_only and len(multi_token_word_idx) > 0:
+            if args.word_prob_method == 'product':
+                multi_token_probs = compute_word_log_prob(
+                    model, tokenizer, device, multi_token_word_idx, context_input_ids,
+                    vocab_token_ids, vocab, args.batch_size, context_length)
+            elif args.word_prob_method == 'prefix':
+                prefix_groups = {}
+                for i in multi_token_word_idx:
+                    prefix = vocab_token_prefix[i]
+                    prefix_groups.setdefault(prefix, []).append(i)
 
-                chunk_input_ids = []
-                for idx in chunk_indices:
-                    combined_ids = context_input_ids[0].tolist() + word_token_ids[idx]
-                    chunk_input_ids.append(combined_ids)
-                padded_batch = tokenizer.pad(
-                    [{"input_ids": seq} for seq in chunk_input_ids],
-                    return_tensors='pt'
-                ).to(device)
+                # Split the probability among words sharing the same prefix
+                for prefix, indices in prefix_groups.items():
+                    total_prefix_prob = next_token_probs[prefix].item()
+                    split_prob = total_prefix_prob / len(indices)
+                    for i in indices:
+                        multi_token_probs[vocab[i]] = split_prob
+            else:
+                raise ValueError(f"Invalid word probability method: {args.word_prob_method}")
 
-                with torch.no_grad():
-                    outputs = model(**padded_batch, use_cache=True, output_hidden_states=True)
-                all_logits = outputs.logits  # [batch_size, seq_len, vocab_size]
-
-                # Calculate probabilities for each sequence in this chunk
-                for batch_idx, idx in enumerate(chunk_indices):
-                    token_ids_for_word = word_token_ids[idx]
-                    log_p = 0.0
-                    for k, subtoken_id in enumerate(token_ids_for_word):
-                        pred_pos = context_length + k - 1
-                        if pred_pos < 0:
-                            raise ValueError("The subtoken index is out of range. Check offsets.")
-
-                        token_logits = all_logits[batch_idx, pred_pos, :]
-                        token_prob = torch.softmax(token_logits, dim=-1)[subtoken_id]
-                        log_p += torch.log(token_prob).item()
-
-                    # Convert log-prob to probability
-                    word_probability = float(torch.exp(torch.tensor(log_p)))
-                    multi_token_probs[vocab[idx]] = word_probability
         all_probs = {**single_token_probs, **multi_token_probs}
         total_prob = sum(all_probs.values())
         normalized_next_word_probs = {word: prob / total_prob for word, prob in all_probs.items()}
         next_word_probs = [normalized_next_word_probs[word] for word in vocab]
+        processed_examples.append({
+            'context': context,
+            'next_word': next_word,
+            'next_word_probs': next_word_probs,
+            'input_embeddings': embeddings,
+        })
 
-    processed_examples.append({
-        'context': context,
-        'next_word': next_word,
-        'next_word_probs': next_word_probs,
-        'input_embeddings': embeddings,
-    })
     # Build a dict of lists from the list of dicts
     keys = processed_examples[0].keys()
     data_dict = {key: [ex[key] for ex in processed_examples] for key in keys}
-
-    # Create the Dataset object from our data dictionary
-    processed_dataset = Dataset.from_dict(data_dict)
-
-    # Save the dataset to disk
     save_path = os.path.join(args.data_path, "processed_dataset")
-    processed_dataset.save_to_disk(save_path)
+    save_processed_dataset(data_dict, save_path)
     print(f"Processed examples saved to disk at: {save_path}")
 
 
@@ -299,6 +289,7 @@ if __name__ == '__main__':
     parser.add_argument('--model_name', type=str, default='meta-llama/Llama-3.2-1B')
     parser.add_argument('--use_flash_attention_2', action='store_true')
     parser.add_argument('--single_token_only', action='store_true', help="Whether to only include single token words.")
+    parser.add_argument('--word_prob_method', type=str, default='prefix', choices=['prefix', 'product'])
     parser.add_argument('--examples_per_vocab', type=int, default=None, help="Number of examples to sample per vocab word.")
     parser.add_argument('--data_path', type=str, default='data')
     parser.add_argument('--batch_size', type=int, default=32)

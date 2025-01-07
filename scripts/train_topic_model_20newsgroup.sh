@@ -1,0 +1,15 @@
+python run_topic_modeling.py --data_path ./data/newsgroup_Llama-3.2-1B_2000/train \
+                             --model generative \
+                             --K 10 \
+                             --hidden_sizes 200 \
+                             --activation softplus \
+                             --dropout 0.2 \
+                             --learn_priors True \
+                             --batch_size 64 \
+                             --lr 0.002 \
+                             --momentum 0.99 \
+                             --solver adam \
+                             --num_epochs 100 \
+                             --reduce_on_plateau False \
+                             --label_size 0 \
+                             --loss_weights None

@@ -10,12 +10,39 @@ from contextualized_topic_models.evaluation.measures import (
     CoherenceWordEmbeddings,
     InvertedRBO,
 )
+from utils.io import load_processed_dataset
+
+
+def evaluate_topic_model(topic_model, processed_dataset, vocab):
+    evaluation_results = {}
+    topics = topic_model.get_topics(10)
+    topics = list(topics.values())
+    td = TopicDiversity(topics)
+    td_score = td.score(topk=10)
+    print("Topic Diversity:", td_score)
+    evaluation_results['topic_diversity'] = td_score
+
+    texts = [example['content'].split() for example in processed_dataset]
+    npmi = CoherenceNPMI(topics, texts)
+    npmi_score = npmi.score(topk=10)
+    print("NPMI:", npmi_score)
+    evaluation_results['npmi'] = npmi_score
+
+    we = CoherenceWordEmbeddings(topics)
+    we_score = we.score(topk=10)
+    print("Word Embeddings:", we_score)
+    evaluation_results['word_embeddings'] = we_score
+
+    irbo = InvertedRBO(topics)
+    irbo_score = irbo.score(topk=10)
+    print("Inverted RBO:", irbo_score)
+    evaluation_results['inverted_rbo'] = irbo_score
+    return evaluation_results
 
 
 def main(args):
     vocab = json.load(open(args.vocab_path, 'r'))
-    processed_dataset = load_from_disk(args.processed_data_path)
-
+    processed_dataset = load_processed_dataset(args.processed_data_path)
     model_weight_path: str | None = os.path.join(args.checkpoint_path, 'model.pt')
     model_weights: dict | None = None
     if os.path.exists(model_weight_path):
@@ -26,7 +53,8 @@ def main(args):
                                     vocab,
                                     processed_dataset,
                                     args.K,
-                                    hidden_sizes=args.hidden_sizes,
+                                    embedding_type=args.embedding_type,
+                                    hidden_sizes=(args.hidden_sizes, args.hidden_sizes),
                                     activation=args.activation,
                                     dropout=args.dropout,
                                     learn_priors=args.learn_priors,
@@ -44,21 +72,10 @@ def main(args):
     torch.save(topic_model.model, model_weight_path)
     print(f"Saved model weights to {model_weight_path}.")
 
-    topics = topic_model.get_topics(10)
-    topics = list(topics.values())
-    td = TopicDiversity(topics)
-    print("Topic Diversity:", td.score(topk=10))
-
-    texts = [example['content'].split() for example in processed_dataset]
-    npmi = CoherenceNPMI(topics, texts)
-    print("NPMI:", npmi.score(topk=10))
-
-    we = CoherenceWordEmbeddings(topics)
-    print("Word Embeddings:", we.score(topk=10))
-
-    irbo = InvertedRBO(topics)
-    print("Inverted RBO:", irbo.score(topk=10))
-
+    evaluation_results = evaluate_topic_model(topic_model, processed_dataset, vocab)
+    with open(os.path.join(args.checkpoint_path, 'evaluation_results.json'), 'w') as f:
+        json.dump(evaluation_results, f)
+    print(f"Saved evaluation results to {os.path.join(args.checkpoint_path, 'evaluation_results.json')}.")
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -67,7 +84,9 @@ if __name__ == '__main__':
     parser.add_argument('--K', type=int, default=10, help='Number of topics')
 
     # Model hyperparameters
-    parser.add_argument('--hidden_sizes', type=tuple, default=(200, 200))
+    parser.add_argument('--hidden_sizes', type=int, default=200)
+    parser.add_argument('--embedding_type', type=str, default='hidden_states', choices=['hidden_states', 'sbert'])
+    parser.add_argument('--hidden_state_layer', type=int, default=0, help='Layer of hidden states to use for embedding')
     parser.add_argument('--activation', type=str, default='softplus')
     parser.add_argument('--dropout', type=float, default=0.2)
     parser.add_argument('--learn_priors', type=bool, default=True)
@@ -93,26 +112,29 @@ if __name__ == '__main__':
     if not os.path.isdir(args.processed_data_path):
         raise ValueError("Processed data directory does not exist. Run process_dataset.py first.")
 
-    args.checkpoint_path = os.path.join(args.data_dir, 'checkpoints', f'{args.model}_K{args.K}.pt')
+    args.checkpoint_path = os.path.join(args.data_path, 'checkpoints', f'{args.model}_K{args.K}.pt')
     if not os.path.exists(args.checkpoint_path):
         args.checkpoint_path = os.path.join(args.checkpoint_path, 'run_0')
         os.makedirs(args.checkpoint_path, exist_ok=True)
     else:
-        num_runs = len(os.listdir(args.checkpoint_path))
+        run_dirs = [
+            os.path.join(args.checkpoint_path, f) for f in os.listdir(args.checkpoint_path)
+            if f.startswith('run_') and 
+               os.path.isdir(os.path.join(args.checkpoint_path, f)) and 
+               len(os.listdir(os.path.join(args.checkpoint_path, f))) > 0
+        ]
+        num_runs = len(run_dirs)
         print(f"Found {num_runs} runs in {args.checkpoint_path}.")
 
         # Check if a run dir has the same args as the current run
         previous_run_path: None | str = None
-        for run_dir in os.listdir(args.checkpoint_path):
-            if run_dir.startswith('run_'):
-                run_dir_path = os.path.join(args.checkpoint_path, run_dir)
-                if os.path.isdir(run_dir_path):
-                    run_args = json.load(open(os.path.join(run_dir_path, 'args.json'), 'r'))
-                    if run_args == vars(args):
-                        previous_run_path = run_dir_path
-                        print(f"Saved checkpoint with identical configs already exists.",
-                              f"Loading from {args.checkpoint_path}")
-                        break
+        for run_dir_path in run_dirs:
+            run_args = json.load(open(os.path.join(run_dir_path, 'args.json'), 'r'))
+            if run_args == vars(args):
+                previous_run_path = run_dir_path
+                print(f"Saved checkpoint with identical configs already exists.",
+                        f"Loading from {args.checkpoint_path}")
+                break
         if previous_run_path is None:
             print(f"No previous run found with identical configs. Creating new run.")
             args.checkpoint_path = os.path.join(args.checkpoint_path, f'run_{num_runs}')

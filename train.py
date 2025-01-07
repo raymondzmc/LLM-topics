@@ -29,9 +29,8 @@ model_classes = {
 def get_bows(processed_dataset: Dataset,
              vocab: list[str]) -> tuple[np.ndarray, np.ndarray]:
     
-    bows = lil_matrix((len(processed_dataset), len(vocab))).tocsr()
-    for i, example in enumerate(tqdm(processed_dataset)):
-        text = example['content'] if 'content' in example else example['context']
+    bows = lil_matrix((len(processed_dataset['context']), len(vocab))).tocsr()
+    for text in enumerate(tqdm(processed_dataset['context'])):
         for j, token in vocab:
             if token in text:
                 bows[i, j] = text.count(token)
@@ -55,6 +54,7 @@ def train_topic_model(model_type: str,
                       processed_dataset: Dataset,
                       K: int,
                       embedding_type: str = 'hidden_states',
+                      hidden_state_layer: int = 0,
                       hidden_sizes: tuple[int] = (100, 100),
                       activation: str = "softplus",
                       dropout: float = 0.2,
@@ -80,12 +80,12 @@ def train_topic_model(model_type: str,
         raise ValueError(f"Unsupported embedding type: {embedding_type}")
 
     if embedding_type == EmbeddingType.HIDDEN_STATES:
-        embeddings = np.stack([example['input_embeddings'] for example in processed_dataset])
+        embeddings = np.stack([embedding[hidden_state_layer] for embedding in processed_dataset['input_embeddings']])
     else:
         embeddings = get_sbert_embeddings(processed_dataset)
 
     if model_type == ModelType.GENERATIVE:
-        targets = np.stack([example['next_word_probs'] for example in processed_dataset])
+        targets = np.stack([probs for probs in processed_dataset['next_word_probs']])
     else:
         targets = get_bows(processed_dataset, vocab)
 
@@ -94,7 +94,6 @@ def train_topic_model(model_type: str,
                          X_bow=targets,
                          idx2token=idx2token)
     model_cls = model_classes[model_type]
-
     model = model_cls(bow_size=len(vocab),
                       contextual_size=embeddings.shape[1],
                       n_components=K,

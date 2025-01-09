@@ -1,12 +1,17 @@
-import torch
+import os
 import numpy as np
+from collections import Counter
 from datasets import Dataset
 from contextualized_topic_models.models.ctm import CTM, GenerativeTM, ZeroShotTM, CombinedTM
 from contextualized_topic_models.datasets.dataset import CTMDataset
 from contextualized_topic_models.utils.data_preparation import bert_embeddings_from_list
-from scipy.sparse import lil_matrix
+from scipy.sparse import lil_matrix, csr_matrix
 from tqdm import tqdm
 from enum import Enum
+import pdb
+
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
+
 
 class ModelType(Enum):
     GENERATIVE = 'generative'
@@ -26,15 +31,16 @@ model_classes = {
 }
 
 
-def get_bows(processed_dataset: Dataset,
-             vocab: list[str]) -> tuple[np.ndarray, np.ndarray]:
-    
-    bows = lil_matrix((len(processed_dataset['context']), len(vocab))).tocsr()
-    for text in enumerate(tqdm(processed_dataset['context'])):
-        for j, token in vocab:
-            if token in text:
-                bows[i, j] = text.count(token)
-    return bows
+def get_bows(processed_dataset, vocab):
+    bows = lil_matrix((len(processed_dataset['content']), len(vocab)), dtype=int)
+    vocab_to_idx = {token: idx for idx, token in enumerate(vocab)}
+    for i, text in enumerate(tqdm(processed_dataset['content'])):
+        token_counts = Counter(text)
+        for token, count in token_counts.items():
+            if token in vocab_to_idx:
+                j = vocab_to_idx[token]
+                bows[i, j] = count
+    return bows.tocsr()
 
 
 def get_sbert_embeddings(processed_dataset: Dataset,
@@ -51,10 +57,10 @@ def get_sbert_embeddings(processed_dataset: Dataset,
 
 def train_topic_model(model_type: str,
                       vocab: list[str],
-                      processed_dataset: Dataset,
+                      processed_dataset: Dataset | list[list[str]],
                       K: int,
                       embedding_type: str = 'hidden_states',
-                      hidden_state_layer: int = 0,
+                      hidden_state_layer: int | None = None,
                       hidden_sizes: tuple[int] = (100, 100),
                       activation: str = "softplus",
                       dropout: float = 0.2,
@@ -66,8 +72,8 @@ def train_topic_model(model_type: str,
                       num_epochs: int = 100,
                       reduce_on_plateau: bool = False,
                       label_size: int = 0,
-                      loss_weights: list[float] | None = None,
-                      model_weights: dict | None = None,
+                      loss_weights: dict[str, float] | None = None,
+                      model_checkpoint: dict | None = None,
                       continue_training: bool = False) -> CTM:
     try:
         model_type = ModelType(model_type)
@@ -79,8 +85,11 @@ def train_topic_model(model_type: str,
     except ValueError:
         raise ValueError(f"Unsupported embedding type: {embedding_type}")
 
-    if embedding_type == EmbeddingType.HIDDEN_STATES:
-        embeddings = np.stack([embedding[hidden_state_layer] for embedding in processed_dataset['input_embeddings']])
+    if model_type == ModelType.GENERATIVE:
+        if embedding_type == EmbeddingType.HIDDEN_STATES:
+            embeddings = np.stack([embedding[hidden_state_layer] for embedding in processed_dataset['input_embeddings']])
+        else:
+            embeddings = get_sbert_embeddings(processed_dataset)
     else:
         embeddings = get_sbert_embeddings(processed_dataset)
 
@@ -88,6 +97,8 @@ def train_topic_model(model_type: str,
         targets = np.stack([probs for probs in processed_dataset['next_word_probs']])
     else:
         targets = get_bows(processed_dataset, vocab)
+    
+    print(f"Input shape: {embeddings.shape}, target shape: {targets.shape}")
 
     idx2token = {i: token for i, token in enumerate(vocab)}
     dataset = CTMDataset(X_contextual=embeddings,
@@ -109,8 +120,10 @@ def train_topic_model(model_type: str,
                       reduce_on_plateau=reduce_on_plateau,
                       label_size=label_size,
                       loss_weights=loss_weights)
-    if model_weights is not None:
-        model.model.load_state_dict(model_weights)
+
+    if model_checkpoint is not None:
+        model.model.load_state_dict(model_checkpoint, strict=False)
+        model.idx2token = idx2token
         print("Successfully loaded model weights.")
         if continue_training:
             print("Continuing training.")

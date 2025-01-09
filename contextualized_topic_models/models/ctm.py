@@ -62,7 +62,7 @@ class CTM:
         solver="adam",
         num_epochs=100,
         reduce_on_plateau=False,
-        num_data_loader_workers=mp.cpu_count(),
+        num_data_loader_workers=4,
         label_size=0,
         loss_weights=None,
         loss_type="ct"
@@ -598,7 +598,7 @@ class CTM:
         :param k: int, number of words to return per topic, default 10.
         """
         assert k <= self.bow_size, "k must be <= input size."
-        component_dists = self.best_components
+        component_dists = self.best_components if self.best_components is not None else self.model.beta
         topics = defaultdict(list)
         for i in range(self.n_components):
             _, idxs = torch.topk(component_dists[i], k)

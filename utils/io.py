@@ -15,11 +15,11 @@ def save_processed_dataset(data_dict, data_path):
         key_path = os.path.join(data_path, key)
         os.makedirs(key_path, exist_ok=True)
         for i in tqdm(list(range(0, len(values), CHUNK_SIZE))):
-            torch.save(np.array(values[i:i+CHUNK_SIZE]), os.path.join(key_path, f"{i}.pt"))
+            torch.save(values[i:i+CHUNK_SIZE], os.path.join(key_path, f"{i}.pt"))
         print(f"Successfully saved {key} values")
 
 
-def load_processed_dataset(data_path):
+def load_processed_dataset(data_path, layer_idx=None):
     data_dict = {}
     
     for key in KEYS:
@@ -35,8 +35,11 @@ def load_processed_dataset(data_path):
         values = []
         for chunk_file in tqdm(chunk_files):
             chunk_path = os.path.join(key_dir, chunk_file)
-            chunk_data = torch.load(chunk_path)
+            chunk_data = torch.load(chunk_path, weights_only=False)
             values.extend(chunk_data)
+
+        if key == 'input_embeddings' and layer_idx is not None:
+            values = [embedding[layer_idx] for embedding in values]
 
         data_dict[key] = values
         print(f"Successfully loaded {key} values")

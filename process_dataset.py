@@ -43,7 +43,7 @@ def get_dataset(args):
         dataset = dataset[args.split] if args.split else dataset
 
     if args.dataset == 'google-research-datasets/newsgroup':
-        dataset = dataset.map(lambda x: {'text': x['text'].split('\n\n')[1]})
+        dataset = dataset.map(lambda x: {'text': x['text'].split('\n\n')[1]}, num_proc=16)
     return dataset
 
 
@@ -57,7 +57,7 @@ def tokenize_dataset(batch, tokenizer, content_key: str, single_token_only: bool
         encoding = tokenizer(text, return_offsets_mapping=True, return_attention_mask=False)
         word_list, token_list, word_offsets = [], [], []
         for word in doc:
-                # Start of Selection
+            # Start of Selection
             if (
                 (vocab and word.text in vocab)
                 or (
@@ -71,8 +71,10 @@ def tokenize_dataset(batch, tokenizer, content_key: str, single_token_only: bool
                 start, end = word.idx, word.idx + len(word)
 
                 # Get all token offsets that overlap with the word span
-                word_token_ids = [encoding.input_ids[i] for i, offset in enumerate(encoding.offset_mapping)
-                                  if offset[0] < end and offset[1] > start]
+                # word_token_ids = [encoding.input_ids[i] for i, offset in enumerate(encoding.offset_mapping)
+                #                   if offset[0] < end and offset[1] > start]
+
+                word_token_ids = tokenizer.encode(f" {word.text}", add_special_tokens=False)
                 if len(word_token_ids) == 0:
                     raise ValueError(f"Word {word.text} not found in tokenizer")
                 
@@ -85,6 +87,17 @@ def tokenize_dataset(batch, tokenizer, content_key: str, single_token_only: bool
         token_ids.append(token_list)
         offsets.append(word_offsets)
     return {'words': words, 'token_ids': token_ids, 'offsets': offsets, 'content': batch[content_key]}
+
+
+def create_bow_dataset(batch, vocab, content_key):
+    bow_lines = []
+    for words in batch["words"]:
+        # Keep only words in vocab (including duplicates if they appear multiple times)
+        filtered_words = [w for w in words if w in vocab]
+        bow_lines.append(" ".join(filtered_words))
+    
+    return {"bow_line": bow_lines}
+
 
 
 def create_inference_examples(batch, vocab, content_key):
@@ -170,6 +183,21 @@ def main(args):
         with open(vocab_path, 'w') as f:
             json.dump(vocab, f)
 
+    if args.bow_dataset:
+        dataset = dataset.map(
+            lambda x: create_bow_dataset(x, vocab, args.content_key),
+            batched=True,
+            batch_size=1000,
+            num_proc=num_proc
+        )
+        # Save the resulting BoW lines to a text file
+        bow_output_path = os.path.join(args.data_path, "bow_dataset.txt")
+        print(f"Saving BoW dataset to {bow_output_path} ...")
+        with open(bow_output_path, "w", encoding="utf-8") as f:
+            for bow_line in dataset["bow_line"]:
+                f.write(bow_line + "\n")
+
+
     # Create LM inference examples when the next word is in the vocab
     inference_dataset = dataset.map(
         lambda x: create_inference_examples(x, vocab, args.content_key),
@@ -196,7 +224,7 @@ def main(args):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model.to(device)
     processed_examples = []
-    vocab_token_ids = [tokenizer.encode(f" {word}") for word in vocab]
+    vocab_token_ids = [tokenizer.encode(f" {word}", add_special_tokens=False) for word in vocab]
     vocab_token_prefix = [ids[0] for ids in vocab_token_ids]
     token_lengths = [len(token_ids) for token_ids in vocab_token_ids]
     single_token_word_idx = [i for i, token_len in enumerate(token_lengths) if token_len == 1]
@@ -208,7 +236,7 @@ def main(args):
 
     if args.word_prob_method == 'prefix' and len(vocab_token_prefix) > len(set(vocab_token_prefix)):
         print(
-            "Warning: Vocab token prefix is not unique.",
+            f"Warning: Vocab token prefix is not unique, {len(vocab_token_prefix) - len(set(vocab_token_prefix))} duplicates.",
             "Consider using 'product' method to compute word probabilities."
         )
     
@@ -233,7 +261,6 @@ def main(args):
         next_token_logits = logits[:, -1, :]
         next_token_probs = torch.softmax(next_token_logits, dim=-1).squeeze(0)
         embeddings = [h[0, -1].cpu().tolist() for h in outputs.hidden_states]
-
         single_token_probs = {}
         for i in single_token_word_idx:
             single_token_probs[vocab[i]] = next_token_probs[vocab_token_prefix[i]].item()
@@ -291,6 +318,7 @@ if __name__ == '__main__':
     parser.add_argument('--single_token_only', action='store_true', help="Whether to only include single token words.")
     parser.add_argument('--word_prob_method', type=str, default='prefix', choices=['prefix', 'product'])
     parser.add_argument('--examples_per_vocab', type=int, default=None, help="Number of examples to sample per vocab word.")
+    parser.add_argument('--bow_dataset', action='store_true', help="Whether to compute the bag-of-words dataset.")
     parser.add_argument('--data_path', type=str, default='data')
     parser.add_argument('--batch_size', type=int, default=32)
     args = parser.parse_args()

@@ -53,7 +53,6 @@ class DecoderNetwork(nn.Module):
         self.activation = activation
         self.dropout = dropout
         self.learn_priors = learn_priors
-        self.topic_word_matrix = None
 
         if infnet == "zeroshot":
             self.inf_net = ContextualInferenceNetwork(
@@ -117,6 +116,16 @@ class DecoderNetwork(nn.Module):
         std = torch.exp(0.5 * logvar)
         eps = torch.randn_like(std)
         return eps.mul(std).add_(mu)
+    
+    @property
+    def topic_word_matrix(self):
+        if self.model_type == "prodLDA":
+            topic_word_matrix = self.beta
+        elif self.model_type == "LDA":
+            topic_word_matrix = F.softmax(self.beta_batchnorm(self.beta), dim=1)
+        else:
+            raise NotImplementedError("Model Type Not Implemented")
+        return topic_word_matrix
 
     def forward(self, x, x_bert, labels=None):
         """Forward pass."""
@@ -134,12 +143,9 @@ class DecoderNetwork(nn.Module):
             word_dist = F.softmax(
                 self.beta_batchnorm(torch.matmul(theta, self.beta)), dim=1
             )
-            # word_dist: batch_size x input_size
-            self.topic_word_matrix = self.beta
         elif self.model_type == "LDA":
             # simplex constrain on Beta
             beta = F.softmax(self.beta_batchnorm(self.beta), dim=1)
-            self.topic_word_matrix = beta
             word_dist = torch.matmul(theta, beta)
             # word_dist: batch_size x input_size
         else:

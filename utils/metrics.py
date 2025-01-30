@@ -1,6 +1,54 @@
+import os
 import math
-from collections import defaultdict
 import numpy as np
+from openai import OpenAI
+from collections import defaultdict
+from settings import settings
+from llm import jinja_template_manager
+import pdb
+
+
+def compute_llm_rating(topics: list[list[str]], model: str = "gpt-4o"):
+    system_prompt = jinja_template_manager.render("topic_ratings_system.jinja")
+    topic_ratings: list[int] = []
+
+    def render_messages(topic: list[str]):
+        user_prompt = jinja_template_manager.render(
+            "topic_ratings_user.jinja",
+            topic=topic,
+        )
+        messages = [
+            {'role': 'system', 'content': system_prompt},
+            {'role': 'user', 'content': user_prompt},
+        ]
+        return messages
+
+    client = OpenAI(api_key=settings.openai_api_key)
+    for topic in topics:
+        messages = render_messages(topic)
+        rating: int | None = None
+        temperature: float = 0.0
+        num_attempts: int = 0
+        while rating is None and num_attempts < 5:
+            response = client.chat.completions.create(
+                model=model,
+                messages=messages,
+                temperature=temperature,
+                max_completion_tokens=1,
+            )
+            _rating = int(response.choices[0].message.content)
+            if _rating in [1, 2, 3]:
+                rating = _rating
+            else:
+                temperature += 0.1
+                num_attempts += 1
+
+        if rating is None:
+            raise ValueError(f"Could not get a valid LLM rating for topic \"{topic}\" after 5 attempts.")
+
+        topic_ratings.append(rating)
+    return topic_ratings
+
 
 def compute_npmi_score(topics, documents):
     """

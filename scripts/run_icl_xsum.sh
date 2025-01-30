@@ -1,1 +1,1 @@
-python run_icl.py --method hidden_states
+python run_icl.py --method mean_hidden_states --output_dir ./results/xsum_icl_mean_hidden_states

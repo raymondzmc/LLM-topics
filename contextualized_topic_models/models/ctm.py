@@ -29,7 +29,7 @@ class CTM:
     :param n_components: int, number of topic components, (default 10)
     :param model_type: string, 'prodLDA' or 'LDA' (default 'prodLDA')
     :param hidden_sizes: tuple, length = n_layers, (default (100, 100))
-    :param activation: string, 'softplus', 'relu', (default 'softplus')
+    :param activation: string, 'softplus', 'relu', 'gelu' (default 'gelu')
     :param dropout: float, dropout to use (default 0.2)
     :param learn_priors: bool, make priors a learnable parameter (default True)
     :param batch_size: int, size of batch to use for training (default 64)
@@ -53,7 +53,7 @@ class CTM:
         n_components=10,
         model_type="prodLDA",
         hidden_sizes=(100, 100),
-        activation="softplus",
+        activation="gelu",
         dropout=0.2,
         learn_priors=True,
         batch_size=64,
@@ -86,7 +86,8 @@ class CTM:
         assert activation in [
             "softplus",
             "relu",
-        ], "activation must be 'softplus' or 'relu'."
+            "gelu",
+        ], "activation must be 'softplus' or 'relu' or 'gelu'."
         assert dropout >= 0, "dropout must be >= 0."
         assert isinstance(learn_priors, bool), "learn_priors must be boolean."
         assert (
@@ -121,7 +122,7 @@ class CTM:
         self.num_data_loader_workers = num_data_loader_workers
         self.training_doc_topic_distributions = None
 
-        if loss_weights:
+        if loss_weights is not None:
             self.weights = loss_weights
         else:
             self.weights = {"beta": 1}
@@ -203,14 +204,11 @@ class CTM:
 
         # Reconstruction term
         if self.loss_type == "generative":
-            temperature = 0.7
-            student_out = torch.log(word_dists / temperature)
-            teacher_out = inputs / temperature
-            RL = torch.sum(F.kl_div(student_out, teacher_out, reduction="none"), dim=1)
+            teacher_probs = inputs
+            student_logprobs = torch.log(word_dists + 1e-10)
+            RL = F.kl_div(student_logprobs, teacher_probs, reduction='none').sum(dim=1)
         else:
             RL = -torch.sum(inputs * torch.log(word_dists + 1e-10), dim=1)
-
-        # loss = self.weights["beta"]*KL + RL
 
         return KL, RL
 
@@ -218,6 +216,8 @@ class CTM:
         """Train epoch."""
         self.model.train()
         train_loss = 0
+        total_kl_loss = 0
+        total_rl_loss = 0
         samples_processed = 0
 
         for batch_samples in loader:
@@ -258,9 +258,11 @@ class CTM:
                 posterior_variance,
                 posterior_log_variance,
             )
-
-            loss = self.weights["beta"] * kl_loss + rl_loss
+            loss = kl_loss + rl_loss
             loss = loss.sum()
+
+            total_kl_loss += kl_loss.sum().item()
+            total_rl_loss += rl_loss.sum().item()
 
             if labels is not None:
                 target_labels = torch.argmax(labels, 1)
@@ -278,8 +280,10 @@ class CTM:
             train_loss += loss.item()
 
         train_loss /= samples_processed
+        total_kl_loss /= samples_processed
+        total_rl_loss /= samples_processed
 
-        return samples_processed, train_loss
+        return samples_processed, train_loss, total_kl_loss, total_rl_loss
 
     def fit(
         self,
@@ -359,7 +363,7 @@ class CTM:
             self.nn_epoch = epoch
             # train epoch
             s = datetime.datetime.now()
-            sp, train_loss = self._train_epoch(train_loader)
+            sp, train_loss, total_kl_loss, total_rl_loss = self._train_epoch(train_loader)
             samples_processed += sp
             e = datetime.datetime.now()
             pbar.update(1)
@@ -391,12 +395,14 @@ class CTM:
                     )
 
                 pbar.set_description(
-                    "Epoch: [{}/{}]\t Seen Samples: [{}/{}]\tTrain Loss: {}\tValid Loss: {}\tTime: {}".format(
+                    "Epoch: [{}/{}]\t Seen Samples: [{}/{}]\tTrain Loss: {}\tTrain KL Loss: {}\tTrain RL Loss: {}\tValid Loss: {}\tTime: {}".format(
                         epoch + 1,
                         self.num_epochs,
                         samples_processed,
                         len(train_data) * self.num_epochs,
                         train_loss,
+                        total_kl_loss,
+                        total_rl_loss,
                         val_loss,
                         e - s,
                     )
@@ -413,12 +419,14 @@ class CTM:
                 if save_dir is not None:
                     self.save(save_dir)
             pbar.set_description(
-                "Epoch: [{}/{}]\t Seen Samples: [{}/{}]\tTrain Loss: {}\tTime: {}".format(
+                "Epoch: [{}/{}]\t Seen Samples: [{}/{}]\tTrain Loss: {}\tTrain KL Loss: {}\tTrain RL Loss: {}\tTime: {}".format(
                     epoch + 1,
                     self.num_epochs,
                     samples_processed,
                     len(train_data) * self.num_epochs,
                     train_loss,
+                    total_kl_loss,
+                    total_rl_loss,
                     e - s,
                 )
             )
@@ -812,8 +820,6 @@ class CombinedTM(CTM):
         super().__init__(**kwargs, inference_type=inference_type)
 
 class GenerativeTM(CTM):
-    """ZeroShotTM, as described in https://arxiv.org/pdf/2004.07737v1.pdf"""
-
     def __init__(self, **kwargs):
         inference_type = "zeroshot"
         loss_type = "generative"

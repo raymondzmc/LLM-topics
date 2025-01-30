@@ -1,0 +1,55 @@
+Results for {"K": 25, "activation": "gelu", "batch_size": 64, "checkpoint_path": "./data/bbc-news_Llama-3.2-1B_2000/checkpoints/generative_K25", "continue_training": false, "data_path": "./data/bbc-news_Llama-3.2-1B_2000", "dropout": 0.2, "embedding_type": "hidden_states", "evaluation_prompt": null, "hidden_sizes": 500, "hidden_state_layer": -1, "label_size": 0, "learn_priors": true, "loss_weight": 0.01, "lr": 0.002, "model": "generative", "momentum": 0.99, "num_epochs": 100, "num_hidden_layers": 2, "processed_data_path": "./data/bbc-news_Llama-3.2-1B_2000/processed_dataset", "reduce_on_plateau": false, "solver": "adam", "test_corpus_path": "data/bbc-news_Llama-3.2-1B_2000/bow_dataset.txt", "top_words": 10, "vocab_path": "./data/bbc-news_Llama-3.2-1B_2000/vocab.json"}:
+topic_diversity: .9840
+word_embeddings: .2480
+inverted_rbo: .9992
+npmi: .1269
+Results for {"K": 25, "activation": "gelu", "batch_size": 64, "checkpoint_path": "./data/bbc-news_Llama-3.2-1B_2000/checkpoints/generative_K25", "continue_training": false, "data_path": "./data/bbc-news_Llama-3.2-1B_2000", "dropout": 0.2, "embedding_type": "hidden_states", "evaluation_prompt": null, "hidden_sizes": 500, "hidden_state_layer": -1, "label_size": 0, "learn_priors": true, "loss_weight": 0.1, "lr": 0.002, "model": "generative", "momentum": 0.99, "num_epochs": 100, "num_hidden_layers": 2, "processed_data_path": "./data/bbc-news_Llama-3.2-1B_2000/processed_dataset", "reduce_on_plateau": false, "solver": "adam", "test_corpus_path": "data/bbc-news_Llama-3.2-1B_2000/bow_dataset.txt", "top_words": 10, "vocab_path": "./data/bbc-news_Llama-3.2-1B_2000/vocab.json"}:
+topic_diversity: 1.0000
+word_embeddings: .2368
+inverted_rbo: 1.0000
+npmi: .1173
+Results for {"K": 25, "activation": "gelu", "batch_size": 64, "checkpoint_path": "./data/bbc-news_Llama-3.2-1B_2000/checkpoints/generative_K25", "continue_training": false, "data_path": "./data/bbc-news_Llama-3.2-1B_2000", "dropout": 0.2, "embedding_type": "hidden_states", "evaluation_prompt": null, "hidden_sizes": 500, "hidden_state_layer": -1, "label_size": 0, "learn_priors": true, "loss_weight": 1, "lr": 0.002, "model": "generative", "momentum": 0.99, "num_epochs": 100, "num_hidden_layers": 2, "processed_data_path": "./data/bbc-news_Llama-3.2-1B_2000/processed_dataset", "reduce_on_plateau": false, "solver": "adam", "test_corpus_path": "data/bbc-news_Llama-3.2-1B_2000/bow_dataset.txt", "top_words": 10, "vocab_path": "./data/bbc-news_Llama-3.2-1B_2000/vocab.json"}:
+topic_diversity: .9720
+word_embeddings: .2318
+inverted_rbo: .9979
+npmi: .1047
+Results for {"K": 25, "activation": "gelu", "batch_size": 64, "checkpoint_path": "./data/bbc-news_Llama-3.2-1B_2000/checkpoints/generative_K25", "continue_training": false, "data_path": "./data/bbc-news_Llama-3.2-1B_2000", "dropout": 0.2, "embedding_type": "hidden_states", "evaluation_prompt": null, "hidden_sizes": 500, "hidden_state_layer": -1, "label_size": 0, "learn_priors": true, "loss_weight": 10, "lr": 0.002, "model": "generative", "momentum": 0.99, "num_epochs": 100, "num_hidden_layers": 2, "processed_data_path": "./data/bbc-news_Llama-3.2-1B_2000/processed_dataset", "reduce_on_plateau": false, "solver": "adam", "test_corpus_path": "data/bbc-news_Llama-3.2-1B_2000/bow_dataset.txt", "top_words": 10, "vocab_path": "./data/bbc-news_Llama-3.2-1B_2000/vocab.json"}:
+topic_diversity: .4440
+word_embeddings: .2201
+inverted_rbo: .9276
+npmi: .1084
+Results for {"K": 25, "activation": "gelu", "batch_size": 64, "checkpoint_path": "./data/bbc-news_Llama-3.2-1B_2000/checkpoints/generative_K25", "continue_training": false, "data_path": "./data/bbc-news_Llama-3.2-1B_2000", "dropout": 0.2, "embedding_type": "hidden_states", "evaluation_prompt": null, "hidden_sizes": 500, "hidden_state_layer": -1, "label_size": 0, "learn_priors": true, "loss_weight": 100, "lr": 0.002, "model": "generative", "momentum": 0.99, "num_epochs": 100, "num_hidden_layers": 2, "processed_data_path": "./data/bbc-news_Llama-3.2-1B_2000/processed_dataset", "reduce_on_plateau": false, "solver": "adam", "test_corpus_path": "data/bbc-news_Llama-3.2-1B_2000/bow_dataset.txt", "top_words": 10, "vocab_path": "./data/bbc-news_Llama-3.2-1B_2000/vocab.json"}:
+topic_diversity: .1480
+word_embeddings: .0739
+inverted_rbo: .4121
+npmi: .0131
+Results for {"K": 25, "activation": "gelu", "batch_size": 64, "checkpoint_path": "./data/bbc-news_Llama-3.2-1B_2000/checkpoints/generative_K25", "continue_training": false, "data_path": "./data/bbc-news_Llama-3.2-1B_2000", "dropout": 0.2, "embedding_type": "hidden_states", "eval_prompt_path": "topic_ratings/bbcnews_system.jinja", "hidden_sizes": 500, "hidden_state_layer": -1, "label_size": 0, "learn_priors": true, "loss_weight": 0.01, "lr": 0.002, "model": "generative", "momentum": 0.99, "num_epochs": 20, "num_hidden_layers": 3, "processed_data_path": "./data/bbc-news_Llama-3.2-1B_2000/processed_dataset", "reduce_on_plateau": false, "solver": "adam", "test_corpus_path": "data/bbc-news_Llama-3.2-1B_2000/bow_dataset.txt", "top_words": 10, "vocab_path": "./data/bbc-news_Llama-3.2-1B_2000/vocab.json"}:
+topic_diversity: .9800
+word_embeddings: .2232
+inverted_rbo: .9989
+npmi: .0995
+llm_rating: 2.2720
+Results for {"K": 25, "activation": "gelu", "batch_size": 64, "checkpoint_path": "./data/bbc-news_Llama-3.2-1B_2000/checkpoints/generative_K25", "continue_training": false, "data_path": "./data/bbc-news_Llama-3.2-1B_2000", "dropout": 0.2, "embedding_type": "hidden_states", "eval_prompt_path": "topic_ratings/bbcnews_system.jinja", "hidden_sizes": 500, "hidden_state_layer": -1, "label_size": 0, "learn_priors": true, "loss_weight": 0.1, "lr": 0.002, "model": "generative", "momentum": 0.99, "num_epochs": 20, "num_hidden_layers": 3, "processed_data_path": "./data/bbc-news_Llama-3.2-1B_2000/processed_dataset", "reduce_on_plateau": false, "solver": "adam", "test_corpus_path": "data/bbc-news_Llama-3.2-1B_2000/bow_dataset.txt", "top_words": 10, "vocab_path": "./data/bbc-news_Llama-3.2-1B_2000/vocab.json"}:
+topic_diversity: .9864
+word_embeddings: .2319
+inverted_rbo: .9993
+npmi: .1028
+llm_rating: 2.3120
+Results for {"K": 25, "activation": "gelu", "batch_size": 64, "checkpoint_path": "./data/bbc-news_Llama-3.2-1B_2000/checkpoints/generative_K25", "continue_training": false, "data_path": "./data/bbc-news_Llama-3.2-1B_2000", "dropout": 0.2, "embedding_type": "hidden_states", "eval_prompt_path": "topic_ratings/bbcnews_system.jinja", "hidden_sizes": 500, "hidden_state_layer": -1, "label_size": 0, "learn_priors": true, "loss_weight": 1, "lr": 0.002, "model": "generative", "momentum": 0.99, "num_epochs": 20, "num_hidden_layers": 3, "processed_data_path": "./data/bbc-news_Llama-3.2-1B_2000/processed_dataset", "reduce_on_plateau": false, "solver": "adam", "test_corpus_path": "data/bbc-news_Llama-3.2-1B_2000/bow_dataset.txt", "top_words": 10, "vocab_path": "./data/bbc-news_Llama-3.2-1B_2000/vocab.json"}:
+topic_diversity: .9504
+word_embeddings: .2432
+inverted_rbo: .9963
+npmi: .1016
+llm_rating: 2.3520
+Results for {"K": 25, "activation": "gelu", "batch_size": 64, "checkpoint_path": "./data/bbc-news_Llama-3.2-1B_2000/checkpoints/generative_K25", "continue_training": false, "data_path": "./data/bbc-news_Llama-3.2-1B_2000", "dropout": 0.2, "embedding_type": "hidden_states", "eval_prompt_path": "topic_ratings/bbcnews_system.jinja", "hidden_sizes": 500, "hidden_state_layer": -1, "label_size": 0, "learn_priors": true, "loss_weight": 10, "lr": 0.002, "model": "generative", "momentum": 0.99, "num_epochs": 20, "num_hidden_layers": 3, "processed_data_path": "./data/bbc-news_Llama-3.2-1B_2000/processed_dataset", "reduce_on_plateau": false, "solver": "adam", "test_corpus_path": "data/bbc-news_Llama-3.2-1B_2000/bow_dataset.txt", "top_words": 10, "vocab_path": "./data/bbc-news_Llama-3.2-1B_2000/vocab.json"}:
+topic_diversity: .4616
+word_embeddings: .2288
+inverted_rbo: .9011
+npmi: .0915
+llm_rating: 2.1920
+Results for {"K": 25, "activation": "gelu", "batch_size": 64, "checkpoint_path": "./data/bbc-news_Llama-3.2-1B_2000/checkpoints/generative_K25", "continue_training": false, "data_path": "./data/bbc-news_Llama-3.2-1B_2000", "dropout": 0.2, "embedding_type": "hidden_states", "eval_prompt_path": "topic_ratings/bbcnews_system.jinja", "hidden_sizes": 500, "hidden_state_layer": -1, "label_size": 0, "learn_priors": true, "loss_weight": 100, "lr": 0.002, "model": "generative", "momentum": 0.99, "num_epochs": 20, "num_hidden_layers": 3, "processed_data_path": "./data/bbc-news_Llama-3.2-1B_2000/processed_dataset", "reduce_on_plateau": false, "solver": "adam", "test_corpus_path": "data/bbc-news_Llama-3.2-1B_2000/bow_dataset.txt", "top_words": 10, "vocab_path": "./data/bbc-news_Llama-3.2-1B_2000/vocab.json"}:
+topic_diversity: .0984
+word_embeddings: .1882
+inverted_rbo: .3336
+npmi: .0352
+llm_rating: 1.9520

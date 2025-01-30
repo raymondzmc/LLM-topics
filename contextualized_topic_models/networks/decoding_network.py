@@ -17,7 +17,7 @@ class DecoderNetwork(nn.Module):
         n_components=10,
         model_type="prodLDA",
         hidden_sizes=(100, 100),
-        activation="softplus",
+        activation="gelu",
         dropout=0.2,
         learn_priors=True,
         label_size=0,
@@ -30,7 +30,7 @@ class DecoderNetwork(nn.Module):
             n_components : int, number of topic components, (default 10)
             model_type : string, 'prodLDA' or 'LDA' (default 'prodLDA')
             hidden_sizes : tuple, length = n_layers, (default (100, 100))
-            activation : string, 'softplus', 'relu', (default 'softplus')
+            activation : string, 'softplus', 'relu', 'gelu' (default 'gelu')
             learn_priors : bool, make priors learnable parameter
         """
         super(DecoderNetwork, self).__init__()
@@ -43,6 +43,7 @@ class DecoderNetwork(nn.Module):
         assert activation in [
             "softplus",
             "relu",
+            "gelu",
         ], "activation must be 'softplus' or 'relu'."
         assert dropout >= 0, "dropout must be >= 0."
 

@@ -16,7 +16,7 @@ from datasets import (
 )
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from llm import compute_word_log_prob
-from utils.io import save_processed_dataset
+from settings import settings
 import pdb
 
 try:
@@ -30,20 +30,25 @@ except OSError:
 
 def get_dataset(args):
     configs = get_dataset_config_names(args.dataset, trust_remote_code=True)
-    if len(configs) > 0:
-        datasets = []
-        if args.split is None:
-            raise ValueError("Split must be specified when combining multiple configs")
-        for cfg in configs:
-            dataset = load_dataset(args.dataset, cfg, trust_remote_code=True)
-            datasets.append(dataset[args.split])
-        dataset = concatenate_datasets(datasets)
-    else:
-        dataset = load_dataset(args.dataset, trust_remote_code=True)
-        dataset = dataset[args.split] if args.split else dataset
 
-    if args.dataset == 'google-research-datasets/newsgroup':
-        dataset = dataset.map(lambda x: {'text': x['text'].split('\n\n')[1]}, num_proc=16)
+    if len(configs) == 0:
+        raise ValueError(f"No dataset configs found for {args.dataset}")
+
+    datasets = []
+    for cfg in configs:
+        dataset = load_dataset(args.dataset, cfg, trust_remote_code=True)
+        
+        if args.split is None or args.split == 'all':
+            all_splits = list(dataset.keys())
+        else:
+            all_splits = [args.split]
+
+        for split in all_splits:
+            datasets.append(dataset[split])
+
+    # Concatenate all dataset splits
+    dataset = concatenate_datasets(datasets)
+
     return dataset
 
 
@@ -54,7 +59,7 @@ def tokenize_dataset(batch, tokenizer, content_key: str, single_token_only: bool
     
     for text in batch[content_key]:
         doc = nlp(text)
-        encoding = tokenizer(text, return_offsets_mapping=True, return_attention_mask=False)
+        # encoding = tokenizer(text, return_offsets_mapping=True, return_attention_mask=False)
         word_list, token_list, word_offsets = [], [], []
         for word in doc:
             # Start of Selection
@@ -128,10 +133,28 @@ def create_inference_examples(batch, vocab, content_key):
         **repeated_cols,
     }
 
+def save_processed_examples(processed_examples: list[dict], data_path: str, num_saved: int):
+    keys = processed_examples[0].keys()
+
+    # Build a dict of lists from the list of dicts
+    data_dict = {key: [ex[key] for ex in processed_examples] for key in keys}
+    save_path = os.path.join(data_path, "processed_dataset")
+    if not os.path.exists(save_path):
+        os.makedirs(save_path, exist_ok=True)
+
+    for key in keys:
+        values = data_dict.get(key, [])
+        key_dir = os.path.join(save_path, key)
+        if not os.path.exists(key_dir):
+            os.makedirs(key_dir, exist_ok=True)
+        torch.save(values, os.path.join(key_dir, f"{num_saved}.pt"))
+    return save_path
+
 
 def main(args):
-    token = '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'
-    login(token)
+
+    login(settings.hf_token)
+
     model = AutoModelForCausalLM.from_pretrained(
         args.model_name,
         torch_dtype=torch.bfloat16,
@@ -243,6 +266,7 @@ def main(args):
     if args.single_token_only and len(multi_token_word_idx) > 0:
         raise ValueError("Single token only is set to True, but there are multi-token words in the vocabulary.")
     
+    num_saved = 0
     for example in tqdm(sampled_inference_dataset):
         context = example['context']
         next_word = example['next_word']
@@ -259,37 +283,51 @@ def main(args):
             )
         logits = outputs.logits
         next_token_logits = logits[:, -1, :]
-        next_token_probs = torch.softmax(next_token_logits, dim=-1).squeeze(0)
-        embeddings = [h[0, -1].cpu().tolist() for h in outputs.hidden_states]
-        single_token_probs = {}
-        for i in single_token_word_idx:
-            single_token_probs[vocab[i]] = next_token_probs[vocab_token_prefix[i]].item()
 
-        multi_token_probs = {}
-        if not args.single_token_only and len(multi_token_word_idx) > 0:
-            if args.word_prob_method == 'product':
-                multi_token_probs = compute_word_log_prob(
-                    model, tokenizer, device, multi_token_word_idx, context_input_ids,
-                    vocab_token_ids, vocab, args.batch_size, context_length)
-            elif args.word_prob_method == 'prefix':
-                prefix_groups = {}
-                for i in multi_token_word_idx:
-                    prefix = vocab_token_prefix[i]
-                    prefix_groups.setdefault(prefix, []).append(i)
+        # Save the hidden states from the specified layer
+        if args.hidden_state_layer is not None:
+            embeddings = outputs.hidden_states[args.hidden_state_layer][0, -1].cpu().tolist()
+        else:
+            # By default, save the hidden states from all layers
+            embeddings = [h[0, -1].cpu().tolist() for h in outputs.hidden_states]
+        
+        # Compute next word probs for words in the vocab
+        if args.single_token_only and len(single_token_word_idx) == len(vocab):
+            vocab_probs = torch.softmax(next_token_logits[0, vocab_token_prefix], dim=-1)
+            all_probs = {vocab[i]: vocab_probs[i].item() for i in range(len(vocab))}
+            next_word_probs = [all_probs[word] for word in vocab]
+        else:
+            single_token_probs = {}
+            for i in single_token_word_idx:
+                single_token_probs[vocab[i]] = next_token_probs[vocab_token_prefix[i]].item()
 
-                # Split the probability among words sharing the same prefix
-                for prefix, indices in prefix_groups.items():
-                    total_prefix_prob = next_token_probs[prefix].item()
-                    split_prob = total_prefix_prob / len(indices)
-                    for i in indices:
-                        multi_token_probs[vocab[i]] = split_prob
-            else:
-                raise ValueError(f"Invalid word probability method: {args.word_prob_method}")
+            next_token_probs = torch.softmax(next_token_logits, dim=-1).squeeze(0)
+            multi_token_probs = {}
+            if not args.single_token_only and len(multi_token_word_idx) > 0:
+                if args.word_prob_method == 'product':
+                    multi_token_probs = compute_word_log_prob(
+                        model, tokenizer, device, multi_token_word_idx, context_input_ids,
+                        vocab_token_ids, vocab, args.batch_size, context_length)
+                elif args.word_prob_method == 'prefix':
+                    prefix_groups = {}
+                    for i in multi_token_word_idx:
+                        prefix = vocab_token_prefix[i]
+                        prefix_groups.setdefault(prefix, []).append(i)
 
-        all_probs = {**single_token_probs, **multi_token_probs}
-        total_prob = sum(all_probs.values())
-        normalized_next_word_probs = {word: prob / total_prob for word, prob in all_probs.items()}
-        next_word_probs = [normalized_next_word_probs[word] for word in vocab]
+                    # Split the probability among words sharing the same prefix
+                    for prefix, indices in prefix_groups.items():
+                        total_prefix_prob = next_token_probs[prefix].item()
+                        split_prob = total_prefix_prob / len(indices)
+                        for i in indices:
+                            multi_token_probs[vocab[i]] = split_prob
+                else:
+                    raise ValueError(f"Invalid word probability method: {args.word_prob_method}")
+
+            all_probs = {**single_token_probs, **multi_token_probs}
+            total_prob = sum(all_probs.values())
+            normalized_next_word_probs = {word: prob / total_prob for word, prob in all_probs.items()}
+            next_word_probs = [normalized_next_word_probs[word] for word in vocab]
+
         processed_examples.append({
             'context': context,
             'next_word': next_word,
@@ -297,13 +335,17 @@ def main(args):
             'input_embeddings': embeddings,
         })
 
-    # Build a dict of lists from the list of dicts
-    keys = processed_examples[0].keys()
-    data_dict = {key: [ex[key] for ex in processed_examples] for key in keys}
-    save_path = os.path.join(args.data_path, "processed_dataset")
-    save_processed_dataset(data_dict, save_path)
-    print(f"Processed examples saved to disk at: {save_path}")
-
+        # Save every 2000 examples to reduce memory usage
+        CHUNK_SIZE = 2000
+        if len(processed_examples) >= CHUNK_SIZE:
+            save_path = save_processed_examples(processed_examples, args.data_path, num_saved)
+            print(f"Saved {len(processed_examples)} processed examples at: {save_path}")
+            num_saved += CHUNK_SIZE
+            processed_examples = []
+         
+    if len(processed_examples) > 0:
+        save_path = save_processed_examples(processed_examples, args.data_path, num_saved)
+        print(f"Saved {len(processed_examples)} processed examples at: {save_path}")
 
 
 if __name__ == '__main__':
@@ -311,21 +353,22 @@ if __name__ == '__main__':
     parser.add_argument('--dataset', type=str, default='fancyzhx/dbpedia_14')
     parser.add_argument('--vocab_path', type=str, default=None)
     parser.add_argument('--content_key', type=str, default='content')
-    parser.add_argument('--split', type=str, default='test')
+    parser.add_argument('--split', type=str, default='all')
     parser.add_argument('--vocab_size', type=int, default=2000)
     parser.add_argument('--model_name', type=str, default='meta-llama/Llama-3.2-1B')
     parser.add_argument('--use_flash_attention_2', action='store_true')
     parser.add_argument('--single_token_only', action='store_true', help="Whether to only include single token words.")
     parser.add_argument('--word_prob_method', type=str, default='prefix', choices=['prefix', 'product'])
+    parser.add_argument('--hidden_state_layer', type=int, default=None, help="The hidden state layer to save (default: all)")
     parser.add_argument('--examples_per_vocab', type=int, default=None, help="Number of examples to sample per vocab word.")
     parser.add_argument('--bow_dataset', action='store_true', help="Whether to compute the bag-of-words dataset.")
     parser.add_argument('--data_path', type=str, default='data')
     parser.add_argument('--batch_size', type=int, default=32)
     args = parser.parse_args()
-    print(f'Processing dataset {args.dataset}')
+    print(f'Processing dataset \"{args.dataset}\"')
 
     data_dir_name = f"{os.path.basename(args.dataset)}_{os.path.basename(args.model_name)}_{args.vocab_size}"
-    args.data_path = os.path.join(args.data_path, data_dir_name, args.split)
+    args.data_path = os.path.join(args.data_path, data_dir_name)
     if not os.path.exists(args.data_path):
         os.makedirs(args.data_path, exist_ok=True)
 

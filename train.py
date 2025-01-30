@@ -32,10 +32,10 @@ model_classes = {
 
 
 def get_bows(processed_dataset, vocab):
-    bows = lil_matrix((len(processed_dataset['content']), len(vocab)), dtype=int)
+    bows = lil_matrix((len(processed_dataset), len(vocab)), dtype=int)
     vocab_to_idx = {token: idx for idx, token in enumerate(vocab)}
-    for i, text in enumerate(tqdm(processed_dataset['content'])):
-        token_counts = Counter(text)
+    for i, words in enumerate(tqdm(processed_dataset['words'])):
+        token_counts = Counter(words)
         for token, count in token_counts.items():
             if token in vocab_to_idx:
                 j = vocab_to_idx[token]
@@ -45,8 +45,8 @@ def get_bows(processed_dataset, vocab):
 
 def get_sbert_embeddings(processed_dataset: Dataset,
                          embedding_model: str = 'paraphrase-multilingual-mpnet-base-v2',
-                         max_seq_length: int = 128) -> np.ndarray:
-    text_for_contextual = [example['content'] for example in processed_dataset]
+                         max_seq_length: int = 512) -> np.ndarray:
+    text_for_contextual = [' '.join(example['words']) for example in processed_dataset]
     sbert_embeddings = bert_embeddings_from_list(
         text_for_contextual,
         sbert_model_to_load=embedding_model,
@@ -72,7 +72,7 @@ def train_topic_model(model_type: str,
                       num_epochs: int = 100,
                       reduce_on_plateau: bool = False,
                       label_size: int = 0,
-                      loss_weights: dict[str, float] | None = None,
+                      loss_weight: float | None = None,
                       model_checkpoint: dict | None = None,
                       continue_training: bool = False) -> CTM:
     try:
@@ -87,18 +87,26 @@ def train_topic_model(model_type: str,
 
     if model_type == ModelType.GENERATIVE:
         if embedding_type == EmbeddingType.HIDDEN_STATES:
-            embeddings = np.stack([embedding[hidden_state_layer] for embedding in processed_dataset['input_embeddings']])
+            embeddings = np.stack(processed_dataset['input_embeddings'])
         else:
             embeddings = get_sbert_embeddings(processed_dataset)
     else:
         embeddings = get_sbert_embeddings(processed_dataset)
 
     if model_type == ModelType.GENERATIVE:
-        targets = np.stack([probs for probs in processed_dataset['next_word_probs']])
+        if isinstance(processed_dataset['next_word_probs'][0], dict):
+            print("Converting next_word_probs dicts to numpy array")
+            processed_dataset['next_word_probs'] = [[prob[word] for word in vocab] for prob in processed_dataset['next_word_probs']]
+        targets = np.stack(processed_dataset['next_word_probs'])
     else:
         targets = get_bows(processed_dataset, vocab)
-    
+
     print(f"Input shape: {embeddings.shape}, target shape: {targets.shape}")
+
+    if loss_weight is not None:
+        loss_weights = {"beta": loss_weight}
+    else:
+        loss_weights = None
 
     idx2token = {i: token for i, token in enumerate(vocab)}
     dataset = CTMDataset(X_contextual=embeddings,

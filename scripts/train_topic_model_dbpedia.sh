@@ -1,117 +1,85 @@
+# #!/usr/bin/env bash
 # python process_dataset.py --dataset fancyzhx/dbpedia_14 \
 #                           --content_key content \
 #                           --split test \
 #                           --vocab_size 2000 \
 #                           --model_name meta-llama/Llama-3.2-1B \
 #                           --single_token_only \
+#                           --hidden_state_layer -1 \
 #                           --batch_size 32 \
 #                           --bow_dataset \
 #                           --examples_per_vocab 100
 
-# # Train topic model with each hidden layer as input
-# python run_topic_modeling.py --data_path ./data/dbpedia_14_Llama-3.2-1B_2000/test \
-#                              --model generative \
-#                              --K 25 \
-#                              --test_corpus_path data/dbpedia_14_Llama-3.2-1B_2000/test/bow_dataset.txt
 
-# python run_topic_modeling.py --data_path ./data/dbpedia_14_Llama-3.2-1B_2000/train \
-#                              --model generative \
-#                              --K 25 \
-#                              --hidden_state_layer 2 \
-#                              --test_corpus_path data/dbpedia_14_Llama-3.2-1B_2000/test/bow_dataset.txt
+# python run_topic_modeling.py \
+#   --data_path ./data/dbpedia_14_Llama-3.2-1B_2000 \
+#   --model zeroshot \
+#   --K 25 \
+#   --test_corpus_path data/dbpedia_14_Llama-3.2-1B_2000/bow_dataset.txt \
+#   --num_seeds 5 \
+#   --num_epochs 20
+  
+# python run_topic_modeling.py \
+#   --data_path ./data/dbpedia_14_Llama-3.2-1B_2000 \
+#   --model zeroshot \
+#   --K 50 \
+#   --test_corpus_path data/dbpedia_14_Llama-3.2-1B_2000/bow_dataset.txt \
+#   --num_seeds 5 \
+#   --num_epochs 20
+  
+# python run_topic_modeling.py \
+#   --data_path ./data/dbpedia_14_Llama-3.2-1B_2000 \
+#   --model combined \
+#   --K 25 \
+#   --test_corpus_path data/dbpedia_14_Llama-3.2-1B_2000/bow_dataset.txt \
+#   --num_seeds 5 \
+#   --num_epochs 20
 
-# python run_topic_modeling.py --data_path ./data/dbpedia_14_Llama-3.2-1B_2000/train \
-#                              --model generative \
-#                              --K 25 \
-#                              --hidden_state_layer 3 \
-#                              --test_corpus_path data/dbpedia_14_Llama-3.2-1B_2000/test/bow_dataset.txt
+# python run_topic_modeling.py \
+#   --data_path ./data/dbpedia_14_Llama-3.2-1B_2000 \
+#   --model combined \
+#   --K 50 \
+#   --test_corpus_path data/dbpedia_14_Llama-3.2-1B_2000/bow_dataset.txt \
+#   --num_seeds 5 \
+#   --num_epochs 20 
 
-# python run_topic_modeling.py --data_path ./data/dbpedia_14_Llama-3.2-1B_2000/train \
-#                              --model generative \
-#                              --K 25 \
-#                              --hidden_state_layer 4  \
-#                              --test_corpus_path data/dbpedia_14_Llama-3.2-1B_2000/test/bow_dataset.txt
+python run_topic_modeling.py \
+  --data_path ./data/dbpedia_14_Llama-3.2-1B_2000 \
+  --model generative \
+  --K 25 \
+  --test_corpus_path data/dbpedia_14_Llama-3.2-1B_2000/bow_dataset.txt \
+  --num_seeds 5 \
+  --num_epochs 20 
 
-# python run_topic_modeling.py --data_path ./data/dbpedia_14_Llama-3.2-1B_2000/train \
-#                              --model generative \
-#                              --K 25 \
-#                              --hidden_state_layer 5 \
-#                              --test_corpus_path data/dbpedia_14_Llama-3.2-1B_2000/test/bow_dataset.txt
+python run_topic_modeling.py \
+  --data_path ./data/dbpedia_14_Llama-3.2-1B_2000 \
+  --model generative \
+  --K 25 \
+  --test_corpus_path data/dbpedia_14_Llama-3.2-1B_2000/bow_dataset.txt \
+  --num_seeds 5 \
+  --num_epochs 20 
 
-# python run_topic_modeling.py --data_path ./data/dbpedia_14_Llama-3.2-1B_2000/train \
-#                              --model generative \
-#                              --K 25 \
-#                              --hidden_state_layer 6 \
-#                              --test_corpus_path data/dbpedia_14_Llama-3.2-1B_2000/test/bow_dataset.txt
+  
+  
 
-# python run_topic_modeling.py --data_path ./data/dbpedia_14_Llama-3.2-1B_2000/train \
-#                              --model generative \
-#                              --K 25 \
-#                              --hidden_state_layer 7 \
-#                              --test_corpus_path data/dbpedia_14_Llama-3.2-1B_2000/test/bow_dataset.txt
+# # Hidden layers based on your commands
+# HIDDEN_LAYERS=(0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16)
 
-# python run_topic_modeling.py --data_path ./data/dbpedia_14_Llama-3.2-1B_2000/train \
-#                              --model generative \
-#                              --K 25 \
-#                              --hidden_state_layer 8 \
-#                              --test_corpus_path data/dbpedia_14_Llama-3.2-1B_2000/test/bow_dataset.txt
+# # Loop over hidden layers
+# for HL in "${HIDDEN_LAYERS[@]}"; do
+#   python run_topic_modeling.py \
+#     --data_path ./data/dbpedia_14_Llama-3.2-1B_2000 \
+#     --model generative \
+#     --K 25 \
+#     --test_corpus_path data/dbpedia_14_Llama-3.2-1B_2000/bow_dataset.txt \
+#     --num_seeds 5 \
+#     --num_epochs 20 
 
-# python run_topic_modeling.py --data_path ./data/dbpedia_14_Llama-3.2-1B_2000/train \
-#                              --model generative \
-#                              --K 25 \
-#                              --hidden_state_layer 9 \
-#                              --test_corpus_path data/dbpedia_14_Llama-3.2-1B_2000/test/bow_dataset.txt
-
-# python run_topic_modeling.py --data_path ./data/dbpedia_14_Llama-3.2-1B_2000/train \
-#                              --model generative \
-#                              --K 25 \
-#                              --hidden_state_layer 10 \
-#                              --test_corpus_path data/dbpedia_14_Llama-3.2-1B_2000/test/bow_dataset.txt
-
-# python run_topic_modeling.py --data_path ./data/dbpedia_14_Llama-3.2-1B_2000/train \
-#                              --model generative \
-#                              --K 25 \
-#                              --hidden_state_layer 11 \
-#                              --test_corpus_path data/dbpedia_14_Llama-3.2-1B_2000/test/bow_dataset.txt
-
-# python run_topic_modeling.py --data_path ./data/dbpedia_14_Llama-3.2-1B_2000/train \
-#                              --model generative \
-#                              --K 25 \
-#                              --hidden_state_layer 12 \
-#                              --test_corpus_path data/dbpedia_14_Llama-3.2-1B_2000/test/bow_dataset.txt
-
-# python run_topic_modeling.py --data_path ./data/dbpedia_14_Llama-3.2-1B_2000/train \
-#                              --model generative \
-#                              --K 25 \
-#                              --hidden_state_layer 13  \
-#                              --test_corpus_path data/dbpedia_14_Llama-3.2-1B_2000/test/bow_dataset.txt
-
-# python run_topic_modeling.py --data_path ./data/dbpedia_14_Llama-3.2-1B_2000/train \
-#                              --model generative \
-#                              --K 25 \
-#                              --hidden_state_layer 14 \
-#                              --test_corpus_path data/dbpedia_14_Llama-3.2-1B_2000/test/bow_dataset.txt
-
-# python run_topic_modeling.py --data_path ./data/dbpedia_14_Llama-3.2-1B_2000/train \
-#                              --model generative \
-#                              --K 25 \
-#                              --hidden_state_layer 15 \
-#                              --test_corpus_path data/dbpedia_14_Llama-3.2-1B_2000/test/bow_dataset.txt
-
-# python run_topic_modeling.py --data_path ./data/dbpedia_14_Llama-3.2-1B_2000/train \
-#                              --model generative \
-#                              --K 25 \
-#                              --hidden_state_layer 16 \
-#                              --test_corpus_path data/dbpedia_14_Llama-3.2-1B_2000/test/bow_dataset.txt
-
-python run_topic_modeling.py --data_path ./data/dbpedia_14_Llama-3.2-1B_2000/test \
-                             --model zeroshot \
-                             --K 25 \
-                             --test_corpus_path data/dbpedia_14_Llama-3.2-1B_2000/test/bow_dataset.txt \
-                             --num_epochs 100
-
-python run_topic_modeling.py --data_path ./data/dbpedia_14_Llama-3.2-1B_2000/test \
-                             --model combined \
-                             --K 25 \
-                             --test_corpus_path data/dbpedia_14_Llama-3.2-1B_2000/test/bow_dataset.txt \
-                             --num_epochs 100
+#   python run_topic_modeling.py \
+#     --data_path ./data/dbpedia_14_Llama-3.2-1B_2000 \
+#     --model generative \
+#     --K 25 \
+#     --test_corpus_path data/dbpedia_14_Llama-3.2-1B_2000/bow_dataset.txt \
+#     --num_seeds 5 \
+#     --num_epochs 50 
+# done

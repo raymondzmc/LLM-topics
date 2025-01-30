@@ -15,5 +15,13 @@ class JinjaTemplateManager:
         rendered_text = template.render(**kwargs)
         return rendered_text
 
+    def exists(self, template_name: str) -> bool:
+        ''' Check if a template exists in the template directory'''
+        try:
+            self.env.get_template(template_name)
+            return True
+        except jinja2.TemplateNotFound:
+            return False
+
 
 jinja_template_manager = JinjaTemplateManager()

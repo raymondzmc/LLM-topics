@@ -63,9 +63,11 @@ def main(args, vocab, processed_dataset):
                                     embedding_type=args.embedding_type,
                                     hidden_state_layer=args.hidden_state_layer,
                                     hidden_sizes=hidden_sizes,
+                                    loss_type=args.loss_type,
                                     activation=args.activation,
                                     dropout=args.dropout,
                                     learn_priors=args.learn_priors,
+                                    temperature=args.temperature,
                                     batch_size=args.batch_size,
                                     lr=args.lr,
                                     momentum=args.momentum,
@@ -109,6 +111,7 @@ if __name__ == '__main__':
     train_group.add_argument('--K', type=int, default=25, help='Number of topics')
     train_group.add_argument('--embedding_type', type=str, default='hidden_states', choices=['hidden_states', 'sbert'])
     train_group.add_argument('--hidden_state_layer', type=int, default=-1, help='Layer of hidden states to use for embedding')
+    train_group.add_argument('--loss_type', type=str, default='ce', choices=['ce', 'kl'])
     train_group.add_argument('--hidden_sizes', type=int, default=200)
     train_group.add_argument('--num_hidden_layers', type=int, default=2)
     train_group.add_argument('--activation', type=str, default='gelu')
@@ -116,6 +119,7 @@ if __name__ == '__main__':
     train_group.add_argument('--learn_priors', type=bool, default=True)
     train_group.add_argument('--batch_size', type=int, default=64)
     train_group.add_argument('--lr', type=float, default=2e-3)
+    train_group.add_argument('--temperature', type=float, default=1.0)
     train_group.add_argument('--momentum', type=float, default=0.99)
     train_group.add_argument('--solver', type=str, default='adam')
     train_group.add_argument('--num_epochs', type=int, default=20)
@@ -138,7 +142,7 @@ if __name__ == '__main__':
 
     if args.model == 'generative':
         args.processed_data_path = os.path.join(args.data_path, 'processed_dataset')
-        processed_dataset = load_processed_dataset(args.processed_data_path, args.hidden_state_layer)
+        processed_dataset = load_processed_dataset(args.processed_data_path, layer_idx=args.hidden_state_layer)
     else:
         args.processed_data_path = os.path.join(args.data_path, 'tokenized_dataset')
         processed_dataset = load_from_disk(args.processed_data_path)

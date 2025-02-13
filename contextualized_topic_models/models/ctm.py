@@ -56,6 +56,7 @@ class CTM:
         activation="gelu",
         dropout=0.2,
         learn_priors=True,
+        temperature=1.0,
         batch_size=64,
         lr=2e-3,
         momentum=0.99,
@@ -65,7 +66,7 @@ class CTM:
         num_data_loader_workers=4,
         label_size=0,
         loss_weights=None,
-        loss_type="ct"
+        loss_type="ce",
     ):
 
         self.device = (
@@ -112,6 +113,7 @@ class CTM:
         self.activation = activation
         self.dropout = dropout
         self.learn_priors = learn_priors
+        self.temperature = temperature
         self.batch_size = batch_size
         self.lr = lr
         self.contextual_size = contextual_size
@@ -127,6 +129,7 @@ class CTM:
         else:
             self.weights = {"beta": 1}
 
+        self.inference_type = inference_type
         self.model = DecoderNetwork(
             bow_size,
             self.contextual_size,
@@ -138,6 +141,7 @@ class CTM:
             dropout,
             learn_priors,
             label_size=label_size,
+            temperature=(temperature if inference_type == "generative" else 1.0),   # Use temperature for generative models
         )
 
         self.early_stopping = None
@@ -203,13 +207,19 @@ class CTM:
         KL = 0.5 * (var_division + diff_term - self.n_components + logvar_det_division)
 
         # Reconstruction term
-        if self.loss_type == "generative":
-            teacher_probs = inputs
-            student_logprobs = torch.log(word_dists + 1e-10)
-            RL = F.kl_div(student_logprobs, teacher_probs, reduction='none').sum(dim=1)
+        if self.inference_type == "generative":
+            teacher_logits = inputs
+            if self.loss_type == "kl":
+                teacher_probs = torch.softmax(teacher_logits / self.temperature, dim=-1)
+                student_logprobs = torch.log(word_dists + 1e-10)
+                RL = F.kl_div(student_logprobs, teacher_probs, reduction='none').sum(dim=1) * (self.temperature**2)
+            elif self.loss_type == "ce":
+                # teacher_probs = torch.softmax(teacher_logits / self.temperature, dim=-1)
+                student_logprobs = torch.log(word_dists + 1e-10)
+                RL = -torch.sum(inputs * student_logprobs, dim=1)
+            # RL = self.weights["beta"] * RL
         else:
             RL = -torch.sum(inputs * torch.log(word_dists + 1e-10), dim=1)
-
         return KL, RL
 
     def _train_epoch(self, loader):
@@ -352,7 +362,7 @@ class CTM:
             batch_size=self.batch_size,
             shuffle=True,
             num_workers=self.num_data_loader_workers,
-            drop_last=True,
+            drop_last=False,
         )
 
         # init training variables
@@ -372,7 +382,7 @@ class CTM:
                 validation_loader = DataLoader(
                     self.validation_data,
                     batch_size=self.batch_size,
-                    shuffle=True,
+                    shuffle=False,
                     num_workers=self.num_data_loader_workers,
                     drop_last=True,
                 )
@@ -481,7 +491,7 @@ class CTM:
                 posterior_log_variance,
             )
 
-            loss = self.weights["beta"] * kl_loss + rl_loss
+            loss = kl_loss + rl_loss
             loss = loss.sum()
 
             if labels is not None:
@@ -821,6 +831,5 @@ class CombinedTM(CTM):
 
 class GenerativeTM(CTM):
     def __init__(self, **kwargs):
-        inference_type = "zeroshot"
-        loss_type = "generative"
-        super().__init__(**kwargs, inference_type=inference_type, loss_type=loss_type)
+        inference_type = "generative"
+        super().__init__(**kwargs, inference_type=inference_type)

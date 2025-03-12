@@ -3,10 +3,9 @@ import torch
 from tqdm import tqdm
 
 KEYS = ['context', 'next_word', 'next_word_probs', 'input_embeddings']
-CHUNK_SIZE = 2000
 
 
-def save_processed_dataset(data_dict, data_path):
+def save_processed_dataset(data_dict, data_path, chunk_size=2000):
     if not os.path.exists(data_path):
         os.makedirs(data_path, exist_ok=True)
 
@@ -14,12 +13,12 @@ def save_processed_dataset(data_dict, data_path):
         values = data_dict.get(key, [])
         key_path = os.path.join(data_path, key)
         os.makedirs(key_path, exist_ok=True)
-        for i in tqdm(list(range(0, len(values), CHUNK_SIZE))):
-            torch.save(values[i:i+CHUNK_SIZE], os.path.join(key_path, f"{i}.pt"))
+        for i in tqdm(list(range(0, len(values), chunk_size))):
+            torch.save(values[i:i+chunk_size], os.path.join(key_path, f"{i}.pt"))
         print(f"Successfully saved {key} values")
 
 
-def load_processed_dataset(data_path, layer_idx=None):
+def load_processed_dataset(data_path, layer_idx=None, chunk_idx=None, verbose=True):
     data_dict = {}
     
     for key in KEYS:
@@ -35,7 +34,10 @@ def load_processed_dataset(data_path, layer_idx=None):
         ]
         # Sort chunk files by the numeric portion in the filename
         chunk_files.sort(key=lambda x: int(x.split('.')[0]))
-        
+
+        if chunk_idx is not None:
+            chunk_files = [chunk_files[chunk_idx]]
+
         values = []
         for chunk_file in tqdm(chunk_files):
             chunk_path = os.path.join(key_dir, chunk_file)
@@ -43,7 +45,8 @@ def load_processed_dataset(data_path, layer_idx=None):
             values.extend(chunk_data)
 
         data_dict[key] = values
-        print(f"Successfully loaded {key} values")
+        if verbose:
+            print(f"Successfully loaded {key} values")
 
     assert (
         len(data_dict['context']) == len(data_dict['next_word']) == len(data_dict['next_word_probs']) == len(data_dict['input_embeddings'])

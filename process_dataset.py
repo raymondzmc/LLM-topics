@@ -47,7 +47,6 @@ def get_hf_dataset(args):
         for split in all_splits:
             datasets.append(dataset[split])
 
-    # Concatenate all dataset splits
     dataset = concatenate_datasets(datasets)
     return dataset
 
@@ -120,24 +119,28 @@ def create_inference_examples(batch, vocab, content_key):
     special_cols = {content_key, "words", "token_ids", "offsets"}
     other_cols = [col for col in batch.keys() if col not in special_cols]
 
+    ids = []
     contexts = []
     next_tokens = []
     next_words = []
     repeated_cols = {col: [] for col in other_cols}
-    for i, (content, words, token_ids, offsets) in enumerate(zip(
+    for i, (content, words, token_ids, offsets, _id) in enumerate(zip(
         batch['content'],
         batch['words'],
         batch['token_ids'],
-        batch['offsets']
+        batch['offsets'],
+        batch[args.id_key],
     )):
         for word, word_token_ids, (start, _) in zip(words, token_ids, offsets):
             if word in vocab:
+                ids.append(_id)
                 contexts.append(content[:start])
                 next_tokens.append(word_token_ids)
                 next_words.append(word)
                 for col in repeated_cols.keys():
                     repeated_cols[col].append(batch[col][i])
     return {
+        'id': ids,
         'context': contexts,
         'next_word_token_ids': next_tokens,
         'next_word': next_words,
@@ -246,16 +249,18 @@ def main(args):
             for bow_line in dataset["bow_line"]:
                 f.write(bow_line + "\n")
 
-
     # Create LM inference examples when the next word is in the vocab
     inference_dataset = dataset.map(
         lambda x: create_inference_examples(x, vocab, args.content_key),
         batched=True,
         batch_size=200,
         num_proc=4,
-        remove_columns=dataset.column_names,
+        remove_columns=dataset.column_names
     )
-
+    inference_dataset_path = os.path.join(args.data_path, "inference_dataset")
+    pdb.set_trace()
+    inference_dataset.save_to_disk(inference_dataset_path)
+    
     if args.examples_per_vocab and args.examples_per_vocab > 0:
         df = inference_dataset.to_pandas()
         grouped = df.groupby('next_word', group_keys=False)
@@ -370,6 +375,7 @@ def main(args):
             next_word_probs = [normalized_next_word_probs[word] for word in vocab]
 
         processed_examples.append({
+            'id': example['id'],
             'context': context,
             'next_word': next_word,
             'next_word_probs': next_word_probs,
@@ -394,6 +400,7 @@ if __name__ == '__main__':
     parser.add_argument('--dataset', type=str, default='fancyzhx/dbpedia_14')
     parser.add_argument('--vocab_path', type=str, default=None)
     parser.add_argument('--content_key', type=str, default='content')
+    parser.add_argument('--id_key', type=str, default='id')
     parser.add_argument('--split', type=str, default='all')
     parser.add_argument('--vocab_size', type=int, default=2000)
     parser.add_argument('--model_name', type=str, default='meta-llama/Llama-3.2-1B')
@@ -405,9 +412,18 @@ if __name__ == '__main__':
     parser.add_argument('--examples_per_vocab', type=int, default=None, help="Number of examples to sample per vocab word.")
     parser.add_argument('--bow_dataset', action='store_true', help="Whether to compute the bag-of-words dataset.")
     parser.add_argument('--data_path', type=str, default='data')
+    parser.add_argument('--dir_name', type=str, default=None)
     parser.add_argument('--batch_size', type=int, default=32)
     parser.add_argument('--subset', type=int, default=None)
+    parser.add_argument('--max_tokens', type=int, default=None)
     args = parser.parse_args()
+    print(f'Processing dataset \"{args.dataset}\"')
+
+    if args.dir_name is None:
+        data_dir_name = f"{os.path.basename(args.dataset)}_{os.path.basename(args.model_name)}_{args.vocab_size}"
+    else:
+        data_dir_name = args.dir_name
+
     print(f'Processing dataset \"{args.dataset}\"')
 
     data_dir_name = f"{os.path.basename(args.dataset).split('.')[0]}_{os.path.basename(args.model_name)}_vocab_{args.vocab_size}_{args.embedding_method}"

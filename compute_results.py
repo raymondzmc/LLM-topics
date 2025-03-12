@@ -2,7 +2,11 @@ import os
 import json
 from collections import defaultdict
 import pdb
+
+ckpt_dir = 'data/govreport-summarization_Llama-3.2-1B_2000/checkpoints/zeroshot_K50'
+
 ckpt_dir = 'data/bbc/bbc_news_full_Llama-3.2-1B_2000_last/checkpoints/zeroshot_K50'
+
 
 
 run_dirs = os.listdir(ckpt_dir)

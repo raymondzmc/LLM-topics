@@ -1,58 +1,11 @@
 import os
-import numpy as np
-from collections import Counter
 from datasets import Dataset
-from contextualized_topic_models.models.ctm import CTM, GenerativeTM, ZeroShotTM, CombinedTM
-from contextualized_topic_models.datasets.dataset import CTMDataset
-from contextualized_topic_models.utils.data_preparation import bert_embeddings_from_list
-from scipy.sparse import lil_matrix, csr_matrix
-from tqdm import tqdm
-from enum import Enum
+from utils.dataset import get_ctm_dataset
+from utils.enums import model_classes
+from contextualized_topic_models.models.ctm import CTM
 import pdb
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
-
-
-class ModelType(Enum):
-    GENERATIVE = 'generative'
-    ZEROSHOT = 'zeroshot'
-    COMBINED = 'combined'
-
-
-class EmbeddingType(Enum):
-    HIDDEN_STATES = 'hidden_states'
-    SBERT = 'sbert'
-
-
-model_classes = {
-    ModelType.GENERATIVE: GenerativeTM,
-    ModelType.ZEROSHOT: ZeroShotTM,
-    ModelType.COMBINED: CombinedTM,
-}
-
-
-def get_bows(processed_dataset, vocab):
-    bows = lil_matrix((len(processed_dataset), len(vocab)), dtype=int)
-    vocab_to_idx = {token: idx for idx, token in enumerate(vocab)}
-    for i, words in enumerate(tqdm(processed_dataset['words'])):
-        token_counts = Counter(words)
-        for token, count in token_counts.items():
-            if token in vocab_to_idx:
-                j = vocab_to_idx[token]
-                bows[i, j] = count
-    return bows.tocsr()
-
-
-def get_sbert_embeddings(processed_dataset: Dataset,
-                         embedding_model: str = 'paraphrase-multilingual-mpnet-base-v2',
-                         max_seq_length: int = 512) -> np.ndarray:
-    text_for_contextual = [' '.join(example['words']) for example in processed_dataset]
-    sbert_embeddings = bert_embeddings_from_list(
-        text_for_contextual,
-        sbert_model_to_load=embedding_model,
-        max_seq_length=max_seq_length,
-    )
-    return sbert_embeddings
 
 
 def train_topic_model(model_type: str,
@@ -77,46 +30,18 @@ def train_topic_model(model_type: str,
                       loss_weight: float | None = None,
                       model_checkpoint: dict | None = None,
                       continue_training: bool = False) -> CTM:
-    try:
-        model_type = ModelType(model_type)
-    except ValueError:
-        raise ValueError(f"Unsupported model: {model_type}")
-
-    try:
-        embedding_type = EmbeddingType(embedding_type)
-    except ValueError:
-        raise ValueError(f"Unsupported embedding type: {embedding_type}")
-
-    if model_type == ModelType.GENERATIVE:
-        if embedding_type == EmbeddingType.HIDDEN_STATES:
-            embeddings = np.stack(processed_dataset['input_embeddings'])
-        else:
-            embeddings = get_sbert_embeddings(processed_dataset)
-    else:
-        embeddings = get_sbert_embeddings(processed_dataset)
-
-    if model_type == ModelType.GENERATIVE:
-        if isinstance(processed_dataset['next_word_probs'][0], dict):
-            print("Converting next_word_probs dicts to numpy array")
-            processed_dataset['next_word_probs'] = [[prob[word] for word in vocab] for prob in processed_dataset['next_word_probs']]
-        targets = np.stack(processed_dataset['next_word_probs'])
-    else:
-        targets = get_bows(processed_dataset, vocab)
-
-    print(f"Input shape: {embeddings.shape}, target shape: {targets.shape}")
 
     if loss_weight is not None:
         loss_weights = {"beta": loss_weight}
     else:
         loss_weights = None
 
-    idx2token = {i: token for i, token in enumerate(vocab)}
-    dataset = CTMDataset(X_contextual=embeddings,
-                         X_bow=targets,
-                         idx2token=idx2token)
+    dataset = get_ctm_dataset(processed_dataset, vocab, model_type, embedding_type)
+    contextual_size = dataset.X_contextual.shape[1]
+
     model_cls = model_classes[model_type]
     model = model_cls(bow_size=len(vocab),
-                      contextual_size=embeddings.shape[1],
+                      contextual_size=contextual_size,
                       n_components=K,
                       hidden_sizes=hidden_sizes,
                       loss_type=loss_type,
@@ -135,7 +60,7 @@ def train_topic_model(model_type: str,
 
     if model_checkpoint is not None:
         model.model.load_state_dict(model_checkpoint, strict=False)
-        model.idx2token = idx2token
+        model.idx2token = dataset.idx2token
         print("Successfully loaded model weights.")
         if continue_training:
             print("Continuing training.")

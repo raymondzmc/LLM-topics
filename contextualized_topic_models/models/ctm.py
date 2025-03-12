@@ -350,7 +350,7 @@ class CTM:
         train_loader = DataLoader(
             train_data,
             batch_size=self.batch_size,
-            shuffle=True,
+            shuffle=False,
             num_workers=self.num_data_loader_workers,
             drop_last=True,
         )
@@ -372,7 +372,7 @@ class CTM:
                 validation_loader = DataLoader(
                     self.validation_data,
                     batch_size=self.batch_size,
-                    shuffle=True,
+                    shuffle=False,
                     num_workers=self.num_data_loader_workers,
                     drop_last=True,
                 )

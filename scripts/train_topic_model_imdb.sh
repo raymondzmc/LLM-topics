@@ -1,5 +1,6 @@
-python process_dataset.py --dataset data/bbc-news-data.csv \
-                          --content_key content \
+python process_dataset.py --dataset stanfordnlp/imdb \
+                          --content_key text \
+                          --split test \
                           --vocab_size 2000 \
                           --model_name meta-llama/Llama-3.2-1B \
                           --hidden_state_layer 16 \

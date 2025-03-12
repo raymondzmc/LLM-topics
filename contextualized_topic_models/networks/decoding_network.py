@@ -21,6 +21,7 @@ class DecoderNetwork(nn.Module):
         dropout=0.2,
         learn_priors=True,
         label_size=0,
+        temperature=1.0,
     ):
         """
         Initialize InferenceNetwork.
@@ -55,7 +56,7 @@ class DecoderNetwork(nn.Module):
         self.dropout = dropout
         self.learn_priors = learn_priors
 
-        if infnet == "zeroshot":
+        if infnet in ["zeroshot", "generative"]:
             self.inf_net = ContextualInferenceNetwork(
                 input_size,
                 bert_size,
@@ -140,13 +141,12 @@ class DecoderNetwork(nn.Module):
 
         # prodLDA vs LDA
         if self.model_type == "prodLDA":
-            # in: batch_size x input_size x n_components
             word_dist = F.softmax(
                 self.beta_batchnorm(torch.matmul(theta, self.beta)), dim=1
             )
         elif self.model_type == "LDA":
             # simplex constrain on Beta
-            beta = F.softmax(self.beta_batchnorm(self.beta), dim=1)
+            beta = F.softmax(self.beta_batchnorm(self.beta) / self.temperature, dim=1)
             word_dist = torch.matmul(theta, beta)
             # word_dist: batch_size x input_size
         else:

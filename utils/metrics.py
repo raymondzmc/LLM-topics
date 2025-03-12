@@ -36,7 +36,11 @@ def compute_llm_rating(topics: list[list[str]], model: str = "gpt-4o"):
                 temperature=temperature,
                 max_completion_tokens=1,
             )
-            _rating = int(response.choices[0].message.content)
+            try:
+                _rating = int(response.choices[0].message.content)
+            except:
+                continue
+
             if _rating in [1, 2, 3]:
                 rating = _rating
             else:

@@ -22,7 +22,11 @@ def load_processed_dataset(data_path, layer_idx=None, chunk_idx=None, verbose=Tr
     data_dict = {}
     
     for key in KEYS:
-        key_dir = os.path.join(data_path, key)
+        if key == 'input_embeddings' and layer_idx is not None:
+            key_dir = os.path.join(data_path, key, f"{layer_idx}")
+        else:
+            key_dir = os.path.join(data_path, key)
+
         # Collect all chunk files (e.g., 0.pt, 1000.pt, 2000.pt, ...)
         chunk_files = [
             f for f in os.listdir(key_dir) 
@@ -38,16 +42,14 @@ def load_processed_dataset(data_path, layer_idx=None, chunk_idx=None, verbose=Tr
         for chunk_file in tqdm(chunk_files):
             chunk_path = os.path.join(key_dir, chunk_file)
             chunk_data = torch.load(chunk_path, weights_only=False)
-            # if key == 'input_embeddings':
-            #     import pdb; pdb.set_trace()
-
-            # if key == 'input_embeddings' and layer_idx is not None and len(chunk_data[0].shape) > 2:
-            #     chunk_data = [embedding[layer_idx] for embedding in chunk_data]
-
             values.extend(chunk_data)
 
         data_dict[key] = values
         if verbose:
             print(f"Successfully loaded {key} values")
+
+    assert (
+        len(data_dict['context']) == len(data_dict['next_word']) == len(data_dict['next_word_probs']) == len(data_dict['input_embeddings'])
+    ), "The lengths of the context, next_word, next_word_probs, and input_embeddings lists are not the same"
 
     return data_dict

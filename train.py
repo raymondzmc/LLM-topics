@@ -1,7 +1,7 @@
 import os
 from datasets import Dataset
-from utils.dataset import get_ctm_dataset
-from utils.enums import model_classes
+from utils.dataset import get_ctm_dataset, get_ctm_dataset_generative
+from utils.enums import ModelType, model_classes
 from contextualized_topic_models.models.ctm import CTM
 import pdb
 
@@ -35,10 +35,13 @@ def train_topic_model(model_type: str,
         loss_weights = {"beta": loss_weight}
     else:
         loss_weights = None
-
-    dataset = get_ctm_dataset(processed_dataset, vocab, model_type, embedding_type)
+    
+    model_type = ModelType(model_type)
+    if model_type == ModelType.GENERATIVE:
+        dataset = get_ctm_dataset_generative(processed_dataset, vocab)
+    else:
+        dataset = get_ctm_dataset(processed_dataset, vocab)
     contextual_size = dataset.X_contextual.shape[1]
-
     model_cls = model_classes[model_type]
     model = model_cls(bow_size=len(vocab),
                       contextual_size=contextual_size,

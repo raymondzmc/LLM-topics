@@ -9,7 +9,7 @@ from tqdm import tqdm
 from collections import defaultdict
 from datasets import load_from_disk, load_dataset, concatenate_datasets
 from utils.io import load_processed_dataset
-from utils.dataset import get_ctm_dataset, get_bows
+from utils.dataset import get_ctm_dataset
 from utils.enums import ModelType, model_classes
 from utils.distributions import combine_distributions
 from transformers import (

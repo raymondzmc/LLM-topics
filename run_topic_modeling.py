@@ -16,10 +16,11 @@ from utils.metrics import compute_llm_rating
 import pdb
 
 
-def evaluate_topic_model(topic_model, top_words=10, test_corpus=None):
+def evaluate_topic_model(topic_model, top_words=10, test_corpus=None, topics=None):
     evaluation_results = {}
-    topics = topic_model.get_topics(top_words)
-    topics = list(topics.values())
+    if topics is None:
+        topics = topic_model.get_topics(top_words)
+        topics = list(topics.values())
 
     td = TopicDiversity(topics)
     td_score = td.score(topk=top_words)
@@ -114,7 +115,7 @@ if __name__ == '__main__':
     train_group.add_argument('--loss_type', type=str, default='ce', choices=['ce', 'kl'])
     train_group.add_argument('--hidden_sizes', type=int, default=200)
     train_group.add_argument('--num_hidden_layers', type=int, default=2)
-    train_group.add_argument('--activation', type=str, default='gelu')
+    train_group.add_argument('--activation', type=str, default='softplus')
     train_group.add_argument('--dropout', type=float, default=0.2)
     train_group.add_argument('--learn_priors', type=bool, default=True)
     train_group.add_argument('--batch_size', type=int, default=64)

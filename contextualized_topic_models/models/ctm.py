@@ -53,7 +53,7 @@ class CTM:
         n_components=10,
         model_type="prodLDA",
         hidden_sizes=(100, 100),
-        activation="gelu",
+        activation="softplus",
         dropout=0.2,
         learn_priors=True,
         temperature=1.0,
@@ -141,7 +141,6 @@ class CTM:
             dropout,
             learn_priors,
             label_size=label_size,
-            temperature=(temperature if inference_type == "generative" else 1.0),   # Use temperature for generative models
         )
 
         self.early_stopping = None
@@ -216,7 +215,7 @@ class CTM:
             elif self.loss_type == "ce":
                 # teacher_probs = torch.softmax(teacher_logits / self.temperature, dim=-1)
                 student_logprobs = torch.log(word_dists + 1e-10)
-                RL = -torch.sum(inputs * student_logprobs, dim=1)
+                RL = -torch.sum(teacher_logits * student_logprobs, dim=1)
             # RL = self.weights["beta"] * RL
         else:
             RL = -torch.sum(inputs * torch.log(word_dists + 1e-10), dim=1)
@@ -281,7 +280,6 @@ class CTM:
                     estimated_labels, target_labels
                 )
                 loss += label_loss
-
             loss.backward()
             self.optimizer.step()
 

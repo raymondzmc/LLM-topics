@@ -17,11 +17,10 @@ class DecoderNetwork(nn.Module):
         n_components=10,
         model_type="prodLDA",
         hidden_sizes=(100, 100),
-        activation="gelu",
+        activation="softplus",
         dropout=0.2,
         learn_priors=True,
         label_size=0,
-        temperature=1.0,
     ):
         """
         Initialize InferenceNetwork.
@@ -31,7 +30,7 @@ class DecoderNetwork(nn.Module):
             n_components : int, number of topic components, (default 10)
             model_type : string, 'prodLDA' or 'LDA' (default 'prodLDA')
             hidden_sizes : tuple, length = n_layers, (default (100, 100))
-            activation : string, 'softplus', 'relu', 'gelu' (default 'gelu')
+            activation : string, 'softplus', 'relu', (default 'softplus')
             learn_priors : bool, make priors learnable parameter
         """
         super(DecoderNetwork, self).__init__()
@@ -44,7 +43,6 @@ class DecoderNetwork(nn.Module):
         assert activation in [
             "softplus",
             "relu",
-            "gelu",
         ], "activation must be 'softplus' or 'relu'."
         assert dropout >= 0, "dropout must be >= 0."
 
@@ -55,6 +53,7 @@ class DecoderNetwork(nn.Module):
         self.activation = activation
         self.dropout = dropout
         self.learn_priors = learn_priors
+        self.topic_word_matrix = None
 
         if infnet in ["zeroshot", "generative"]:
             self.inf_net = ContextualInferenceNetwork(
@@ -118,16 +117,6 @@ class DecoderNetwork(nn.Module):
         std = torch.exp(0.5 * logvar)
         eps = torch.randn_like(std)
         return eps.mul(std).add_(mu)
-    
-    @property
-    def topic_word_matrix(self):
-        if self.model_type == "prodLDA":
-            topic_word_matrix = self.beta
-        elif self.model_type == "LDA":
-            topic_word_matrix = F.softmax(self.beta_batchnorm(self.beta), dim=1)
-        else:
-            raise NotImplementedError("Model Type Not Implemented")
-        return topic_word_matrix
 
     def forward(self, x, x_bert, labels=None):
         """Forward pass."""
@@ -141,12 +130,16 @@ class DecoderNetwork(nn.Module):
 
         # prodLDA vs LDA
         if self.model_type == "prodLDA":
+            # in: batch_size x input_size x n_components
             word_dist = F.softmax(
                 self.beta_batchnorm(torch.matmul(theta, self.beta)), dim=1
             )
+            # word_dist: batch_size x input_size
+            self.topic_word_matrix = self.beta
         elif self.model_type == "LDA":
             # simplex constrain on Beta
-            beta = F.softmax(self.beta_batchnorm(self.beta) / self.temperature, dim=1)
+            beta = F.softmax(self.beta_batchnorm(self.beta), dim=1)
+            self.topic_word_matrix = beta
             word_dist = torch.matmul(theta, beta)
             # word_dist: batch_size x input_size
         else:

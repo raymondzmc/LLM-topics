@@ -1,5 +1,6 @@
 import os
 import math
+import json
 import numpy as np
 from openai import OpenAI
 from collections import defaultdict
@@ -120,7 +121,7 @@ def compute_npmi_score(topics, documents):
     for topic in topics:
         total_npmi = 0.0
         count_pairs = 0
-        
+
         # Go through each pair of words in the topic
         for i in range(len(topic)):
             for j in range(i + 1, len(topic)):
@@ -128,10 +129,9 @@ def compute_npmi_score(topics, documents):
                 # Ensure (w1, w2) matches how we counted in pair_doc_count
                 if w1 > w2:
                     w1, w2 = w2, w1
-                
                 total_npmi += npmi_score(w1, w2)
                 count_pairs += 1
-        
+
         # Average NPMI for all pairs in the topic
         if count_pairs > 0:
             topic_coherences.append(total_npmi / count_pairs)
@@ -141,3 +141,26 @@ def compute_npmi_score(topics, documents):
     return np.mean(topic_coherences)
 
 
+def compute_aggregate_results(results_path):
+    aggregated_results = defaultdict(float)
+    counts = defaultdict(int)
+    for seed_dir in os.listdir(results_path):
+        results_file = os.path.join(results_path, seed_dir, 'evaluation_results.json')
+        if os.path.exists(results_file):
+            results = json.load(open(results_file, encoding='utf-8'))
+
+            # Backwards compatibility (used to save topics and results)
+            if isinstance(results, list):
+                results = results[1]
+
+            assert isinstance(results, dict)
+            for k, v in results.items():
+                aggregated_results[k] += v
+                counts[k] += 1
+
+    metrics = aggregated_results.keys()
+    for k in metrics:
+        aggregated_results[k] /= counts[k]
+        print(f"[{k}] {aggregated_results[k]} (from {counts[k]} runs)")
+    return aggregated_results
+        

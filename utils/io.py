@@ -23,6 +23,9 @@ def load_processed_dataset(data_path, layer_idx=None, chunk_idx=None, verbose=Tr
     
     for key in KEYS:
         if key == 'input_embeddings' and layer_idx is not None:
+            # Use the last layer if layer_idx is -1
+            if layer_idx == -1:
+                layer_idx = sorted(os.listdir(os.path.join(data_path, key)), key=lambda x: int(x))[-1]
             key_dir = os.path.join(data_path, key, f"{layer_idx}")
         else:
             key_dir = os.path.join(data_path, key)

@@ -6,6 +6,7 @@ from collections import defaultdict
 import numpy as np
 import torch
 from torch import optim
+from torch.nn import functional as F
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torch.utils.data import DataLoader
 
@@ -25,7 +26,7 @@ class CTM(object):
         lr=2e-3, momentum=0.99, solver='adam', num_epochs=100, num_samples=10,
         reduce_on_plateau=False, topic_prior_mean=0.0, top_words=10,
         topic_prior_variance=None, num_data_loader_workers=0, loss_weight=1.0,
-        sparsity_ratio=1.0):
+        sparsity_ratio=1.0, temperature=1.0, loss_type='CE'):
 
         """
         :param input_size: int, dimension of input
@@ -84,7 +85,11 @@ class CTM(object):
             "loss_weight must be type float"
         assert isinstance(sparsity_ratio, float), \
             "sparsity_ratio must be type float"
-            
+        assert isinstance(temperature, float), \
+            "temperature must be type float"
+        assert loss_type in ['CE', 'KL'], \
+            "loss_type must be 'CE' or 'KL'"
+
         # and topic_prior_variance >= 0, \
         # assert isinstance(topic_prior_variance, float), \
         #    "topic prior_variance must be type float"
@@ -110,13 +115,15 @@ class CTM(object):
         self.topic_prior_variance = topic_prior_variance
         self.loss_weight = loss_weight
         self.sparsity_ratio = sparsity_ratio
+        self.temperature = temperature
+        self.loss_type = loss_type
 
         # init inference avitm network
         self.model = DecoderNetwork(
             input_size, self.bert_size, inference_type, num_topics,
             model_type, hidden_sizes, activation,
             dropout, self.learn_priors, self.topic_prior_mean,
-            self.topic_prior_variance)
+            self.topic_prior_variance, self.temperature)
         self.early_stopping = EarlyStopping(patience=5, verbose=False)
         # init optimizer
         if self.solver == 'adam':
@@ -177,9 +184,18 @@ class CTM(object):
         mask = torch.zeros_like(teacher_logits)
         mask.scatter_(1, topk_indices, 1.0)
         teacher_logits = teacher_logits * mask
+        teacher_probs = torch.softmax(teacher_logits / self.temperature, dim=-1)
 
-        RL = self.loss_weight * -torch.sum(teacher_logits * torch.log(student_probs + 1e-10), dim=1)
-        loss = KL + RL
+        if self.loss_type == 'CE':
+            RL =  -torch.sum(teacher_probs * torch.log(student_probs + 1e-10), dim=1)
+        elif self.loss_type == 'KL':
+            teacher_probs = teacher_probs.clamp_min(1e-9)
+            student_probs = student_probs.clamp_min(1e-9)
+            RL = torch.sum(teacher_probs * torch.log(teacher_probs / student_probs), dim=1)
+        else:
+            raise ValueError(f"Invalid loss type: {self.loss_type}")
+
+        loss = KL + self.loss_weight * RL
         return loss.sum()
 
     def _train_epoch(self, loader):
@@ -415,7 +431,7 @@ class CTM(object):
 
     def _format_file(self):
         model_dir = (
-            "AVITM_nc_{}_tpm_{}_tpv_{}_hs_{}_ac_{}_do_{}_"
+            "GenerativeTM_nc_{}_tpm_{}_tpv_{}_hs_{}_ac_{}_do_{}_"
             "lr_{}_mo_{}_rp_{}".format(
                 self.num_topics, 0.0, 1 - (1. / self.num_topics),
                 self.model_type, self.hidden_sizes, self.activation,

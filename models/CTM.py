@@ -13,7 +13,8 @@ class CTM(AbstractModel):
         dropout=0.2, learn_priors=True, batch_size=64, lr=2e-3, momentum=0.99,
         solver='adam', num_epochs=100, reduce_on_plateau=False, prior_mean=0.0,
         prior_variance=None, num_layers=2, num_neurons=100, seed=None,
-        use_partitions=False, num_samples=10, loss_weight=None, sparsity_ratio=None):
+        use_partitions=False, num_samples=10, loss_weight=None, sparsity_ratio=None,
+        temperature=1.0, loss_type='CE'):
         """
         initialization of CTM
 
@@ -60,6 +61,8 @@ class CTM(AbstractModel):
         self.hyperparameters["seed"] = seed
         self.hyperparameters["loss_weight"] = loss_weight
         self.hyperparameters["sparsity_ratio"] = sparsity_ratio
+        self.hyperparameters["temperature"] = temperature
+        self.hyperparameters["loss_type"] = loss_type
         self.use_partitions = use_partitions
 
         hidden_sizes = tuple([num_neurons for _ in range(num_layers)])
@@ -100,9 +103,11 @@ class CTM(AbstractModel):
              topic_prior_variance=self.hyperparameters["prior_variance"],
              top_words=top_words,
              loss_weight=self.hyperparameters["loss_weight"],
-             sparsity_ratio=self.hyperparameters['sparsity_ratio'])
+             sparsity_ratio=self.hyperparameters['sparsity_ratio'],
+             temperature=self.hyperparameters['temperature'],
+             loss_type=self.hyperparameters['loss_type'])
 
-        self.model.fit(x_train, None, verbose=False)
+        self.model.fit(x_train, None, verbose=True)
         result = self.model.get_info()
         return result
 

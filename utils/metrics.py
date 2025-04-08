@@ -1,12 +1,17 @@
 import os
-import math
 import json
+import itertools
 import numpy as np
 from openai import OpenAI
 from collections import defaultdict
 from settings import settings
 from llm import jinja_template_manager
-import pdb
+from octis.evaluation_metrics.metrics import AbstractMetric
+from octis.evaluation_metrics.diversity_metrics import TopicDiversity, InvertedRBO
+from octis.evaluation_metrics.coherence_metrics import Coherence
+from gensim.downloader import load as gensim_load
+from gensim.models import KeyedVectors
+from sklearn.metrics.pairwise import pairwise_distances
 
 
 def compute_llm_rating(topics: list[list[str]], model: str = "gpt-4o"):
@@ -55,90 +60,103 @@ def compute_llm_rating(topics: list[list[str]], model: str = "gpt-4o"):
     return topic_ratings
 
 
-def compute_npmi_score(topics, documents):
-    """
-    Computes the topic coherence (NPMI) for each topic in 'topics' 
-    based on the collection of documents in 'documents'.
+class PairwiseEmbeddings(AbstractMetric):
+    def __init__(self, embeddings, topk=10):
+        super().__init__()
+        self.embeddings = embeddings
+        self.topk = topk
 
-    :param topics: List of topics, each topic is a list of words [ [w1, w2, ...], [w1, w2, ...], ... ]
-    :param documents: List of documents, each document is a list of words [ [d1, d2, ...], [d1, d2, ...], ... ]
-    :return: A list of coherence scores, one for each topic
-    """
+    def score(self, model_output):
+        topics = model_output["topics"]
+        assert all(word in self.embeddings for topic in topics for word in topic), "All words must be in the embeddings"
 
-    # 1. Collect all unique words from the topics
-    topic_words = set()
-    for topic in topics:
-        topic_words.update(topic)
+        result = 0.0
+        for topic in topics:
+            E = []
+            for word in topic[0:self.topk]:
+                word_embedding = self.embeddings[word]   # OpenAI embeddings are already to length 1
+                E.append(word_embedding)
 
-    # 2. Initialize counters
-    word_doc_count = defaultdict(int)   # Count of docs that contain each word
-    pair_doc_count = defaultdict(int)   # Count of docs that contain each (word1, word2) pair
+            E = np.array(E)
+            distances = np.sum(1 - pairwise_distances(E, metric='cosine') - np.diag(np.ones(len(E))))
+            topic_coherence = distances/(self.topk*(self.topk-1))
 
-    # 3. Single pass over documents to fill the counters
-    num_docs = len(documents)
-    for doc in documents:
-        doc_set = set(doc)
-        # Only keep words that appear in any of the topics
-        filtered_words = doc_set.intersection(topic_words)
-        
-        # Update individual word counts
-        for w in filtered_words:
-            word_doc_count[w] += 1
-        
-        # Update pairwise counts
-        filtered_list = sorted(filtered_words)
-        for i in range(len(filtered_list)):
-            for j in range(i + 1, len(filtered_list)):
-                w1 = filtered_list[i]
-                w2 = filtered_list[j]
-                pair_doc_count[(w1, w2)] += 1
+            # Update result with the computed coherence of the topic
+            result += topic_coherence
+        result = result/len(topics)
+        return result
 
-    # Helper function to compute NPMI for a pair of words
-    def npmi_score(w1, w2):
-        pair_count = pair_doc_count.get((w1, w2), 0)
-        if pair_count == 0:
-            return 0.0  # No co-occurrence => NPMI = 0
-        
-        p_xy = pair_count / num_docs
-        p_x = word_doc_count[w1] / num_docs
-        p_y = word_doc_count[w2] / num_docs
-        
-        # If any probability is zero (should not happen if pair_count > 0, but just in case):
-        if p_x == 0 or p_y == 0 or p_xy == 0:
-            return 0.0
-        
-        # PMI = log ( p_xy / (p_x * p_y) )
-        # Choose log base 2 or natural log (ln) consistently.
-        pmi = math.log(p_xy / (p_x * p_y), 2)
-        
-        # NPMI = PMI / -log(p_xy)
-        if p_xy <= 0:
-            return 0.0
-        return pmi / -math.log(p_xy, 2)
 
-    # 4. Compute coherence (average NPMI) for each topic
-    topic_coherences = []
-    for topic in topics:
-        total_npmi = 0.0
-        count_pairs = 0
-
-        # Go through each pair of words in the topic
-        for i in range(len(topic)):
-            for j in range(i + 1, len(topic)):
-                w1, w2 = topic[i], topic[j]
-                # Ensure (w1, w2) matches how we counted in pair_doc_count
-                if w1 > w2:
-                    w1, w2 = w2, w1
-                total_npmi += npmi_score(w1, w2)
-                count_pairs += 1
-
-        # Average NPMI for all pairs in the topic
-        if count_pairs > 0:
-            topic_coherences.append(total_npmi / count_pairs)
+class Word2VecEmbeddingCoherence(AbstractMetric):
+    def __init__(self, word2vec_path='word2vec-google-news-300.kv', binary=True, top_k=10):
+        """
+        :param word2vec_path: if word2vec_file is specified, it retrieves the
+         word embeddings file (in word2vec format) to compute similarities
+         between words, otherwise 'word2vec-google-news-300' is downloaded
+        :param binary: if the word2vec file is binary
+        """
+        super().__init__()
+        self.binary = binary
+        self.top_k = top_k
+        if word2vec_path is None:
+            self.wv = gensim_load('word2vec-google-news-300')
+            self.wv.save_word2vec_format(word2vec_path, binary=binary)
         else:
-            topic_coherences.append(0.0)
+            self.wv = KeyedVectors.load_word2vec_format(word2vec_path, binary=binary)
 
-    return np.mean(topic_coherences)
+    def score(self, model_output):
+        topics = model_output["topics"]
+        if self.top_k > len(topics[0]):
+            raise Exception(f'Words in topics are less than top_k: {self.top_k}')
+        else:
+            arrays = []
+            for topic in topics:
+                if len(topic) > 0:
+                    local_sim = []
+                    for w1, w2 in itertools.combinations(topic[:self.top_k], 2):
+                        if (w1 in self.wv.index_to_key and w2 in self.wv.index_to_key):
+                            local_sim.append(self.wv.similarity(w1, w2))
+                    arrays.append(np.mean(local_sim))
+            return np.mean(arrays)
+
+
+def evaluate_topic_model(model_output, top_words=10, test_corpus=None, embeddings=None):
+    assert 'topics' in model_output, "model_output must contain 'topics'"
+
+    evaluation_results = {}
+
+    td = TopicDiversity(topk=top_words)
+    td_score = td.score(model_output)
+    print("Topic Diversity:", td_score)
+    evaluation_results['topic_diversity'] = float(td_score)
+    
+    irbo = InvertedRBO(topk=top_words)
+    irbo_score = irbo.score(model_output)
+    print("Inverted RBO:", irbo_score)
+    evaluation_results['inverted_rbo'] = float(irbo_score)
+    
+    if test_corpus is not None:
+        npmi = Coherence(measure='c_npmi', texts=test_corpus, topk=top_words)
+        npmi_score = npmi.score(model_output)
+        print("NPMI:", npmi_score)
+        evaluation_results['npmi'] = float(npmi_score)
+
+    if embeddings is not None:
+        openai_we = PairwiseEmbeddings(embeddings, topk=top_words)
+        openai_we_score = openai_we.score(model_output)
+        print("(OpenAI) Word Embeddings:", openai_we_score)
+        evaluation_results['openai_word_embeddings'] = float(openai_we_score)
+
+    word2vec_we = Word2VecEmbeddingCoherence(top_k=top_words)
+    word2vec_we_score = word2vec_we.score(model_output)
+    print("(Word2Vec) Word Embeddings:", word2vec_we_score)
+    evaluation_results['word2vec_word_embeddings'] = float(word2vec_we_score)
+
+    llm_ratings = compute_llm_rating(model_output['topics'])
+    llm_average_rating = float(np.mean(llm_ratings))
+    print("LLM Rating:", llm_average_rating)
+    evaluation_results['llm_rating'] = llm_average_rating
+    return evaluation_results
 
 
 def compute_aggregate_results(results_path):

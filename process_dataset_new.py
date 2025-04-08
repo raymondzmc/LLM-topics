@@ -225,6 +225,8 @@ def main(args):
 
     if args.hidden_state_layer is None:
         hidden_state_layers = list(range(model.config.num_hidden_layers + 1))
+    elif args.hidden_state_layer == -1:
+        hidden_state_layers = [model.config.num_hidden_layers]
     else:
         hidden_state_layers = [args.hidden_state_layer]
 
@@ -328,7 +330,7 @@ def main(args):
             print(f"Saved {len(processed_examples)} processed examples at: {save_path}")
             num_saved += CHUNK_SIZE
             processed_examples = []
-         
+
     if len(processed_examples) > 0:
         save_path = save_processed_examples(processed_examples, args.data_path, num_saved, hidden_state_layers)
         print(f"Saved {len(processed_examples)} processed examples at: {save_path}")

@@ -2,8 +2,13 @@ import os
 import csv
 import json
 import argparse
+from gensim.downloader import load as gensim_load
+from gensim.models import KeyedVectors
 from octis.dataset.dataset import Dataset
+from octis.models.LDA import LDA
+from octis.models.ProdLDA import ProdLDA
 from octis.models.CTM import CTM
+from octis.models.ETM import ETM
 from utils.metrics import compute_aggregate_results
 from utils.metrics import evaluate_topic_model
 from utils.embeddings import get_openai_embedding
@@ -19,15 +24,20 @@ def run(args):
     os.makedirs(args.results_path, exist_ok=True)
     
     with open(os.path.join(args.data_path, 'bow_dataset.txt'), 'r', encoding='utf-8') as f:
-        bow_corpus = [line.strip().split() for line in f if line.strip()]
+        bow_corpus = [line.strip().split() for line in f]
+        empty_documents = [i for i, doc in enumerate(bow_corpus) if len(doc) == 0]
+        bow_corpus = [doc for i, doc in enumerate(bow_corpus) if i not in empty_documents]
 
     # Prepare the corpus and vocabulary for OCTIS dataset
     corpus_file = os.path.join(args.data_path, 'corpus.tsv')
     vocab_file = os.path.join(args.data_path, 'vocab.txt')
+    labels_file = os.path.join(args.data_path, 'labels.txt')
     if not os.path.exists(corpus_file):
         with open(corpus_file, 'w', encoding='utf-8', newline='') as tsvfile:
             writer = csv.writer(tsvfile, delimiter='\t')
             for doc in bow_corpus:
+                if len(doc) == 0:
+                    continue
                 # Each row: document, partition, label (empty)
                 writer.writerow([' '.join(doc), 'train', ''])
 
@@ -38,8 +48,18 @@ def run(args):
         with open(os.path.join(args.data_path, "vocabulary.txt"), "w", encoding="utf-8") as vocab_file:
             for word in vocab:
                 vocab_file.write(f"{word}\n")
-    dataset = Dataset()
-    dataset.load_custom_dataset_from_folder(args.data_path)
+
+    if os.path.exists(labels_file):
+        with open(labels_file, 'r', encoding='utf-8') as f:
+            labels = [line.strip() for line in f if line.strip()]
+        labels = [labels[i] for i in range(len(labels)) if i not in empty_documents]
+    else:
+        labels = None
+
+    dataset = None
+    if not args.eval_only:
+        dataset = Dataset()
+        dataset.load_custom_dataset_from_folder(args.data_path)
 
     # Compute OpenAI embeddings for evaluation
     vocab_embedding_path = os.path.join(args.data_path, 'vocab_embeddings.json')
@@ -53,26 +73,92 @@ def run(args):
     for seed in range(args.num_seeds):
         seed_dir = os.path.join(args.results_path, f"seed_{seed}")
         os.makedirs(seed_dir, exist_ok=True)
+        
+        model_output_path = os.path.join(seed_dir, 'model_output.pt')
+        if os.path.exists(model_output_path):
+            model_output = torch.load(model_output_path, weights_only=False)
+        else:
+            assert not args.eval_only, \
+                (f"Model output does not exist in \"{seed_dir}\" when eval_only set is True,"
+                 " please re-run the script without --eval_only")
 
-        if args.model in ['zeroshot', 'combined']:
-            model = CTM(
-                num_topics=args.num_topics,
-                num_layers=args.num_hidden_layers,
-                num_neurons=args.hidden_size,
-                num_epochs=args.num_epochs,
-                inference_type=args.model,
-                use_partitions=False,
-            )
-            model.set_seed(seed)
-            model_output = model.train_model(dataset=dataset, top_words=args.top_words) # Train the model
-            topics = model_output['topics']
-            torch.save(model_output, os.path.join(seed_dir, 'model_output.pt'))
+            if args.model == 'lda':
+                model = LDA(
+                    num_topics=args.num_topics,
+                    random_state=seed,
+                )
+                model_output = model.train_model(dataset=dataset, top_words=args.top_words)
+            elif args.model == 'prodlda':
+                model = ProdLDA(
+                    num_topics=args.num_topics,
+                    batch_size=args.batch_size,
+                    lr=args.lr,
+                    activation=args.activation,
+                    solver=args.solver,
+                    num_layers=args.num_hidden_layers,
+                    num_neurons=args.hidden_size,
+                    num_epochs=args.num_epochs,
+                    use_partitions=False,
+                )
+                model.train_model(dataset=dataset, top_words=args.top_words)
+                model_output = {}
+                model_output['topics'] = model.model.get_topics(k=args.top_words)
+            if args.model in ['zeroshot', 'combined']:
+                model = CTM(
+                    num_topics=args.num_topics,
+                    num_layers=args.num_hidden_layers,
+                    num_neurons=args.hidden_size,
+                    batch_size=args.batch_size,
+                    lr=args.lr,
+                    activation=args.activation,
+                    solver=args.solver,
+                    num_epochs=args.num_epochs,
+                    inference_type=args.model,
+                    bert_path=os.path.join(seed_dir),
+                    bert_model='all-mpnet-base-v2',
+                    use_partitions=False,
+                )
+                model.set_seed(seed)
+                model_output = model.train_model(dataset=dataset, top_words=args.top_words)
+            elif args.model == 'etm':
+                word2vec_path = os.path.join('word2vec-google-news-300.kv')
+                if not os.path.exists(word2vec_path):
+                    word2vec = gensim_load('word2vec-google-news-300')
+                    word2vec.save_word2vec_format(word2vec_path, binary=True)
 
+                model = ETM(
+                    num_topics=args.num_topics,
+                    num_epochs=args.num_epochs,
+                    activation=args.activation,
+                    train_embeddings=True,
+                    use_partitions=False,
+                    embeddings_path=word2vec_path,
+                    embeddings_type='keyedvectors',
+                )
+                model_output = model.train_model(
+                    dataset=dataset,
+                    top_words=args.top_words,
+                    op_path=os.path.join(seed_dir, 'checkpoint.pt'),
+                )
+
+        topics = model_output['topics']
+        if not os.path.exists(os.path.join(seed_dir, 'topics.json')):
             with open(os.path.join(seed_dir, 'topics.json'), 'w', encoding="utf-8") as f:
                 json.dump(topics, f)
-            evaluation_results = evaluate_topic_model(model_output, top_words=args.top_words, test_corpus=bow_corpus, embeddings=vocab_embeddings)
+
+        if not os.path.exists(os.path.join(seed_dir, 'evaluation_results.json')):
+            evaluation_results = evaluate_topic_model(model_output, top_words=args.top_words, test_corpus=bow_corpus, embeddings=vocab_embeddings, labels=labels)
             with open(os.path.join(seed_dir, 'evaluation_results.json'), 'w', encoding="utf-8") as f:
                 json.dump(evaluation_results, f)
+        elif args.recompute_metrics:
+            evaluation_results = json.load(open(os.path.join(seed_dir, 'evaluation_results.json'), encoding='utf-8'))
+            new_results = evaluate_topic_model(model_output, top_words=args.top_words, test_corpus=bow_corpus, embeddings=vocab_embeddings, labels=labels)
+            evaluation_results.update(new_results)
+            with open(os.path.join(seed_dir, 'evaluation_results.json'), 'w', encoding="utf-8") as f:
+                json.dump(evaluation_results, f)
+        else:
+            # Nothing to do here since metrics have already been computed
+            pass
 
     averaged_results = compute_aggregate_results(args.results_path)
     with open(os.path.join(args.results_path, 'averaged_results.json'), 'w', encoding='utf-8') as f:
@@ -89,5 +175,11 @@ if __name__ == '__main__':
     parser.add_argument('--num_epochs', type=int, default=50)
     parser.add_argument('--top_words', type=int, default=20)
     parser.add_argument('--num_seeds', type=int, default=5)
+    parser.add_argument('--batch_size', type=int, default=64)
+    parser.add_argument('--lr', type=float, default=2e-3)
+    parser.add_argument('--activation', type=str, default='softplus')
+    parser.add_argument('--solver', type=str, default='adam')
+    parser.add_argument('--eval_only', action='store_true')
+    parser.add_argument('--recompute_metrics', action='store_true')
     args = parser.parse_args()
     run(args)

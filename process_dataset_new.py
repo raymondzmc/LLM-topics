@@ -213,7 +213,15 @@ def main(args):
         with open(bow_output_path, "w", encoding="utf-8") as f:
             for bow_line in dataset["bow_line"]:
                 f.write(bow_line + "\n")
-    
+
+    if args.label_key is not None:
+        # Save the labels to a text file
+        labels_output_path = os.path.join(args.data_path, "labels.txt")
+        print(f"Saving labels to {labels_output_path} ...")
+        with open(labels_output_path, "w", encoding="utf-8") as f:
+            for label in dataset[args.label_key]:
+                f.write(f"{label}\n")
+    exit()
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     model.to(device)
     processed_examples = []
@@ -341,6 +349,7 @@ if __name__ == '__main__':
     parser.add_argument('--dataset', type=str, default='fancyzhx/dbpedia_14')
     parser.add_argument('--vocab_path', type=str, default=None)
     parser.add_argument('--content_key', type=str, default='content')
+    parser.add_argument('--label_key', type=str, default=None)
     parser.add_argument('--id_key', type=str, default='id')
     parser.add_argument('--split', type=str, default='all')
     parser.add_argument('--vocab_size', type=int, default=2000)

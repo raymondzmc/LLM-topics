@@ -10,8 +10,7 @@ from torch.nn import functional as F
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torch.utils.data import DataLoader
 
-from octis.models.contextualized_topic_models.networks.decoding_network import (
-    DecoderNetwork)
+from models.networks.decoding_network import DecoderNetwork
 from octis.models.early_stopping.pytorchtools import EarlyStopping
 
 

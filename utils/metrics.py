@@ -12,6 +12,8 @@ from octis.evaluation_metrics.coherence_metrics import Coherence
 from gensim.downloader import load as gensim_load
 from gensim.models import KeyedVectors
 from sklearn.metrics.pairwise import pairwise_distances
+from sklearn.metrics.cluster import contingency_matrix
+from sklearn import metrics
 
 
 def compute_llm_rating(topics: list[list[str]], model: str = "gpt-4o"):
@@ -44,7 +46,8 @@ def compute_llm_rating(topics: list[list[str]], model: str = "gpt-4o"):
             )
             try:
                 _rating = int(response.choices[0].message.content)
-            except:
+            except Exception as e:
+                print(f"Error parsing rating for topic \"{topic}\": {e}")
                 continue
 
             if _rating in [1, 2, 3]:
@@ -58,6 +61,63 @@ def compute_llm_rating(topics: list[list[str]], model: str = "gpt-4o"):
 
         topic_ratings.append(rating)
     return topic_ratings
+
+
+def compute_purity_score(topic_document_matrix, labels ):
+    """
+    Compute cluster purity (and optionally inverse & harmonic purity)
+    for a topic model given ground‑truth document labels.
+
+    Parameters
+    ----------
+    labels : array‑like, shape (n_documents,)
+        Ground‑truth class label for each document.
+
+    topic_document_matrix : ndarray, shape (K, n_documents)
+        Topic weights/probabilities per document.  Each column j is the
+        distribution θ_{·,j} over K topics for document j.
+
+    Returns
+    -------
+    purity : float
+        Standard cluster purity in [0, 1].
+
+    inverse_purity : float
+        Inverse cluster purity in [0, 1].
+
+    harmonic_purity : float
+        Harmonic mean of purity and inverse purity in [0, 1].
+    """
+    labels = np.asarray(labels)
+    # sanity check
+    if topic_document_matrix.shape[1] != labels.shape[0]:
+        raise ValueError(
+            "topic_document_matrix must have the same number "
+            "of columns as the length of `labels`."
+        )
+
+    # 1. Hard‐assign every document to its most probable topic
+    y_pred = topic_document_matrix.argmax(axis=0)  # shape (n_documents,)
+
+    # 2. Build contingency matrix: rows=gold classes, cols=predicted topics
+    cmat = contingency_matrix(labels, y_pred)
+    n_samples = cmat.sum()
+
+    # 3. Purity: for each predicted cluster, count how many docs come
+    #    from its dominant class, then normalise.
+    purity = cmat.max(axis=0).sum() / n_samples
+
+    # Inverse purity (a.k.a. completeness)
+    inverse_purity = cmat.max(axis=1).sum() / n_samples
+
+    # Harmonic purity (F1 between purity & inverse purity)
+    harmonic_purity = (
+        2 * purity * inverse_purity / (purity + inverse_purity)
+        if (purity + inverse_purity) > 0
+        else 0.0
+    )
+
+    return purity, inverse_purity, harmonic_purity
 
 
 class PairwiseEmbeddings(AbstractMetric):
@@ -120,7 +180,7 @@ class Word2VecEmbeddingCoherence(AbstractMetric):
             return np.mean(arrays)
 
 
-def evaluate_topic_model(model_output, top_words=10, test_corpus=None, embeddings=None):
+def evaluate_topic_model(model_output, top_words=10, test_corpus=None, embeddings=None, labels=None):
     assert 'topics' in model_output, "model_output must contain 'topics'"
 
     evaluation_results = {}
@@ -135,11 +195,32 @@ def evaluate_topic_model(model_output, top_words=10, test_corpus=None, embedding
     print("Inverted RBO:", irbo_score)
     evaluation_results['inverted_rbo'] = float(irbo_score)
     
+    if labels is not None and model_output.get('topic-document-matrix') is not None:
+        purity_score, inverse_purity, harmonic_purity = compute_purity_score(model_output['topic-document-matrix'], labels)
+        print("Purity:", purity_score)
+        evaluation_results['purity'] = float(purity_score)
+        print("Inverse Purity:", inverse_purity)
+        evaluation_results['inverse_purity'] = float(inverse_purity)
+        print("Harmonic Purity:", harmonic_purity)
+        evaluation_results['harmonic_purity'] = float(harmonic_purity)
+        
+        ari_score = metrics.adjusted_rand_score(labels, model_output['topic-document-matrix'].argmax(axis=0))
+        print("ARI:", ari_score)
+        evaluation_results['ari'] = float(ari_score)
+        mis_score = metrics.normalized_mutual_info_score(labels, model_output['topic-document-matrix'].argmax(axis=0))
+        print("MIS:", mis_score)
+        evaluation_results['mis'] = float(mis_score)
+    
     if test_corpus is not None:
         npmi = Coherence(measure='c_npmi', texts=test_corpus, topk=top_words)
         npmi_score = npmi.score(model_output)
         print("NPMI:", npmi_score)
         evaluation_results['npmi'] = float(npmi_score)
+        
+        cv = Coherence(measure='c_v', texts=test_corpus, topk=top_words)
+        cv_score = cv.score(model_output)
+        print("CV:", cv_score)
+        evaluation_results['cv'] = float(cv_score)
 
     if embeddings is not None:
         openai_we = PairwiseEmbeddings(embeddings, topk=top_words)

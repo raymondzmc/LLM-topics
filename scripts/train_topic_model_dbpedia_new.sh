@@ -1,16 +1,17 @@
 # #!/usr/bin/env bash
-CUDA_VISIBLE_DEVICES=0 python process_dataset_new.py \
+CUDA_VISIBLE_DEVICES=1 python process_dataset_new.py \
   --dataset fancyzhx/dbpedia_14 \
   --content_key content \
-  --split test \
+  --split all \
   --vocab_size 2000 \
   --model_name meta-llama/Llama-3.2-3B-Instruct \
   --hidden_state_layer -1 \
   --single_token_only \
   --batch_size 32 \
   --target_method summary \
-  --bow_dataset
-  
+  --bow_dataset \
+  --label_key label
+
 CUDA_VISIBLE_DEVICES=0 python run_topic_model_baselines.py \
   --data_path data/dbpedia_14_Llama-3.2-3B-Instruct_vocab_2000_last \
   --model zeroshot \

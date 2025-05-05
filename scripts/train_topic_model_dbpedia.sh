@@ -1,8 +1,8 @@
 # #!/usr/bin/env bash
 CUDA_VISIBLE_DEVICES=0 python process_dataset_new.py \
-  --dataset fancyzhx/dbpedia_14 \
-  --content_key content \
-  --split test \
+  --dataset fancyzhx/ag_news \
+  --content_key text \
+  --split all \
   --vocab_size 2000 \
   --model_name meta-llama/Llama-3.2-1B-Instruct \
   --single_token_only \

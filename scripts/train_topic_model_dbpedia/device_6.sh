@@ -2,7 +2,7 @@
 
 for num_topics in 25 50 100; do
   for temperature in 1 2 3 5 10; do
-    CUDA_VISIBLE_DEVICES=0 python run_topic_model_ours.py \
+    CUDA_VISIBLE_DEVICES=6 python run_topic_model_ours.py \
       --data_path data/dbpedia_14_Llama-3.2-3B-Instruct_vocab_2000_last \
       --results_path results/dbpedia/Llama-3.2-3B-Instruct/K${num_topics}_CE_temperature${temperature}_loss_weight100 \
       --num_topics ${num_topics} \

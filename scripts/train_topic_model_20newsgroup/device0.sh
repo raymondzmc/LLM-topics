@@ -57,7 +57,7 @@ python run_topic_model_baselines.py \
 
 python run_topic_model_ours.py \
     --data_path data/20_newsgroups_Llama-3.2-3B-Instruct_vocab_2000_last \
-    --results_path results/20_newsgroups/Llama-3.2-3B-Instruct${NUM_TOPICS}_CE \
+    --results_path results/20_newsgroups/Llama-3.2-3B-Instruct/${NUM_TOPICS}_CE \
     --num_topics ${NUM_TOPICS} \
     --num_hidden_layers 2 \
     --num_seeds 5 \

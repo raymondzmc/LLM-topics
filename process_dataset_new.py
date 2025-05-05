@@ -216,12 +216,12 @@ def main(args):
 
     if args.label_key is not None:
         # Save the labels to a text file
-        labels_output_path = os.path.join(args.data_path, "labels.txt")
+        labels_output_path = os.path.join(args.data_path, "numeric_labels.txt")
         print(f"Saving labels to {labels_output_path} ...")
         with open(labels_output_path, "w", encoding="utf-8") as f:
             for label in dataset[args.label_key]:
                 f.write(f"{label}\n")
-    exit()
+
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     model.to(device)
     processed_examples = []

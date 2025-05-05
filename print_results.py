@@ -5,8 +5,8 @@ import argparse
 import collections
 
 # Define metric keys globally
-REQUIRED_KEYS = ['npmi', 'word2vec_word_embeddings', 'llm_rating', 'topic_diversity', 'inverted_rbo']
-# REQUIRED_KEYS = ['npmi', 'word2vec_word_embeddings', 'llm_rating', 'topic_diversity', 'inverted_rbo', 'harmonic_purity', 'ari', 'mis']
+# REQUIRED_KEYS = ['npmi', 'word2vec_word_embeddings', 'llm_rating', 'topic_diversity', 'inverted_rbo']
+REQUIRED_KEYS = ['npmi', 'word2vec_word_embeddings', 'llm_rating', 'topic_diversity', 'inverted_rbo', 'harmonic_purity', 'ari', 'mis']
 NUM_METRICS = len(REQUIRED_KEYS)
 
 def get_metrics(file_path):

@@ -1,11 +1,23 @@
-Method	K25					K50					K75					K100				
-	npmi	word2vec_word_embeddings	llm_rating	topic_diversity	inverted_rbo	npmi	word2vec_word_embeddings	llm_rating	topic_diversity	inverted_rbo	npmi	word2vec_word_embeddings	llm_rating	topic_diversity	inverted_rbo	npmi	word2vec_word_embeddings	llm_rating	topic_diversity	inverted_rbo
-Llama-3.2-1B-Instruct-CE	0.0228	0.2113	2.8960	0.8332	0.9945	0.0025	0.1969	2.9040	0.6218	0.9897	-0.0057	0.1924	2.8773	0.4920	0.9880	-0.0151	0.1858	2.8700	0.4185	0.9872
-Llama-3.2-1B-Instruct-KL	0.0233	0.2116	2.8880	0.8332	0.9945	0.0029	0.1970	2.9080	0.6194	0.9896	-0.0061	0.1917	2.8907	0.4920	0.9879	-0.0167	0.1850	2.8680	0.4191	0.9873
-Llama-3.2-3B-Instruct-CE	0.0043	0.1910	2.8800	0.8548	0.9951	-0.0120	0.1828	2.8680	0.6564	0.9904	-0.0206	0.1778	2.8480	0.5353	0.9893	-0.0272	0.1756	2.8320	0.4619	0.9887
-Llama-3.2-3B-Instruct-KL	0.0047	0.1912	2.8800	0.8552	0.9951	-0.0119	0.1827	2.8680	0.6588	0.9906	-0.0203	0.1773	2.8453	0.5376	0.9893	-0.0278	0.1753	2.8200	0.4613	0.9887
-combined	0.0423	0.1619	2.5360	0.8824	0.9901	0.0365	0.1547	2.5560	0.7622	0.9908	0.0186	0.1501	2.4853	0.6432	0.9908	0.0132	0.1480	2.4920	0.5467	0.9896
-etm	-0.0060	0.2199	1.9920	0.0868	0.2481	-0.0126	0.2124	1.9800	0.0858	0.3379	-0.0278	0.2006	1.9173	0.1104	0.4743	-0.0367	0.1900	1.9000	0.1236	0.5791
-lda	0.0202	0.1597	2.2160	0.6936	0.9487	0.0045	0.1498	2.1880	0.6986	0.9754	-0.0242	0.1416	2.1413	0.7044	0.9858	-0.0336	0.1363	2.0880	0.6808	0.9889
-prodlda	0.0363	0.1612	2.5040	0.8732	0.9898	0.0118	0.1506	2.4440	0.7582	0.9913	0.0037	0.1454	2.3973	0.6435	0.9906	0.0010	0.1439	2.3800	0.5698	0.9906
-zeroshot	0.0453	0.1643	2.5440	0.8764	0.9908	0.0310	0.1557	2.5600	0.7566	0.9914	0.0202	0.1516	2.5093	0.6336	0.9908	0.0195	0.1534	2.5100	0.5288	0.9896
+Warning: Missing keys in results/20_newsgroups/Llama-3.2-3B-Instruct/100_CE/averaged_results.json. Found: ['topic_diversity', 'inverted_rbo', 'npmi', 'openai_word_embeddings', 'word2vec_word_embeddings', 'llm_rating']
+Warning: Missing keys in results/20_newsgroups/Llama-3.2-3B-Instruct/25_CE/averaged_results.json. Found: ['topic_diversity', 'inverted_rbo', 'npmi', 'openai_word_embeddings', 'word2vec_word_embeddings', 'llm_rating']
+Warning: Missing keys in results/20_newsgroups/Llama-3.2-3B-Instruct/75_CE/averaged_results.json. Found: ['topic_diversity', 'inverted_rbo', 'npmi', 'openai_word_embeddings', 'word2vec_word_embeddings', 'llm_rating']
+Warning: Missing keys in results/20_newsgroups/Llama-3.2-3B-Instruct/50_CE/averaged_results.json. Found: ['topic_diversity', 'inverted_rbo', 'npmi', 'openai_word_embeddings', 'word2vec_word_embeddings', 'llm_rating']
+Warning: Missing keys in results/20_newsgroups/combined_K100/averaged_results.json. Found: ['topic_diversity', 'inverted_rbo', 'npmi', 'openai_word_embeddings', 'word2vec_word_embeddings', 'llm_rating', 'cv']
+Warning: Missing keys in results/20_newsgroups/lda_K100/averaged_results.json. Found: ['topic_diversity', 'inverted_rbo', 'npmi', 'openai_word_embeddings', 'word2vec_word_embeddings', 'llm_rating', 'cv']
+Warning: Missing keys in results/20_newsgroups/zeroshot_K100/averaged_results.json. Found: ['topic_diversity', 'inverted_rbo', 'npmi', 'openai_word_embeddings', 'word2vec_word_embeddings', 'llm_rating', 'cv']
+Warning: Missing keys in results/20_newsgroups/prodlda_K50/averaged_results.json. Found: ['topic_diversity', 'inverted_rbo', 'npmi', 'openai_word_embeddings', 'word2vec_word_embeddings', 'llm_rating', 'cv']
+Warning: Missing keys in results/20_newsgroups/etm_K100/averaged_results.json. Found: ['topic_diversity', 'inverted_rbo', 'npmi', 'openai_word_embeddings', 'word2vec_word_embeddings', 'llm_rating', 'cv']
+Warning: Missing keys in results/20_newsgroups/prodlda_K100/averaged_results.json. Found: ['topic_diversity', 'inverted_rbo', 'npmi', 'openai_word_embeddings', 'word2vec_word_embeddings', 'llm_rating', 'cv']
+Warning: Missing keys in results/20_newsgroups/prodlda_K25/averaged_results.json. Found: ['topic_diversity', 'inverted_rbo', 'npmi', 'openai_word_embeddings', 'word2vec_word_embeddings', 'llm_rating', 'cv']
+Warning: Missing keys in results/20_newsgroups/prodlda_K75/averaged_results.json. Found: ['topic_diversity', 'inverted_rbo', 'npmi', 'openai_word_embeddings', 'word2vec_word_embeddings', 'llm_rating', 'cv']
+Method	K25								K50								K75								K100							
+	npmi	word2vec_word_embeddings	llm_rating	topic_diversity	inverted_rbo	harmonic_purity	ari	mis	npmi	word2vec_word_embeddings	llm_rating	topic_diversity	inverted_rbo	harmonic_purity	ari	mis	npmi	word2vec_word_embeddings	llm_rating	topic_diversity	inverted_rbo	harmonic_purity	ari	mis	npmi	word2vec_word_embeddings	llm_rating	topic_diversity	inverted_rbo	harmonic_purity	ari	mis
+Llama-3.2-1B-Instruct-CE	0.0228	0.2113	2.8960	0.8332	0.9945	0.5183	0.3357	0.4947	0.0025	0.1969	2.9040	0.6218	0.9897	0.4053	0.2371	0.4702	-0.0057	0.1924	2.8933	0.4920	0.9880	0.3391	0.1825	0.4543	-0.0151	0.1858	2.8720	0.4185	0.9872	0.2927	0.1491	0.4467
+Llama-3.2-1B-Instruct-KL	0.0233	0.2116	2.8880	0.8332	0.9945	0.5183	0.3356	0.4949	0.0029	0.1970	2.8920	0.6194	0.9896	0.4039	0.2355	0.4705	-0.0061	0.1917	2.8853	0.4920	0.9879	0.3418	0.1841	0.4555	-0.0167	0.1850	2.8900	0.4191	0.9873	0.2911	0.1490	0.4477
+Llama-3.2-3B-Instruct-CE	0.0043	0.1910	2.8800	0.8548	0.9951	N/A	N/A	N/A	-0.0120	0.1828	2.8680	0.6564	0.9904	N/A	N/A	N/A	-0.0206	0.1778	2.8480	0.5353	0.9893	N/A	N/A	N/A	-0.0272	0.1756	2.8320	0.4619	0.9887	N/A	N/A	N/A
+Llama-3.2-3B-Instruct-KL	0.0047	0.1912	2.8800	0.8552	0.9951	0.4907	0.3134	0.4712	-0.0119	0.1827	2.8760	0.6588	0.9906	0.4110	0.2425	0.4574	-0.0203	0.1773	2.8453	0.5376	0.9893	0.3362	0.1797	0.4465	-0.0278	0.1753	2.8340	0.4613	0.9887	0.2965	0.1502	0.4403
+combined	0.0423	0.1619	2.5360	0.8824	0.9901	0.3312	0.1460	0.2973	0.0365	0.1547	2.5560	0.7622	0.9908	0.2976	0.1253	0.3047	0.0186	0.1501	2.4640	0.6432	0.9908	0.2551	0.1008	0.2951	0.0132	0.1480	2.4900	0.5467	0.9896	N/A	N/A	N/A
+etm	-0.0060	0.2199	1.9920	0.0868	0.2481	0.1023	0.0000	0.0000	-0.0126	0.2124	1.9800	0.0858	0.3379	0.1023	0.0000	0.0000	-0.0278	0.2006	1.9227	0.1104	0.4743	0.1023	0.0000	0.0000	-0.0367	0.1900	1.8960	0.1236	0.5791	N/A	N/A	N/A
+lda	0.0202	0.1597	2.2160	0.6936	0.9487	0.3191	0.1416	0.2555	0.0045	0.1498	2.1880	0.6986	0.9754	0.2674	0.1049	0.2293	-0.0242	0.1416	2.1547	0.7044	0.9858	0.2462	0.0929	0.2209	-0.0336	0.1363	2.0980	0.6808	0.9889	N/A	N/A	N/A
+prodlda	0.0363	0.1612	2.5040	0.8732	0.9898	N/A	N/A	N/A	0.0118	0.1506	2.4440	0.7582	0.9913	N/A	N/A	N/A	0.0037	0.1454	2.4027	0.6435	0.9906	N/A	N/A	N/A	0.0010	0.1439	2.3900	0.5698	0.9906	N/A	N/A	N/A
+zeroshot	0.0453	0.1643	2.5440	0.8764	0.9908	0.3400	0.1553	0.3055	0.0310	0.1557	2.5440	0.7566	0.9914	0.2969	0.1291	0.3115	0.0202	0.1516	2.5200	0.6336	0.9908	0.2582	0.1038	0.3065	0.0195	0.1534	2.4860	0.5288	0.9896	N/A	N/A	N/A

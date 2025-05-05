@@ -38,8 +38,8 @@ def run(args):
     else:
         vocab_embeddings = None
     
-    if os.path.exists(os.path.join(args.data_path, 'labels.txt')):
-        with open(os.path.join(args.data_path, 'labels.txt'), 'r', encoding='utf-8') as f:
+    if os.path.exists(os.path.join(args.data_path, 'numeric_labels.txt')):
+        with open(os.path.join(args.data_path, 'numeric_labels.txt'), 'r', encoding='utf-8') as f:
             labels = [line.strip() for line in f if line.strip()]
     else:
         labels = None
@@ -74,7 +74,6 @@ def run(args):
                 use_partitions=False,
             )
             model.train_model(dataset=processed_dataset, top_words=args.top_words)
-            torch.save(model.model.model.state_dict(), os.path.join(seed_dir, 'checkpoint.pt'))
             model_output = model.model.get_info()
             torch.save(model_output, os.path.join(seed_dir, 'model_output.pt'))
 

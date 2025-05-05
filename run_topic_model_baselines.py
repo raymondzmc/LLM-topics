@@ -3,7 +3,6 @@ import csv
 import json
 import argparse
 from gensim.downloader import load as gensim_load
-from gensim.models import KeyedVectors
 from octis.dataset.dataset import Dataset
 from octis.models.LDA import LDA
 from octis.models.ProdLDA import ProdLDA
@@ -22,22 +21,20 @@ def run(args):
         args.results_path = f'results/{dataset_name}/{args.model}_K{args.num_topics}'
 
     os.makedirs(args.results_path, exist_ok=True)
-    
+
     with open(os.path.join(args.data_path, 'bow_dataset.txt'), 'r', encoding='utf-8') as f:
         bow_corpus = [line.strip().split() for line in f]
-        empty_documents = [i for i, doc in enumerate(bow_corpus) if len(doc) == 0]
-        bow_corpus = [doc for i, doc in enumerate(bow_corpus) if i not in empty_documents]
+        empty_indices = [i for i, doc in enumerate(bow_corpus) if len(doc) == 0 or doc == ['null']]
+        bow_corpus = [doc for i, doc in enumerate(bow_corpus) if i not in empty_indices]
 
     # Prepare the corpus and vocabulary for OCTIS dataset
     corpus_file = os.path.join(args.data_path, 'corpus.tsv')
     vocab_file = os.path.join(args.data_path, 'vocab.txt')
-    labels_file = os.path.join(args.data_path, 'labels.txt')
+    labels_file = os.path.join(args.data_path, 'numeric_labels.txt')
     if not os.path.exists(corpus_file):
         with open(corpus_file, 'w', encoding='utf-8', newline='') as tsvfile:
             writer = csv.writer(tsvfile, delimiter='\t')
             for doc in bow_corpus:
-                if len(doc) == 0:
-                    continue
                 # Each row: document, partition, label (empty)
                 writer.writerow([' '.join(doc), 'train', ''])
 
@@ -52,14 +49,17 @@ def run(args):
     if os.path.exists(labels_file):
         with open(labels_file, 'r', encoding='utf-8') as f:
             labels = [line.strip() for line in f if line.strip()]
-        labels = [labels[i] for i in range(len(labels)) if i not in empty_documents]
+        labels = [labels[i] for i in range(len(labels)) if i not in empty_indices]
     else:
         labels = None
 
-    dataset = None
-    if not args.eval_only:
-        dataset = Dataset()
+    dataset = Dataset()
+    dataset.load_custom_dataset_from_folder(args.data_path)
+    try:
         dataset.load_custom_dataset_from_folder(args.data_path)
+    except Exception as e:
+        print(f"Error loading dataset: {e}")
+        raise e
 
     # Compute OpenAI embeddings for evaluation
     vocab_embedding_path = os.path.join(args.data_path, 'vocab_embeddings.json')
@@ -78,10 +78,6 @@ def run(args):
         if os.path.exists(model_output_path):
             model_output = torch.load(model_output_path, weights_only=False)
         else:
-            assert not args.eval_only, \
-                (f"Model output does not exist in \"{seed_dir}\" when eval_only set is True,"
-                 " please re-run the script without --eval_only")
-
             if args.model == 'lda':
                 model = LDA(
                     num_topics=args.num_topics,
@@ -100,9 +96,7 @@ def run(args):
                     num_epochs=args.num_epochs,
                     use_partitions=False,
                 )
-                model.train_model(dataset=dataset, top_words=args.top_words)
-                model_output = {}
-                model_output['topics'] = model.model.get_topics(k=args.top_words)
+                model_output = model.train_model(dataset=dataset, top_words=args.top_words)
             if args.model in ['zeroshot', 'combined']:
                 model = CTM(
                     num_topics=args.num_topics,
@@ -114,7 +108,7 @@ def run(args):
                     solver=args.solver,
                     num_epochs=args.num_epochs,
                     inference_type=args.model,
-                    bert_path=os.path.join(seed_dir),
+                    bert_path=os.path.join(args.data_path, 'bert'),
                     bert_model='all-mpnet-base-v2',
                     use_partitions=False,
                 )
@@ -140,6 +134,7 @@ def run(args):
                     top_words=args.top_words,
                     op_path=os.path.join(seed_dir, 'checkpoint.pt'),
                 )
+            torch.save(model_output, os.path.join(seed_dir, 'model_output.pt'))
 
         topics = model_output['topics']
         if not os.path.exists(os.path.join(seed_dir, 'topics.json')):

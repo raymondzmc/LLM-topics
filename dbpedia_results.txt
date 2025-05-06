@@ -13,6 +13,7 @@ Warning: Missing keys in results/dbpedia_14/prodlda_K75/averaged_results.json. F
 Method	K25								K50								K75								K100							
 	npmi	word2vec_word_embeddings	llm_rating	topic_diversity	inverted_rbo	harmonic_purity	ari	mis	npmi	word2vec_word_embeddings	llm_rating	topic_diversity	inverted_rbo	harmonic_purity	ari	mis	npmi	word2vec_word_embeddings	llm_rating	topic_diversity	inverted_rbo	harmonic_purity	ari	mis	npmi	word2vec_word_embeddings	llm_rating	topic_diversity	inverted_rbo	harmonic_purity	ari	mis
 combined	0.1504	0.1504	2.6560	0.9632	0.9987	N/A	N/A	N/A	0.1464	0.1452	2.6040	0.8440	0.9966	N/A	N/A	N/A	0.1474	0.1495	2.6640	0.7173	0.9952	N/A	N/A	N/A	0.1476	0.1528	2.6920	0.6058	0.9941	N/A	N/A	N/A
+etm	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A	N/A
 lda	-0.0223	0.1092	2.0640	0.9772	0.9991	0.4629	0.2696	0.3676	-0.0422	0.0995	2.0080	0.9960	0.9999	0.4682	0.2995	0.3904	-0.0557	0.0964	1.9547	0.9309	0.9982	0.4613	0.2885	0.3964	-0.0440	0.1014	1.9820	0.7667	0.9852	0.4693	0.2949	0.4115
 prodlda	0.1451	0.1479	2.5760	0.9596	0.9984	N/A	N/A	N/A	0.1335	0.1421	2.5680	0.8418	0.9968	N/A	N/A	N/A	0.1410	0.1469	2.6347	0.7296	0.9958	N/A	N/A	N/A	0.1368	0.1483	2.6420	0.6112	0.9946	N/A	N/A	N/A
 zeroshot	0.1486	0.1530	2.6000	0.9512	0.9980	N/A	N/A	N/A	0.1446	0.1480	2.6680	0.8476	0.9966	N/A	N/A	N/A	0.1474	0.1526	2.6747	0.7149	0.9949	N/A	N/A	N/A	0.1472	0.1550	2.7000	0.6006	0.9934	N/A	N/A	N/A

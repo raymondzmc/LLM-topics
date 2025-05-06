@@ -76,20 +76,6 @@ def run(args):
             model.train_model(dataset=processed_dataset, top_words=args.top_words)
             model_output = model.model.get_info()
             torch.save(model_output, os.path.join(seed_dir, 'model_output.pt'))
-
-        # checkpoints = os.listdir(checkpoint_dir)
-        # if len(checkpoints) > 0:
-        #     if len(checkpoints) > 1:
-        #         print(f"Found {len(checkpoints)} checkpoints for seed {seed}. Using the latest one.")
-        #     checkpoint_path = os.path.join(checkpoint_dir, checkpoints[-1])
-        #     epoch_files = [os.path.join(checkpoint_path, f) for f in os.listdir(checkpoint_path) if f.endswith('.pth')]
-        #     epochs = [int(f.split('_')[-1].split('.')[0]) for f in epoch_files]
-        #     epochs.sort()
-        #     model.model.load(checkpoint_path, epochs[-1])
-        #     model_output = model.model.get_info()
-        # else:
-        #     model_output = model.train_model(dataset=processed_dataset, top_words=args.top_words) # Train the model
-        #     model.model.save(checkpoint_dir)
         topics = model_output['topics']
         if not os.path.exists(os.path.join(seed_dir, 'topics.json')):
             with open(os.path.join(seed_dir, 'topics.json'), 'w', encoding="utf-8") as f:

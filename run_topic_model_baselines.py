@@ -129,12 +129,13 @@ def run(args):
 
                 model = ETM(
                     num_topics=args.num_topics,
-                    num_epochs=args.num_epochs,
-                    activation=args.activation,
+                    # num_epochs=args.num_epochs,
+                    # activation=args.activation,
                     use_partitions=False,
                     train_embeddings=False,
                     embeddings_path=word2vec_path,
-                    embeddings_type='keyedvectors',
+                    embeddings_type='word2vec',
+                    binary_embeddings=True,
                 )
                 model_output = model.train_model(
                     dataset=dataset,

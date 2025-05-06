@@ -2,17 +2,29 @@ import os
 import csv
 import json
 import argparse
+import random
+import numpy as np
 from gensim.downloader import load as gensim_load
 from octis.dataset.dataset import Dataset
 from octis.models.LDA import LDA
 from octis.models.ProdLDA import ProdLDA
 from octis.models.CTM import CTM
 from octis.models.ETM import ETM
+from bertopic import BERTopic
 from utils.metrics import compute_aggregate_results
 from utils.metrics import evaluate_topic_model
 from utils.embeddings import get_openai_embedding
 import torch
 import pdb
+
+
+def set_seed(seed: int):
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    np.random.seed(seed)
+    random.seed(seed)
+    torch.backends.cudnn.enabled = False
+    torch.backends.cudnn.deterministic = True
 
 
 def run(args):
@@ -24,8 +36,8 @@ def run(args):
 
     with open(os.path.join(args.data_path, 'bow_dataset.txt'), 'r', encoding='utf-8') as f:
         bow_corpus = [line.strip().split() for line in f]
-        empty_indices = [i for i, doc in enumerate(bow_corpus) if len(doc) == 0 or doc == ['null']]
-        bow_corpus = [doc for i, doc in enumerate(bow_corpus) if i not in empty_indices]
+        ignore_indices = [i for i, doc in enumerate(bow_corpus) if len(doc) == 0 or doc == ['null']]
+        bow_corpus = [doc for i, doc in enumerate(bow_corpus) if i not in ignore_indices]
 
     # Prepare the corpus and vocabulary for OCTIS dataset
     corpus_file = os.path.join(args.data_path, 'corpus.tsv')
@@ -49,17 +61,12 @@ def run(args):
     if os.path.exists(labels_file):
         with open(labels_file, 'r', encoding='utf-8') as f:
             labels = [line.strip() for line in f if line.strip()]
-        labels = [labels[i] for i in range(len(labels)) if i not in empty_indices]
+        labels = [label for i, label in enumerate(labels) if i not in ignore_indices]
     else:
         labels = None
 
     dataset = Dataset()
     dataset.load_custom_dataset_from_folder(args.data_path)
-    try:
-        dataset.load_custom_dataset_from_folder(args.data_path)
-    except Exception as e:
-        print(f"Error loading dataset: {e}")
-        raise e
 
     # Compute OpenAI embeddings for evaluation
     vocab_embedding_path = os.path.join(args.data_path, 'vocab_embeddings.json')
@@ -71,11 +78,11 @@ def run(args):
             json.dump(vocab_embeddings, f)
     
     for seed in range(args.num_seeds):
+        set_seed(seed)
         seed_dir = os.path.join(args.results_path, f"seed_{seed}")
         os.makedirs(seed_dir, exist_ok=True)
-        
         model_output_path = os.path.join(seed_dir, 'model_output.pt')
-        if os.path.exists(model_output_path):
+        if os.path.exists(model_output_path) and torch.load(model_output_path, weights_only=False).get('topic-document-matrix') is not None:
             model_output = torch.load(model_output_path, weights_only=False)
         else:
             if args.model == 'lda':
@@ -97,7 +104,7 @@ def run(args):
                     use_partitions=False,
                 )
                 model_output = model.train_model(dataset=dataset, top_words=args.top_words)
-            if args.model in ['zeroshot', 'combined']:
+            elif args.model in ['zeroshot', 'combined']:
                 model = CTM(
                     num_topics=args.num_topics,
                     num_layers=args.num_hidden_layers,
@@ -124,8 +131,8 @@ def run(args):
                     num_topics=args.num_topics,
                     num_epochs=args.num_epochs,
                     activation=args.activation,
-                    train_embeddings=True,
                     use_partitions=False,
+                    train_embeddings=False,
                     embeddings_path=word2vec_path,
                     embeddings_type='keyedvectors',
                 )
@@ -134,12 +141,39 @@ def run(args):
                     top_words=args.top_words,
                     op_path=os.path.join(seed_dir, 'checkpoint.pt'),
                 )
+            elif args.model == 'bertopic':
+                model = BERTopic(
+                    language='english',
+                    top_n_words=args.top_words,
+                    nr_topics=args.num_topics+1,
+                    calculate_probabilities=True,
+                    verbose=True,
+                )
+                text_corpus = [' '.join(word_list) for word_list in bow_corpus]
+                output = model.fit_transform(text_corpus)
+                all_topics = model.get_topics()
+                topics = [[word_prob[0] for word_prob in topic] for topic_id, topic in all_topics.items() if topic_id != -1]  
+                model_output = {
+                    'topics': topics,
+                    'topic-document-matrix': output[1].transpose(),
+                }
+            else:
+                raise ValueError(f"Model {args.model} not supported")
             torch.save(model_output, os.path.join(seed_dir, 'model_output.pt'))
 
-        topics = model_output['topics']
         if not os.path.exists(os.path.join(seed_dir, 'topics.json')):
             with open(os.path.join(seed_dir, 'topics.json'), 'w', encoding="utf-8") as f:
-                json.dump(topics, f)
+                json.dump(model_output['topics'], f)
+
+        # TODO: Can be deleted after
+        if len(model_output['topics'][0]) != args.top_words:
+            print(f"Number of top words in model output: {len(model_output['topics'][0])}")
+            print(f"Number of top topic words expected: {args.top_words}")
+            topics = json.load(open(os.path.join(seed_dir, 'topics.json'), encoding='utf-8'))
+            if len(topics[0]) == args.top_words:
+                print("Saved topics have the correct number of top words")
+                model_output['topics'] = topics
+                torch.save(model_output, os.path.join(seed_dir, 'model_output.pt'))
 
         if not os.path.exists(os.path.join(seed_dir, 'evaluation_results.json')):
             evaluation_results = evaluate_topic_model(model_output, top_words=args.top_words, test_corpus=bow_corpus, embeddings=vocab_embeddings, labels=labels)
@@ -163,7 +197,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--data_path', type=str, default=None)
     parser.add_argument('--results_path', type=str, default=None)
-    parser.add_argument('--model', type=str, default='zeroshot', choices=['zeroshot', 'combined', 'prodlda', 'lda', 'etm'])
+    parser.add_argument('--model', type=str, default='zeroshot', choices=['zeroshot', 'combined', 'prodlda', 'lda', 'etm', 'bertopic'])
     parser.add_argument('--num_topics', type=int, default=25, help='Number of topics')
     parser.add_argument('--num_hidden_layers', type=int, default=2)
     parser.add_argument('--hidden_size', type=int, default=200)

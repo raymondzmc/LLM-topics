@@ -17,14 +17,14 @@ if [ "$RECOMPUTE_METRICS" = "True" ]; then
 fi
 
 for NUM_TOPICS in ${ALL_TOPICS[@]}; do
-    python run_topic_model_baselines.py \
-        --model lda \
-        --data_path data/dbpedia_14_Llama-3.2-3B-Instruct_vocab_2000_last \
-        --results_path results/dbpedia_14/lda_K${NUM_TOPICS} \
-        --num_topics ${NUM_TOPICS} \
-        --num_seeds 5 \
-        $eval_flag \
-        $recompute_flag
+    # python run_topic_model_baselines.py \
+    #     --model lda \
+    #     --data_path data/dbpedia_14_Llama-3.2-3B-Instruct_vocab_2000_last \
+    #     --results_path results/dbpedia_14/lda_K${NUM_TOPICS} \
+    #     --num_topics ${NUM_TOPICS} \
+    #     --num_seeds 5 \
+    #     $eval_flag \
+    #     $recompute_flag
 
     python run_topic_model_baselines.py \
         --model prodlda \
@@ -65,6 +65,15 @@ for NUM_TOPICS in ${ALL_TOPICS[@]}; do
     #     --num_seeds 5 \
     #     $eval_flag \
     #     $recompute_flag
+
+    python run_topic_model_baselines.py \
+        --model bertopic \
+        --data_path data/dbpedia_14_Llama-3.2-3B-Instruct_vocab_2000_last \
+        --results_path results/dbpedia_14/bertopic_K${NUM_TOPICS} \
+        --num_topics ${NUM_TOPICS} \
+        --num_seeds 5 \
+        $eval_flag \
+        $recompute_flag
 
     python run_topic_model_ours.py \
         --data_path data/dbpedia_14_Llama-3.2-3B-Instruct_vocab_2000_last \

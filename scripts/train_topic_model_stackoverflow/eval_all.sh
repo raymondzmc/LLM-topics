@@ -4,7 +4,7 @@ export CUDA_VISIBLE_DEVICES=7
 # Set this flag to True to only evaluate the model and not train it
 EVAL_ONLY=True
 RECOMPUTE_METRICS=True
-ALL_TOPICS=(100)
+ALL_TOPICS=(25 50 75 100)
 
 eval_flag=""
 if [ "$EVAL_ONLY" = "True" ]; then

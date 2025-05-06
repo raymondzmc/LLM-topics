@@ -194,7 +194,7 @@ def evaluate_topic_model(model_output, top_words=10, test_corpus=None, embedding
     irbo_score = irbo.score(model_output)
     print("Inverted RBO:", irbo_score)
     evaluation_results['inverted_rbo'] = float(irbo_score)
-    
+
     if labels is not None and model_output.get('topic-document-matrix') is not None:
         purity_score, inverse_purity, harmonic_purity = compute_purity_score(model_output['topic-document-matrix'], labels)
         print("Purity:", purity_score)
@@ -222,11 +222,11 @@ def evaluate_topic_model(model_output, top_words=10, test_corpus=None, embedding
         print("CV:", cv_score)
         evaluation_results['cv'] = float(cv_score)
 
-    if embeddings is not None:
-        openai_we = PairwiseEmbeddings(embeddings, topk=top_words)
-        openai_we_score = openai_we.score(model_output)
-        print("(OpenAI) Word Embeddings:", openai_we_score)
-        evaluation_results['openai_word_embeddings'] = float(openai_we_score)
+    # if embeddings is not None:
+    #     openai_we = PairwiseEmbeddings(embeddings, topk=top_words)
+    #     openai_we_score = openai_we.score(model_output)
+    #     print("(OpenAI) Word Embeddings:", openai_we_score)
+    #     evaluation_results['openai_word_embeddings'] = float(openai_we_score)
 
     word2vec_we = Word2VecEmbeddingCoherence(top_k=top_words)
     word2vec_we_score = word2vec_we.score(model_output)

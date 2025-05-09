@@ -129,8 +129,6 @@ def run(args):
 
                 model = ETM(
                     num_topics=args.num_topics,
-                    # num_epochs=args.num_epochs,
-                    # activation=args.activation,
                     use_partitions=False,
                     train_embeddings=False,
                     embeddings_path=word2vec_path,

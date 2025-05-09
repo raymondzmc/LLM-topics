@@ -1,6 +1,6 @@
-export CUDA_VISIBLE_DEVICES=2
+export CUDA_VISIBLE_DEVICES=7
 
-for NUM_TOPICS in 25 50 75 100; do
+for NUM_TOPICS in 25 50; do
     python run_topic_model_baselines.py \
         --model etm \
         --data_path data/dbpedia_14_Llama-3.2-3B-Instruct_vocab_2000_last \

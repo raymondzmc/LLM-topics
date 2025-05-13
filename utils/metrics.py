@@ -158,7 +158,7 @@ class Word2VecEmbeddingCoherence(AbstractMetric):
         super().__init__()
         self.binary = binary
         self.top_k = top_k
-        if word2vec_path is None:
+        if word2vec_path is None or not os.path.exists(word2vec_path):
             self.wv = gensim_load('word2vec-google-news-300')
             self.wv.save_word2vec_format(word2vec_path, binary=binary)
         else:

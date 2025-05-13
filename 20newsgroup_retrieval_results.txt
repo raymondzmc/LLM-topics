@@ -1,0 +1,848 @@
+
+Processing seed directory: seed_4
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5467
+Average Precision@5: 0.5353
+Average Precision@10: 0.5300
+
+Processing seed directory: seed_3
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5410
+Average Precision@5: 0.5311
+Average Precision@10: 0.5258
+
+Processing seed directory: seed_2
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5435
+Average Precision@5: 0.5361
+Average Precision@10: 0.5300
+
+Processing seed directory: seed_0
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5255
+Average Precision@5: 0.5245
+Average Precision@10: 0.5184
+
+Processing seed directory: seed_1
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5349
+Average Precision@5: 0.5256
+Average Precision@10: 0.5203
+
+==================================================
+AVERAGE RESULTS ACROSS 5 SEEDS for Llama-3.2-1B-Instruct-CE with 25 topics
+Data Path: results/20_newsgroups/Llama-3.2-1B-Instruct/25_CE
+==================================================
+Average Precision@1: 0.5383 ± 0.0075
+Average Precision@5: 0.5305 ± 0.0048
+Average Precision@10: 0.5249 ± 0.0048
+
+Processing seed directory: seed_4
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5725
+Average Precision@5: 0.5582
+Average Precision@10: 0.5493
+
+Processing seed directory: seed_3
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5840
+Average Precision@5: 0.5652
+Average Precision@10: 0.5551
+
+Processing seed directory: seed_2
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5738
+Average Precision@5: 0.5564
+Average Precision@10: 0.5482
+
+Processing seed directory: seed_0
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5773
+Average Precision@5: 0.5610
+Average Precision@10: 0.5535
+
+Processing seed directory: seed_1
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5773
+Average Precision@5: 0.5615
+Average Precision@10: 0.5550
+
+==================================================
+AVERAGE RESULTS ACROSS 5 SEEDS for Llama-3.2-1B-Instruct-CE with 50 topics
+Data Path: results/20_newsgroups/Llama-3.2-1B-Instruct/50_CE
+==================================================
+Average Precision@1: 0.5770 ± 0.0040
+Average Precision@5: 0.5605 ± 0.0030
+Average Precision@10: 0.5522 ± 0.0029
+
+Processing seed directory: seed_4
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5943
+Average Precision@5: 0.5758
+Average Precision@10: 0.5639
+
+Processing seed directory: seed_3
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5922
+Average Precision@5: 0.5769
+Average Precision@10: 0.5670
+
+Processing seed directory: seed_2
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5985
+Average Precision@5: 0.5804
+Average Precision@10: 0.5699
+
+Processing seed directory: seed_0
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.6020
+Average Precision@5: 0.5782
+Average Precision@10: 0.5673
+
+Processing seed directory: seed_1
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5865
+Average Precision@5: 0.5749
+Average Precision@10: 0.5643
+
+==================================================
+AVERAGE RESULTS ACROSS 5 SEEDS for Llama-3.2-1B-Instruct-CE with 75 topics
+Data Path: results/20_newsgroups/Llama-3.2-1B-Instruct/75_CE
+==================================================
+Average Precision@1: 0.5947 ± 0.0053
+Average Precision@5: 0.5772 ± 0.0019
+Average Precision@10: 0.5665 ± 0.0022
+
+Processing seed directory: seed_4
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.6090
+Average Precision@5: 0.5855
+Average Precision@10: 0.5750
+
+Processing seed directory: seed_3
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.6095
+Average Precision@5: 0.5878
+Average Precision@10: 0.5759
+
+Processing seed directory: seed_2
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.6063
+Average Precision@5: 0.5872
+Average Precision@10: 0.5763
+
+Processing seed directory: seed_0
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.6102
+Average Precision@5: 0.5903
+Average Precision@10: 0.5785
+
+Processing seed directory: seed_1
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.6051
+Average Precision@5: 0.5822
+Average Precision@10: 0.5718
+
+==================================================
+AVERAGE RESULTS ACROSS 5 SEEDS for Llama-3.2-1B-Instruct-CE with 100 topics
+Data Path: results/20_newsgroups/Llama-3.2-1B-Instruct/100_CE
+==================================================
+Average Precision@1: 0.6080 ± 0.0020
+Average Precision@5: 0.5866 ± 0.0027
+Average Precision@10: 0.5755 ± 0.0022
+
+Processing seed directory: seed_4
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5475
+Average Precision@5: 0.5370
+Average Precision@10: 0.5298
+
+Processing seed directory: seed_3
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5422
+Average Precision@5: 0.5327
+Average Precision@10: 0.5269
+
+Processing seed directory: seed_2
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5452
+Average Precision@5: 0.5363
+Average Precision@10: 0.5298
+
+Processing seed directory: seed_0
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5273
+Average Precision@5: 0.5253
+Average Precision@10: 0.5193
+
+Processing seed directory: seed_1
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5353
+Average Precision@5: 0.5275
+Average Precision@10: 0.5203
+
+==================================================
+AVERAGE RESULTS ACROSS 5 SEEDS for Llama-3.2-1B-Instruct-KL with 25 topics
+Data Path: results/20_newsgroups/Llama-3.2-1B-Instruct/25_KL
+==================================================
+Average Precision@1: 0.5395 ± 0.0074
+Average Precision@5: 0.5318 ± 0.0047
+Average Precision@10: 0.5252 ± 0.0046
+
+Processing seed directory: seed_4
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5712
+Average Precision@5: 0.5569
+Average Precision@10: 0.5494
+
+Processing seed directory: seed_3
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5828
+Average Precision@5: 0.5643
+Average Precision@10: 0.5543
+
+Processing seed directory: seed_2
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5698
+Average Precision@5: 0.5557
+Average Precision@10: 0.5471
+
+Processing seed directory: seed_0
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5792
+Average Precision@5: 0.5647
+Average Precision@10: 0.5546
+
+Processing seed directory: seed_1
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5746
+Average Precision@5: 0.5623
+Average Precision@10: 0.5546
+
+==================================================
+AVERAGE RESULTS ACROSS 5 SEEDS for Llama-3.2-1B-Instruct-KL with 50 topics
+Data Path: results/20_newsgroups/Llama-3.2-1B-Instruct/50_KL
+==================================================
+Average Precision@1: 0.5755 ± 0.0049
+Average Precision@5: 0.5608 ± 0.0038
+Average Precision@10: 0.5520 ± 0.0032
+
+Processing seed directory: seed_4
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5968
+Average Precision@5: 0.5746
+Average Precision@10: 0.5651
+
+Processing seed directory: seed_3
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5956
+Average Precision@5: 0.5783
+Average Precision@10: 0.5674
+
+Processing seed directory: seed_2
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.6021
+Average Precision@5: 0.5810
+Average Precision@10: 0.5713
+
+Processing seed directory: seed_0
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5977
+Average Precision@5: 0.5780
+Average Precision@10: 0.5669
+
+Processing seed directory: seed_1
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5924
+Average Precision@5: 0.5765
+Average Precision@10: 0.5655
+
+==================================================
+AVERAGE RESULTS ACROSS 5 SEEDS for Llama-3.2-1B-Instruct-KL with 75 topics
+Data Path: results/20_newsgroups/Llama-3.2-1B-Instruct/75_KL
+==================================================
+Average Precision@1: 0.5969 ± 0.0031
+Average Precision@5: 0.5777 ± 0.0021
+Average Precision@10: 0.5672 ± 0.0022
+
+Processing seed directory: seed_4
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.6026
+Average Precision@5: 0.5851
+Average Precision@10: 0.5741
+
+Processing seed directory: seed_3
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.6079
+Average Precision@5: 0.5869
+Average Precision@10: 0.5756
+
+Processing seed directory: seed_2
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.6136
+Average Precision@5: 0.5888
+Average Precision@10: 0.5773
+
+Processing seed directory: seed_0
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.6109
+Average Precision@5: 0.5868
+Average Precision@10: 0.5742
+
+Processing seed directory: seed_1
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.6047
+Average Precision@5: 0.5834
+Average Precision@10: 0.5722
+
+==================================================
+AVERAGE RESULTS ACROSS 5 SEEDS for Llama-3.2-1B-Instruct-KL with 100 topics
+Data Path: results/20_newsgroups/Llama-3.2-1B-Instruct/100_KL
+==================================================
+Average Precision@1: 0.6079 ± 0.0040
+Average Precision@5: 0.5862 ± 0.0018
+Average Precision@10: 0.5747 ± 0.0017
+
+Processing seed directory: seed_4
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5314
+Average Precision@5: 0.5176
+Average Precision@10: 0.5092
+
+Processing seed directory: seed_3
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5413
+Average Precision@5: 0.5321
+Average Precision@10: 0.5267
+
+Processing seed directory: seed_2
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5181
+Average Precision@5: 0.5069
+Average Precision@10: 0.4992
+
+Processing seed directory: seed_0
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5148
+Average Precision@5: 0.5045
+Average Precision@10: 0.4961
+
+Processing seed directory: seed_1
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5286
+Average Precision@5: 0.5157
+Average Precision@10: 0.5086
+
+==================================================
+AVERAGE RESULTS ACROSS 5 SEEDS for Llama-3.2-3B-Instruct-CE with 25 topics
+Data Path: results/20_newsgroups/Llama-3.2-3B-Instruct/25_CE
+==================================================
+Average Precision@1: 0.5268 ± 0.0095
+Average Precision@5: 0.5154 ± 0.0098
+Average Precision@10: 0.5080 ± 0.0107
+
+Processing seed directory: seed_4
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5845
+Average Precision@5: 0.5661
+Average Precision@10: 0.5534
+
+Processing seed directory: seed_3
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5872
+Average Precision@5: 0.5682
+Average Precision@10: 0.5566
+
+Processing seed directory: seed_2
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5906
+Average Precision@5: 0.5698
+Average Precision@10: 0.5580
+
+Processing seed directory: seed_0
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5902
+Average Precision@5: 0.5674
+Average Precision@10: 0.5563
+
+Processing seed directory: seed_1
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5849
+Average Precision@5: 0.5659
+Average Precision@10: 0.5538
+
+==================================================
+AVERAGE RESULTS ACROSS 5 SEEDS for Llama-3.2-3B-Instruct-CE with 50 topics
+Data Path: results/20_newsgroups/Llama-3.2-3B-Instruct/50_CE
+==================================================
+Average Precision@1: 0.5875 ± 0.0025
+Average Precision@5: 0.5675 ± 0.0014
+Average Precision@10: 0.5556 ± 0.0018
+
+Processing seed directory: seed_4
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.6113
+Average Precision@5: 0.5832
+Average Precision@10: 0.5699
+
+Processing seed directory: seed_3
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.6134
+Average Precision@5: 0.5894
+Average Precision@10: 0.5757
+
+Processing seed directory: seed_2
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.6157
+Average Precision@5: 0.5962
+Average Precision@10: 0.5825
+
+Processing seed directory: seed_0
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.6151
+Average Precision@5: 0.5892
+Average Precision@10: 0.5756
+
+Processing seed directory: seed_1
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.6136
+Average Precision@5: 0.5837
+Average Precision@10: 0.5697
+
+==================================================
+AVERAGE RESULTS ACROSS 5 SEEDS for Llama-3.2-3B-Instruct-CE with 75 topics
+Data Path: results/20_newsgroups/Llama-3.2-3B-Instruct/75_CE
+==================================================
+Average Precision@1: 0.6138 ± 0.0015
+Average Precision@5: 0.5883 ± 0.0047
+Average Precision@10: 0.5747 ± 0.0047
+
+Processing seed directory: seed_4
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.6230
+Average Precision@5: 0.5954
+Average Precision@10: 0.5810
+
+Processing seed directory: seed_3
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.6203
+Average Precision@5: 0.5932
+Average Precision@10: 0.5800
+
+Processing seed directory: seed_2
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.6182
+Average Precision@5: 0.5930
+Average Precision@10: 0.5813
+
+Processing seed directory: seed_0
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.6238
+Average Precision@5: 0.5988
+Average Precision@10: 0.5849
+
+Processing seed directory: seed_1
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.6219
+Average Precision@5: 0.5956
+Average Precision@10: 0.5815
+
+==================================================
+AVERAGE RESULTS ACROSS 5 SEEDS for Llama-3.2-3B-Instruct-CE with 100 topics
+Data Path: results/20_newsgroups/Llama-3.2-3B-Instruct/100_CE
+==================================================
+Average Precision@1: 0.6214 ± 0.0020
+Average Precision@5: 0.5952 ± 0.0021
+Average Precision@10: 0.5818 ± 0.0016
+
+Processing seed directory: seed_4
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5332
+Average Precision@5: 0.5174
+Average Precision@10: 0.5093
+
+Processing seed directory: seed_3
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5456
+Average Precision@5: 0.5336
+Average Precision@10: 0.5272
+
+Processing seed directory: seed_2
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5183
+Average Precision@5: 0.5075
+Average Precision@10: 0.4993
+
+Processing seed directory: seed_0
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5180
+Average Precision@5: 0.5039
+Average Precision@10: 0.4955
+
+Processing seed directory: seed_1
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5324
+Average Precision@5: 0.5158
+Average Precision@10: 0.5085
+
+==================================================
+AVERAGE RESULTS ACROSS 5 SEEDS for Llama-3.2-3B-Instruct-KL with 25 topics
+Data Path: results/20_newsgroups/Llama-3.2-3B-Instruct/25_KL
+==================================================
+Average Precision@1: 0.5295 ± 0.0104
+Average Precision@5: 0.5156 ± 0.0103
+Average Precision@10: 0.5080 ± 0.0110
+
+Processing seed directory: seed_4
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5856
+Average Precision@5: 0.5677
+Average Precision@10: 0.5553
+
+Processing seed directory: seed_3
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5878
+Average Precision@5: 0.5663
+Average Precision@10: 0.5560
+
+Processing seed directory: seed_2
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5907
+Average Precision@5: 0.5702
+Average Precision@10: 0.5587
+
+Processing seed directory: seed_0
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5920
+Average Precision@5: 0.5694
+Average Precision@10: 0.5576
+
+Processing seed directory: seed_1
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.5847
+Average Precision@5: 0.5631
+Average Precision@10: 0.5522
+
+==================================================
+AVERAGE RESULTS ACROSS 5 SEEDS for Llama-3.2-3B-Instruct-KL with 50 topics
+Data Path: results/20_newsgroups/Llama-3.2-3B-Instruct/50_KL
+==================================================
+Average Precision@1: 0.5882 ± 0.0028
+Average Precision@5: 0.5673 ± 0.0025
+Average Precision@10: 0.5560 ± 0.0022
+
+Processing seed directory: seed_4
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.6100
+Average Precision@5: 0.5828
+Average Precision@10: 0.5699
+
+Processing seed directory: seed_3
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.6121
+Average Precision@5: 0.5899
+Average Precision@10: 0.5764
+
+Processing seed directory: seed_2
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.6211
+Average Precision@5: 0.5956
+Average Precision@10: 0.5819
+
+Processing seed directory: seed_0
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.6151
+Average Precision@5: 0.5897
+Average Precision@10: 0.5752
+
+Processing seed directory: seed_1
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.6149
+Average Precision@5: 0.5855
+Average Precision@10: 0.5713
+
+==================================================
+AVERAGE RESULTS ACROSS 5 SEEDS for Llama-3.2-3B-Instruct-KL with 75 topics
+Data Path: results/20_newsgroups/Llama-3.2-3B-Instruct/75_KL
+==================================================
+Average Precision@1: 0.6147 ± 0.0037
+Average Precision@5: 0.5887 ± 0.0043
+Average Precision@10: 0.5749 ± 0.0042
+
+Processing seed directory: seed_4
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.6255
+Average Precision@5: 0.5973
+Average Precision@10: 0.5818
+
+Processing seed directory: seed_3
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.6204
+Average Precision@5: 0.5938
+Average Precision@10: 0.5799
+
+Processing seed directory: seed_2
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.6170
+Average Precision@5: 0.5911
+Average Precision@10: 0.5773
+
+Processing seed directory: seed_0
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.6217
+Average Precision@5: 0.5987
+Average Precision@10: 0.5854
+
+Processing seed directory: seed_1
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17993 documents...
+KL divergence computation complete.
+Average Precision@1: 0.6178
+Average Precision@5: 0.5962
+Average Precision@10: 0.5819
+
+==================================================
+AVERAGE RESULTS ACROSS 5 SEEDS for Llama-3.2-3B-Instruct-KL with 100 topics
+Data Path: results/20_newsgroups/Llama-3.2-3B-Instruct/100_KL
+==================================================
+Average Precision@1: 0.6205 ± 0.0030
+Average Precision@5: 0.5954 ± 0.0027
+Average Precision@10: 0.5813 ± 0.0027

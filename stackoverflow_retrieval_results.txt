@@ -1,0 +1,46 @@
+Computing retrieval results for stackoverflow dataset
+
+
+
+
+Processing seed directory: seed_4
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17107 documents...
+KL divergence computation complete.
+Average Precision@1: 0.0890
+Average Precision@5: 0.0799
+Average Precision@10: 0.0757
+
+Processing seed directory: seed_3
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17107 documents...
+KL divergence computation complete.
+Average Precision@1: 0.0880
+Average Precision@5: 0.0794
+Average Precision@10: 0.0746
+
+Processing seed directory: seed_2
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17107 documents...
+KL divergence computation complete.
+Average Precision@1: 0.0866
+Average Precision@5: 0.0801
+Average Precision@10: 0.0771
+
+Processing seed directory: seed_0
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17107 documents...
+KL divergence computation complete.
+Average Precision@1: 0.0947
+Average Precision@5: 0.0839
+Average Precision@10: 0.0802
+
+Processing seed directory: seed_1
+Using device: cuda
+Computing pairwise KL divergence using PyTorch...
+  Calculating KL divergence row-by-row for 17107 documents...
+KL divergence computation complete.

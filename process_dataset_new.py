@@ -253,7 +253,7 @@ def main(args):
     
     num_saved = 0
     for idx, example in enumerate(tqdm(dataset)):
-        context = jinja_template_manager.render('document_topic.jinja', document=example[args.content_key])
+        context = jinja_template_manager.render('document_topic.jinja', document="")
         context_input_ids = tokenizer.encode(context.rstrip(), return_tensors='pt').to(device)
         context_length = context_input_ids.shape[1]
 
@@ -264,7 +264,10 @@ def main(args):
         logits = outputs.logits
         next_token_logits = logits[:, -1, :]
         next_word = tokenizer.decode(torch.argmax(next_token_logits, dim=-1))
-
+        
+        # Get top 10 words with highest probabilities
+        vocab_logits = next_token_logits[0, vocab_token_prefix]
+        all_probs = {vocab[i]: vocab_logits[i].item() for i in range(len(vocab))}
         # Save the hidden states from the specified layer
         if args.hidden_state_layer is not None:
             if args.embedding_method == 'mean':

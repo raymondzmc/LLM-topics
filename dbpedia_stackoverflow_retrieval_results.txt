@@ -1,0 +1,9 @@
+Computing retrieval results for dbpedia_14 dataset
+
+
+
+
+Processing seed directory: seed_4
+Using device: cuda
+Preparing P_norm and logP_all on GPU for row-by-row KL divergence calculation...
+Precomputation complete.

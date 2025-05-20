@@ -25,16 +25,71 @@ def compute_pairwise_kl_divergence_torch(P, device):
     P_norm = P / P.sum(dim=1, keepdims=True)
     P_stable = P_norm + 1e-12
     logP_all = P_stable.log()
-    kl_matrix = torch.zeros((n_docs, n_docs), device=device)
+    kl_matrix = torch.zeros((n_docs, n_docs))
 
     print(f"  Calculating KL divergence row-by-row for {n_docs} documents...")
     for i in tqdm(range(n_docs), desc="  KL Div Row", unit="doc", leave=False, dynamic_ncols=True):
         log_diff = logP_all[i, :].unsqueeze(0) - logP_all
         product = P_norm[i, :].unsqueeze(0) * log_diff
-        kl_matrix[i, :] = product.sum(dim=-1)
+        kl_matrix[i, :] = product.sum(dim=-1).cpu()
     kl_matrix.fill_diagonal_(0)
-    
     return kl_matrix
+
+
+def compute_pairwise_cosine_similarity_torch(X, device):
+    """
+    Compute pairwise cosine similarity between rows of a matrix X using PyTorch.
+    cosine_similarity(X_i, X_j) = (X_i·X_j) / (||X_i|| * ||X_j||)
+    This version computes the matrix row-by-row to be more memory-efficient.
+    Args:
+        X (torch.Tensor): Input tensor of shape (n_docs, n_features) where rows are vectors.
+        device (torch.device): The device (CPU or CUDA) to perform calculations on.
+    Returns:
+        torch.Tensor: Pairwise cosine similarity matrix of shape (n_docs, n_docs).
+    """
+    X = X.to(device)
+    n_docs, n_features = X.shape
+    # Normalize rows to unit length
+    X_norm = torch.nn.functional.normalize(X, p=2, dim=1)
+    sim_matrix = torch.zeros((n_docs, n_docs), device=device)
+    
+    print(f"  Calculating cosine similarity row-by-row for {n_docs} documents...")
+    for i in tqdm(range(n_docs), desc="  Cosine Sim Row", unit="doc", leave=False, dynamic_ncols=True):
+        # Dot product of normalized vectors gives cosine similarity
+        sim_matrix[i, :] = torch.matmul(X_norm[i].unsqueeze(0), X_norm.t()).squeeze(0)
+    
+    # Set diagonal to 0 (document similarity to itself is not needed)
+    sim_matrix.fill_diagonal_(-1)
+    return sim_matrix
+
+
+def compute_pairwise_cosine_distance_torch(X, device):
+    """
+    Compute pairwise cosine distance between rows of a matrix X using PyTorch.
+    cosine_distance(X_i, X_j) = 1 - cosine_similarity(X_i, X_j)
+    This version computes the matrix row-by-row to be more memory-efficient.
+    Args:
+        X (torch.Tensor): Input tensor of shape (n_docs, n_features) where rows are vectors.
+        device (torch.device): The device (CPU or CUDA) to perform calculations on.
+    Returns:
+        torch.Tensor: Pairwise cosine distance matrix of shape (n_docs, n_docs).
+    """
+    X = X.to(device)
+    n_docs, n_features = X.shape
+    # Normalize rows to unit length
+    X_norm = torch.nn.functional.normalize(X, p=2, dim=1)
+    dist_matrix = torch.zeros((n_docs, n_docs), device=device)
+    
+    print(f"  Calculating cosine distance row-by-row for {n_docs} documents...")
+    for i in tqdm(range(n_docs), desc="  Cosine Dist Row", unit="doc", leave=False, dynamic_ncols=True):
+        # Get similarity (dot product of normalized vectors)
+        sim = torch.matmul(X_norm[i].unsqueeze(0), X_norm.t()).squeeze(0)
+        # Convert to distance: 1 - similarity
+        dist_matrix[i, :] = 1 - sim
+    
+    # Set diagonal to 0 (distance to self is 0)
+    dist_matrix.fill_diagonal_(0)
+    return dist_matrix
 
 
 def compute_precision_at_k(retrieved_indices, query_labels, all_labels, k_values=[1, 5, 10]):
@@ -52,6 +107,22 @@ def compute_precision_at_k(retrieved_indices, query_labels, all_labels, k_values
         
     return results
 
+def apply_subsetting(labels, retrieval_representation, subset_size):
+    # Apply subsetting for a even number of documents per label
+    label_to_indices = defaultdict(list)
+    for i, label in enumerate(labels):
+        label_to_indices[label].append(i)
+        
+    min_count = min(len(indices) for indices in label_to_indices.values())
+    if subset_size < len(label_to_indices) * min_count:
+        docs_per_label = subset_size // len(label_to_indices)
+        min_count = min(min_count, docs_per_label)
+        
+    subset_indices = sum([indices[:min_count] for indices in label_to_indices.values()], [])
+    labels = labels[subset_indices]
+    retrieval_representation = retrieval_representation[subset_indices]
+    return labels, retrieval_representation
+
 
 def main(args):
     labels = np.loadtxt(args.label_file)
@@ -61,10 +132,12 @@ def main(args):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {device}")
     
+    ignore_indices = []
     with open(os.path.join(args.bow_corpus_path), 'r', encoding='utf-8') as f:
         bow_corpus = [line.strip().split() for line in f]
         ignore_indices = [i for i, doc in enumerate(bow_corpus) if len(doc) == 0 or doc == ['null']]
         labels = np.array([int(label) for i, label in enumerate(labels) if i not in ignore_indices])
+        bow_corpus = [doc for i, doc in enumerate(bow_corpus) if i not in ignore_indices]
 
     if args.method == 'topic_distribution':
         output = torch.load(args.data_file, weights_only=False)
@@ -74,29 +147,49 @@ def main(args):
         
         # Ensure topic_distribution_np aligns with filtered labels
         if topic_distribution_np.shape[0] != len(labels):
-            if topic_distribution_np.shape[0] > len(labels) and len(ignore_indices) > 0:
-                # Assuming topic_distribution_np was from an unfiltered corpus and ignore_indices applies to it.
-                n_original_docs = topic_distribution_np.shape[0]
-                valid_rows_mask = np.ones(n_original_docs, dtype=bool)
-                if max(ignore_indices) < n_original_docs: # Check if ignore_indices are valid for this array
-                    valid_rows_mask[ignore_indices] = False
+            # This initial check assumes topic_distribution_np might be larger due to not having ignore_indices applied yet.
+            original_td_shape_0 = topic_distribution_np.shape[0]
+            original_labels_len = len(labels) # This is already filtered by ignore_indices if subsetting is not applied yet
+
+            # Determine the expected number of documents after ignore_indices filtering (before subsetting)
+            # We need to know the original number of documents before ignore_indices were applied to labels.
+            # This is tricky because labels are already filtered. We assume topic_distribution_np is from the unfiltered corpus.
+            # Let's reload the original labels count to correctly apply ignore_indices to topic_distribution_np
+            original_labels_for_filtering = np.loadtxt(args.label_file)
+            temp_ignore_indices = [i for i, doc_text in enumerate(open(os.path.join(args.bow_corpus_path), 'r', encoding='utf-8')) if len(doc_text.strip().split()) == 0 or doc_text.strip().split() == ['null']]
+
+            if topic_distribution_np.shape[0] > (len(original_labels_for_filtering) - len(temp_ignore_indices)):
+                 # This implies topic_distribution_np is larger than the count of valid documents from bow_corpus
+                 # Apply ignore_indices to topic_distribution_np before subsetting
+                n_original_docs_from_td = topic_distribution_np.shape[0]
+                # Re-calculate ignore_indices based on the original corpus that topic_distribution_np corresponds to.
+                # We assume that the original bow_corpus (unfiltered) had n_original_docs_from_td documents.
+                # This part is complex because we don't have the original unfiltered bow_corpus easily accessible here to derive ignore_indices for topic_distribution_np.
+                # Let's assume ignore_indices are applicable if lengths match the unfiltered source of topic_distribution_np
+                # For simplicity, we will assume the pre-loaded ignore_indices can be used if max(ignore_indices) is valid
+                if max(temp_ignore_indices) < n_original_docs_from_td:
+                    valid_rows_mask = np.ones(n_original_docs_from_td, dtype=bool)
+                    valid_rows_mask[temp_ignore_indices] = False
                     topic_distribution_np = topic_distribution_np[valid_rows_mask, :]
                 else:
-                    raise ValueError(
-                        f"ignore_indices contains indices out of bounds for topic_distribution_np. "
-                        f"Max index: {max(ignore_indices)}, Original docs: {n_original_docs}"
+                     raise ValueError(\
+                        f"Max index in temp_ignore_indices ({max(temp_ignore_indices)}) is out of bounds for topic_distribution_np " \
+                        f"which has {n_original_docs_from_td} documents. Cannot apply ignore_indices directly."\
                     )
-            else:
-                # This case implies a mismatch that cannot be resolved by ignore_indices as applied.
-                raise ValueError(
-                    f"Shape mismatch between topic distributions ({topic_distribution_np.shape[0]}) "
-                    f"and labels ({len(labels)}) that cannot be rectified with ignore_indices. "
-                    f"(topic_dist_rows > labels_len: {topic_distribution_np.shape[0] > len(labels)}, "
-                    f"ignore_indices_len: {len(ignore_indices)})"
+
+            # Final check after all filtering and potential subsetting
+            if topic_distribution_np.shape[0] != len(labels):
+                raise ValueError(\
+                    f"Shape mismatch between topic distributions ({topic_distribution_np.shape[0]}) "\
+                    f"and labels ({len(labels)}) after ignore_indices and subsetting. "\
+                    f"Original TD shape: {original_td_shape_0}, original labels (after ignore): {original_labels_len}, subset_size: {args.subset_size}"\
                 )
+        
+        if args.subset_size > 0:
+            labels, topic_distribution_np = apply_subsetting(labels, topic_distribution_np, args.subset_size)
 
         assert topic_distribution_np.shape[0] == len(labels), \
-            f"topic-document-matrix shape {topic_distribution_np.shape[0]} does not match number of labels {len(labels)}"
+            f"topic-document-matrix shape {topic_distribution_np.shape[0]} does not match number of labels {len(labels)} after subsetting"
         
         print("Computing pairwise KL divergence using PyTorch...")
         # Convert to tensor and compute KL divergence
@@ -105,46 +198,41 @@ def main(args):
         similarity_matrix = kl_matrix_torch.cpu().numpy() # Move back to CPU and convert to NumPy
         print("KL divergence computation complete.")
 
-    elif args.method == 'probabilities':
-        # Placeholder: Load probabilities representation
-        print(f"Warning: Representation loading for method '{args.method}' is a placeholder.")
-        # retrieval_representation = ... # Load/compute data
-        # if retrieval_representation represents distributions, KL can be used:
-        # representation_tensor = torch.from_numpy(retrieval_representation).float()
-        # kl_matrix_torch = compute_pairwise_kl_divergence_torch(representation_tensor, device)
-        # similarity_matrix = kl_matrix_torch.cpu().numpy()
-        # Or use another similarity metric like cosine similarity:
-        # from sklearn.metrics.pairwise import cosine_similarity
-        # cos_sim = cosine_similarity(retrieval_representation)
-        # similarity_matrix = 1 - cos_sim # Convert to distance
-        # np.fill_diagonal(similarity_matrix, 0)
-        print(f"Warning: Similarity computation for method '{args.method}' is a placeholder. Assigning NaN matrix.")
-        # Need to determine the number of docs first if not loaded
-        # For now, assuming labels give the number of docs
-        n_docs_placeholder = len(labels)
-        similarity_matrix = np.full((n_docs_placeholder, n_docs_placeholder), np.nan)
+    elif args.method == 'next_word_probs':
+        probabilities_files = [f for f in os.listdir(args.probabilities_path) if f.endswith('.pt')]
+        probabilities_files.sort(key=lambda x: int(x.split('.')[0]))
+        probabilities = [torch.tensor(torch.load(os.path.join(args.probabilities_path, f), weights_only=False)) for f in probabilities_files]
+        probabilities = torch.vstack(probabilities)
+        probabilities = torch.softmax(probabilities, dim=-1)
+        valid_rows_mask = np.ones(len(probabilities), dtype=bool)
+        valid_rows_mask[ignore_indices] = False
+        probabilities = probabilities[valid_rows_mask]
+        if probabilities.shape[0] != len(labels):
+            raise ValueError(f"Shape mismatch between probabilities ({probabilities.shape[0]}) and labels ({len(labels)}).")
+        similarity_matrix = compute_pairwise_kl_divergence_torch(probabilities, device).cpu().numpy()
 
     elif args.method == 'hidden_states':
-        # Placeholder: Load hidden_states representation
-        print(f"Warning: Representation loading for method '{args.method}' is a placeholder.")
-        # retrieval_representation = ... # Load/compute data (potentially needs aggregation)
-        # Often cosine similarity or Euclidean distance is used for hidden states:
-        # from sklearn.metrics.pairwise import cosine_similarity, euclidean_distances
-        # cos_sim = cosine_similarity(retrieval_representation)
-        # similarity_matrix = 1 - cos_sim # Convert to distance
-        # Or:
-        # similarity_matrix = euclidean_distances(retrieval_representation)
-        # np.fill_diagonal(similarity_matrix, 0)
-        print(f"Warning: Similarity computation for method '{args.method}' is a placeholder. Assigning NaN matrix.")
-        n_docs_placeholder = len(labels)
-        similarity_matrix = np.full((n_docs_placeholder, n_docs_placeholder), np.nan)
-
+        hidden_states_files = [f for f in os.listdir(args.hidden_state_path) if f.endswith('.pt')]
+        hidden_states_files.sort(key=lambda x: int(x.split('.')[0]))
+        hidden_states = [torch.tensor(torch.load(os.path.join(args.hidden_state_path, f), weights_only=False)) for f in hidden_states_files]
+        hidden_states = torch.vstack(hidden_states)
+        valid_rows_mask = np.ones(len(hidden_states), dtype=bool)
+        valid_rows_mask[ignore_indices] = False
+        hidden_states = hidden_states[valid_rows_mask]
+        if hidden_states.shape[0] != len(labels):
+            raise ValueError(f"Shape mismatch between probabilities ({hidden_states.shape[0]}) and labels ({len(labels)}).")
+        similarity_matrix = compute_pairwise_cosine_distance_torch(hidden_states, device).cpu().numpy()
+    elif args.method == 'bow':
+        import pdb; pdb.set_trace()
+        bow_corpus_tensor = torch.from_numpy(np.array(bow_corpus)).float()
+        similarity_matrix = compute_pairwise_cosine_distance_torch(bow_corpus_tensor, device).cpu().numpy()
     else:
         raise NotImplementedError(f"Method {args.method} not implemented")
 
     # Check if similarity matrix was computed
     if similarity_matrix is None:
         raise ValueError(f"Similarity matrix was not computed. Check implementation for method {args.method}.")
+
     # Check if it contains NaNs (indicating a placeholder was hit without full implementation)
     if np.isnan(similarity_matrix).all():
          raise NotImplementedError(f"Similarity calculation for method {args.method} resulted in all NaNs. Please implement it fully.")
@@ -178,22 +266,31 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--bow_corpus_path", type=str, default="data/20_newsgroups_Llama-3.2-1B-Instruct_vocab_2000_last/bow_dataset.txt")
     parser.add_argument("--data_path", type=str, default="results/20_newsgroups/combined_K100/")
-    # parser.add_argument("--probabilities_path", type=str, default="results/20_newsgroups/combined_K100/")
-    parser.add_argument("--label_file", type=str, default="data/20_newsgroups_Llama-3.2-1B-Instruct_vocab_2000_last/numeric_labels.txt")
-    parser.add_argument("--method", type=str, default='topic_distribution', choices=['topic_distribution', 'next_word_probs', 'hidden_states'])
+    parser.add_argument("--probabilities_path", type=str, default="data/20_newsgroups_Llama-3.2-3B-Instruct_vocab_2000_last/processed_dataset/next_word_probs")
+    parser.add_argument("--hidden_state_path", type=str, default="data/20_newsgroups_Llama-3.2-3B-Instruct_vocab_2000_last/processed_dataset/input_embeddings/28")
+    parser.add_argument("--label_file", type=str, default="data/20_newsgroups_Llama-3.2-3B-Instruct_vocab_2000_last/numeric_labels.txt")
+    parser.add_argument("--method", type=str, default='topic_distribution', choices=['topic_distribution', 'next_word_probs', 'hidden_states', 'bow'])
+    parser.add_argument("--subset_size", type=int, default=-1, help="Number of documents to use for a subset. Default is -1 (use all documents).")
     args = parser.parse_args()
-
-    datasets = ['stackoverflow', 'dbpedia_14']
-    label_files = ['data/stackoverflow_Llama-3.2-1B-Instruct_vocab_2000_last/numeric_labels.txt',
+    datasets = ['20_newsgroups', 'stackoverflow', 'dbpedia_14']
+    label_files = ['data/20_newsgroups_Llama-3.2-1B-Instruct_vocab_2000_last/numeric_labels.txt',
+                   'data/stackoverflow_Llama-3.2-1B-Instruct_vocab_2000_last/numeric_labels.txt',
                    'data/dbpedia_14_Llama-3.2-1B-Instruct_vocab_2000_last/numeric_labels.txt']
-    bow_corpus_paths = ['data/stackoverflow_Llama-3.2-1B-Instruct_vocab_2000_last/bow_dataset.txt',
+    bow_corpus_paths = ['data/20_newsgroups_Llama-3.2-1B-Instruct_vocab_2000_last/bow_dataset.txt',
+                        'data/stackoverflow_Llama-3.2-1B-Instruct_vocab_2000_last/bow_dataset.txt',
                         'data/dbpedia_14_Llama-3.2-1B-Instruct_vocab_2000_last/bow_dataset.txt']
-    baselines = ['lda', 'prodlda', 'combined', 'zeroshot', 'etm', 'bertopic']
-    ours = ['Llama-3.2-1B-Instruct-CE', 'Llama-3.2-1B-Instruct-KL', 'Llama-3.2-3B-Instruct-CE', 'Llama-3.2-3B-Instruct-KL']
-    topic_models = baselines + ours
+    # baselines = ['lda', 'prodlda', 'combined', 'zeroshot', 'etm', 'bertopic']
+    baselines = ['bertopic']
+    # datasets = ['stackoverflow']
+    # label_files = ['data/stackoverflow_Llama-3.2-1B-Instruct_vocab_2000_last/numeric_labels.txt']
+    # bow_corpus_paths = ['data/stackoverflow_Llama-3.2-1B-Instruct_vocab_2000_last/bow_dataset.txt']
+    # ours = ['Llama-3.2-11B-Vision-Instruct-CE', 'Llama-3.2-11B-Vision-Instruct-KL']
+    topic_models = baselines
 
-    for dataset, label_file, bow_corpus_path in zip(datasets, label_files, bow_corpus_paths):
+    for dataset, label_file, bow_corpus_path in list(zip(datasets, label_files, bow_corpus_paths))[2:]:
         print(f"Computing retrieval results for {dataset} dataset\n\n\n")
+        if dataset == 'dbpedia_14':
+            args.subset_size = 70000
         args.bow_corpus_path = bow_corpus_path
         args.label_file = label_file
         for topic_model in topic_models:

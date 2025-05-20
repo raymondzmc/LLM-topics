@@ -253,7 +253,8 @@ def main(args):
     
     num_saved = 0
     for idx, example in enumerate(tqdm(dataset)):
-        context = jinja_template_manager.render('document_topic.jinja', document="")
+        instruction = jinja_template_manager.render(args.instruction_template)
+        context = jinja_template_manager.render(args.prompt_template, instruction=instruction, document=example[args.content_key])
         context_input_ids = tokenizer.encode(context.rstrip(), return_tensors='pt').to(device)
         context_length = context_input_ids.shape[1]
 
@@ -360,6 +361,8 @@ if __name__ == '__main__':
     parser.add_argument('--use_flash_attention_2', action='store_true')
     parser.add_argument('--target_method', type=str, choices=['generative', 'summary'])
     parser.add_argument('--single_token_only', action='store_true', help="Whether to only include single token words.")
+    parser.add_argument('--prompt_template', type=str, default="document_topic_distribution.jinja")
+    parser.add_argument('--instruction_template', type=str, default="instructions/default.jinja")
     parser.add_argument('--word_prob_method', type=str, default='prefix', choices=['prefix', 'product'])
     parser.add_argument('--hidden_state_layer', type=int, default=None, help="The hidden state layer to save (default: all)")
     parser.add_argument('--embedding_method', type=str, default='last', choices=['mean', 'last'], help="The method to compute the embedding of the context.")
@@ -374,15 +377,13 @@ if __name__ == '__main__':
     print(f'Processing dataset \"{args.dataset}\"')
 
     if args.dir_name is None:
-        data_dir_name = f"{os.path.basename(args.dataset)}_{os.path.basename(args.model_name)}_{args.vocab_size}"
+        data_dir_name = f"{os.path.basename(args.dataset).split('.')[0]}_{os.path.basename(args.model_name)}_vocab_{args.vocab_size}_{args.embedding_method}"
+        if args.subset is not None:
+            data_dir_name += f"_subset_{args.subset}"
     else:
         data_dir_name = args.dir_name
 
-    print(f'Processing dataset \"{args.dataset}\"')
-
-    data_dir_name = f"{os.path.basename(args.dataset).split('.')[0]}_{os.path.basename(args.model_name)}_vocab_{args.vocab_size}_{args.embedding_method}"
-    if args.subset is not None:
-        data_dir_name += f"_subset_{args.subset}"
+    print(f'Processing dataset \"{args.dataset}\" with data directory \"{data_dir_name}\"')
     args.data_path = os.path.join(args.data_path, data_dir_name)
     if not os.path.exists(args.data_path):
         os.makedirs(args.data_path, exist_ok=True)

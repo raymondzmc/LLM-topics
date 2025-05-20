@@ -1,0 +1,360 @@
+
+================================================================================
+TOPICS ORGANIZED BY CATEGORY
+================================================================================
+
+
+### CATEGORY: Album ###
+--------------------------------------------------
+Model: etm (Topic #3)
+Words: released, debut, album, second, release, recorded, studio, band, compilation, rock
+Scores: LLM=3.0000, Word2Vec=0.2297, NPMI=0.2754
+------------------------------
+Model: zeroshot (Topic #16)
+Words: reached, number, certified, country, single, hit, week, peaked, charts, debuted
+Scores: LLM=3.0000, Word2Vec=0.1355, NPMI=0.2713
+------------------------------
+Model: zeroshot (Topic #20)
+Words: live, heavy, hard, metal, progressive, recorded, tour, alternative, rock, concert
+Scores: LLM=3.0000, Word2Vec=0.1444, NPMI=0.2056
+------------------------------
+Model: ours (Topic #10)
+Words: lyrics, hip, band, music, label, album, bands, song, songs, albums
+Scores: LLM=3.0000, Word2Vec=0.4178, NPMI=0.2068
+------------------------------
+Model: ours (Topic #18)
+Words: jazz, recording, musicians, musical, instrumental, band, recordings, albums, blues, music
+Scores: LLM=3.0000, Word2Vec=0.4028, NPMI=0.2113
+------------------------------
+
+
+### CATEGORY: Animal ###
+--------------------------------------------------
+Model: etm (Topic #0)
+Words: species, habitat, tropical, forests, moist, habitats, genus, forest, freshwater, fish
+Scores: LLM=3.0000, Word2Vec=0.3822, NPMI=0.3275
+------------------------------
+Model: etm (Topic #9)
+Words: species, extinct, genera, habitat, endemic, aquatic, known, noted, features, years
+Scores: LLM=3.0000, Word2Vec=0.1831, NPMI=0.0373
+------------------------------
+Model: etm (Topic #14)
+Words: family, genus, small, families, genera, living, known, extinct, life, lived
+Scores: LLM=3.0000, Word2Vec=0.2063, NPMI=0.0922
+------------------------------
+Model: ours (Topic #6)
+Words: habitat, endangered, end, threatened, habitats, species, bird, birds, environmental, endemic
+Scores: LLM=3.0000, Word2Vec=0.2804, NPMI=0.1395
+------------------------------
+Model: ours (Topic #8)
+Words: marine, fish, sea, ocean, aquatic, scientific, study, status, species, life
+Scores: LLM=3.0000, Word2Vec=0.2335, NPMI=0.0376
+------------------------------
+Model: ours (Topic #9)
+Words: moth, butterfly, larvae, beetle, described, flies, said, distribution, families, wing
+Scores: LLM=2.0000, Word2Vec=0.1378, NPMI=0.0058
+------------------------------
+
+
+### CATEGORY: Artist ###
+--------------------------------------------------
+Model: ours (Topic #1)
+Words: singing, famous, singer, fame, performer, musician, artist, songwriter, musical, popular
+Scores: LLM=3.0000, Word2Vec=0.3326, NPMI=0.1893
+------------------------------
+Model: ours (Topic #13)
+Words: notable, birth, historian, life, painting, early, painter, famous, died, prominent
+Scores: LLM=3.0000, Word2Vec=0.1712, NPMI=0.0994
+------------------------------
+Model: zeroshot (Topic #2)
+Words: better, stage, best, worked, works, work, famous, age, classical, voice
+Scores: LLM=2.0000, Word2Vec=0.1495, NPMI=0.1013
+------------------------------
+
+
+### CATEGORY: Athlete ###
+--------------------------------------------------
+Model: zeroshot (Topic #15)
+Words: gold, finished, silver, event, men, won, competition, win, events, race
+Scores: LLM=3.0000, Word2Vec=0.2218, NPMI=0.2868
+------------------------------
+Model: ours (Topic #24)
+Words: football, player, soccer, athlete, sports, players, sport, rugby, hockey, cricket
+Scores: LLM=3.0000, Word2Vec=0.4473, NPMI=0.2022
+------------------------------
+Model: zeroshot (Topic #18)
+Words: free, club, overall, agent, round, plays, clubs, selected, currently, youth
+Scores: LLM=2.0000, Word2Vec=0.1393, NPMI=0.1512
+------------------------------
+
+
+### CATEGORY: Building ###
+--------------------------------------------------
+Model: zeroshot (Topic #1)
+Words: home, style, listed, added, structure, house, wood, architecture, historic, century
+Scores: LLM=3.0000, Word2Vec=0.1379, NPMI=0.2351
+------------------------------
+Model: ours (Topic #20)
+Words: church, churches, architecture, religious, history, historical, architectural, buildings, architect, old
+Scores: LLM=3.0000, Word2Vec=0.2231, NPMI=0.1372
+------------------------------
+Model: ours (Topic #23)
+Words: architectural, architect, historic, buildings, architecture, downtown, building, property, old, construction
+Scores: LLM=3.0000, Word2Vec=0.3023, NPMI=0.1732
+------------------------------
+Model: etm (Topic #12)
+Words: kilometres, small, large, operated, size, smaller, theatre, purchased, metre, range
+Scores: LLM=2.0000, Word2Vec=0.2665, NPMI=-0.0203
+------------------------------
+
+
+### CATEGORY: Company ###
+--------------------------------------------------
+Model: ours (Topic #4)
+Words: company, companies, business, industry, corporate, businesses, market, financial, brand, corporation
+Scores: LLM=3.0000, Word2Vec=0.3816, NPMI=0.1952
+------------------------------
+Model: etm (Topic #5)
+Words: published, academic, founded, years, based, life, second, year, publishing, group
+Scores: LLM=2.0000, Word2Vec=0.1429, NPMI=0.0330
+------------------------------
+Model: zeroshot (Topic #9)
+Words: independent, developer, game, video, media, entertainment, record, started, created, brand
+Scores: LLM=2.0000, Word2Vec=0.1179, NPMI=0.1153
+------------------------------
+Model: zeroshot (Topic #24)
+Words: domestic, countries, network, scheduled, financial, base, provides, oil, services, subsidiary
+Scores: LLM=2.0000, Word2Vec=0.1301, NPMI=0.1691
+------------------------------
+
+
+### CATEGORY: Educational Institution ###
+--------------------------------------------------
+Model: ours (Topic #22)
+Words: school, schools, educational, education, curriculum, colleges, teaching, students, student, campus
+Scores: LLM=3.0000, Word2Vec=0.4808, NPMI=0.2424
+------------------------------
+Model: zeroshot (Topic #5)
+Words: high, serves, principal, middle, secondary, public, rated, colors, grade, opened
+Scores: LLM=2.0000, Word2Vec=0.1227, NPMI=0.1785
+------------------------------
+Model: zeroshot (Topic #21)
+Words: higher, affiliated, arts, private, programs, program, courses, learning, offers, technical
+Scores: LLM=2.0000, Word2Vec=0.1671, NPMI=0.2330
+------------------------------
+Model: ours (Topic #5)
+Words: currently, covering, articles, university, publications, today, focuses, said, article, publishes
+Scores: LLM=2.0000, Word2Vec=0.1441, NPMI=0.0054
+------------------------------
+
+
+### CATEGORY: Film ###
+--------------------------------------------------
+Model: etm (Topic #1)
+Words: novel, film, starring, adaptation, directed, thriller, screenplay, drama, writer, comedy
+Scores: LLM=3.0000, Word2Vec=0.3967, NPMI=0.3061
+------------------------------
+Model: zeroshot (Topic #19)
+Words: television, adapted, life, movie, play, animated, stars, role, films, adaptation
+Scores: LLM=3.0000, Word2Vec=0.2166, NPMI=0.1822
+------------------------------
+Model: ours (Topic #19)
+Words: film, cinema, films, movie, silent, filmmaker, movies, director, directed, actors
+Scores: LLM=3.0000, Word2Vec=0.3875, NPMI=0.2537
+------------------------------
+Model: zeroshot (Topic #22)
+Words: entered, composed, documentary, supporting, comedy, stars, drama, shot, lost, language
+Scores: LLM=2.0000, Word2Vec=0.1035, NPMI=0.1036
+------------------------------
+
+
+### CATEGORY: Mean Of Transportation ###
+--------------------------------------------------
+Model: ours (Topic #14)
+Words: ship, ships, naval, submarines, destroyer, sailing, submarine, boats, vessel, vessels
+Scores: LLM=3.0000, Word2Vec=0.5378, NPMI=0.2977
+------------------------------
+Model: ours (Topic #17)
+Words: cars, aircraft, model, car, vehicles, automobile, air, engine, engines, vehicle
+Scores: LLM=3.0000, Word2Vec=0.3766, NPMI=0.2419
+------------------------------
+Model: etm (Topic #24)
+Words: class, designed, peer, built, service, sponsored, commissioned, tree, laid, launched
+Scores: LLM=2.0000, Word2Vec=0.1393, NPMI=0.1075
+------------------------------
+Model: zeroshot (Topic #7)
+Words: twin, light, developed, model, introduced, multiple, unit, design, mid, type
+Scores: LLM=2.0000, Word2Vec=0.1398, NPMI=0.1397
+------------------------------
+Model: zeroshot (Topic #23)
+Words: transferred, sister, saw, rate, honor, broken, class, launched, ship, crew
+Scores: LLM=2.0000, Word2Vec=0.0817, NPMI=0.2261
+------------------------------
+
+
+### CATEGORY: Natural Place ###
+--------------------------------------------------
+Model: etm (Topic #16)
+Words: regional, approximately, central, western, capital, south, district, region, north, east
+Scores: LLM=3.0000, Word2Vec=0.3453, NPMI=0.3835
+------------------------------
+Model: zeroshot (Topic #4)
+Words: natural, loss, dry, bird, heavily, land, tropical, forests, threatened, forest
+Scores: LLM=3.0000, Word2Vec=0.1685, NPMI=0.3395
+------------------------------
+Model: ours (Topic #3)
+Words: river, rivers, water, environmental, waters, watershed, drainage, streams, stream, flow
+Scores: LLM=3.0000, Word2Vec=0.3520, NPMI=0.1866
+------------------------------
+Model: ours (Topic #12)
+Words: mountain, mountains, glacier, peaks, landscape, elevation, natural, volcanic, summit, volcano
+Scores: LLM=3.0000, Word2Vec=0.2983, NPMI=0.1908
+------------------------------
+Model: zeroshot (Topic #3)
+Words: point, highest, surface, edge, southwest, northeast, northwest, level, forms, island
+Scores: LLM=2.0000, Word2Vec=0.1747, NPMI=0.1706
+------------------------------
+Model: zeroshot (Topic #10)
+Words: regional, source, approximately, central, capital, region, mile, generally, runs, water
+Scores: LLM=2.0000, Word2Vec=0.1248, NPMI=0.0998
+------------------------------
+Model: zeroshot (Topic #12)
+Words: described, host, containing, belonging, ground, order, colour, belongs, following, probably
+Scores: LLM=1.0000, Word2Vec=0.0924, NPMI=0.0556
+------------------------------
+
+
+### CATEGORY: Office Holder ###
+--------------------------------------------------
+Model: ours (Topic #11)
+Words: political, elections, politics, election, politician, elected, nomination, candidate, senator, leader
+Scores: LLM=3.0000, Word2Vec=0.3688, NPMI=0.3041
+------------------------------
+Model: zeroshot (Topic #0)
+Words: terms, term, represents, party, leader, general, president, politician, position, represent
+Scores: LLM=2.0000, Word2Vec=0.1752, NPMI=0.1904
+------------------------------
+
+
+### CATEGORY: Plant ###
+--------------------------------------------------
+Model: ours (Topic #2)
+Words: end, native, plant, plants, flowering, trees, endemic, tree, flowers, names
+Scores: LLM=3.0000, Word2Vec=0.2146, NPMI=0.2010
+------------------------------
+Model: ours (Topic #7)
+Words: flower, flowers, herb, flowering, cultivated, plant, plants, var, perennial, leaves
+Scores: LLM=3.0000, Word2Vec=0.2921, NPMI=0.2803
+------------------------------
+Model: etm (Topic #15)
+Words: long, known, short, black, commonly, white, leaves, high, green, best
+Scores: LLM=2.0000, Word2Vec=0.1604, NPMI=0.0885
+------------------------------
+Model: zeroshot (Topic #17)
+Words: common, native, commonly, names, growing, green, annual, red, long, usually
+Scores: LLM=2.0000, Word2Vec=0.1311, NPMI=0.1955
+------------------------------
+
+
+### CATEGORY: Village ###
+--------------------------------------------------
+Model: etm (Topic #4)
+Words: families, population, census, village, children, people, villages, communities, residents, living
+Scores: LLM=3.0000, Word2Vec=0.3488, NPMI=0.1813
+------------------------------
+Model: etm (Topic #6)
+Words: born, married, lived, birth, native, mother, suburb, named, sister, childhood
+Scores: LLM=3.0000, Word2Vec=0.2858, NPMI=0.0254
+------------------------------
+Model: etm (Topic #7)
+Words: village, century, area, church, building, house, land, centuries, home, wood
+Scores: LLM=3.0000, Word2Vec=0.2163, NPMI=0.0899
+------------------------------
+Model: etm (Topic #8)
+Words: village, district, municipality, city, town, located, county, province, area, north
+Scores: LLM=3.0000, Word2Vec=0.3830, NPMI=0.1538
+------------------------------
+Model: ours (Topic #0)
+Words: town, place, rural, places, villages, settlement, towns, village, travel, location
+Scores: LLM=3.0000, Word2Vec=0.2570, NPMI=0.0795
+------------------------------
+Model: ours (Topic #16)
+Words: village, population, rural, villages, census, settlement, people, town, region, land
+Scores: LLM=3.0000, Word2Vec=0.2785, NPMI=0.1548
+------------------------------
+Model: zeroshot (Topic #6)
+Words: regional, people, living, capital, central, approximately, individual, administrative, western, eastern
+Scores: LLM=2.0000, Word2Vec=0.1907, NPMI=0.1718
+------------------------------
+Model: zeroshot (Topic #14)
+Words: noted, reported, existence, families, people, living, individual, census, predominantly, giving
+Scores: LLM=2.0000, Word2Vec=0.1209, NPMI=0.0649
+------------------------------
+
+
+### CATEGORY: Written Work ###
+--------------------------------------------------
+Model: etm (Topic #2)
+Words: series, book, fiction, comic, published, story, author, written, books, fictional
+Scores: LLM=3.0000, Word2Vec=0.3063, NPMI=0.2599
+------------------------------
+Model: etm (Topic #10)
+Words: book, published, author, novel, books, series, written, publisher, story, article
+Scores: LLM=3.0000, Word2Vec=0.3159, NPMI=0.2107
+------------------------------
+Model: etm (Topic #13)
+Words: published, journal, collection, stories, magazine, story, edition, original, set, appeared
+Scores: LLM=3.0000, Word2Vec=0.1953, NPMI=0.1373
+------------------------------
+Model: etm (Topic #17)
+Words: written, science, fantasy, serialized, literary, series, fiction, fictional, book, title
+Scores: LLM=3.0000, Word2Vec=0.2437, NPMI=0.2046
+------------------------------
+Model: etm (Topic #20)
+Words: newspaper, weekly, daily, magazine, newspapers, circulation, editor, columns, news, published
+Scores: LLM=3.0000, Word2Vec=0.3283, NPMI=0.3024
+------------------------------
+Model: etm (Topic #22)
+Words: novel, novels, author, produced, director, film, writer, known, covers, novelist
+Scores: LLM=3.0000, Word2Vec=0.2411, NPMI=0.0890
+------------------------------
+Model: etm (Topic #23)
+Words: published, magazine, editor, publication, author, journal, based, written, edited, publisher
+Scores: LLM=3.0000, Word2Vec=0.3373, NPMI=0.1830
+------------------------------
+Model: ours (Topic #15)
+Words: literature, literary, authors, author, writing, book, books, novels, fiction, writers
+Scores: LLM=3.0000, Word2Vec=0.4489, NPMI=0.2616
+------------------------------
+Model: ours (Topic #21)
+Words: manga, themes, characters, plot, protagonist, character, drama, based, anime, fictional
+Scores: LLM=3.0000, Word2Vec=0.3008, NPMI=0.1622
+------------------------------
+Model: etm (Topic #11)
+Words: manga, story, children, title, language, young, tells, man, sequel, year
+Scores: LLM=2.0000, Word2Vec=0.1380, NPMI=0.0957
+------------------------------
+Model: etm (Topic #18)
+Words: written, produced, illustrated, form, television, short, known, history, included, war
+Scores: LLM=2.0000, Word2Vec=0.1342, NPMI=0.0147
+------------------------------
+Model: etm (Topic #19)
+Words: book, volume, scientific, historical, author, paperback, fiction, short, issue, books
+Scores: LLM=2.0000, Word2Vec=0.2271, NPMI=0.1812
+------------------------------
+Model: etm (Topic #21)
+Words: set, issues, work, imprint, social, literary, political, created, works, art
+Scores: LLM=2.0000, Word2Vec=0.1530, NPMI=0.1105
+------------------------------
+Model: zeroshot (Topic #8)
+Words: volume, adult, translated, set, young, short, character, follows, children, fictional
+Scores: LLM=2.0000, Word2Vec=0.1205, NPMI=0.1310
+------------------------------
+Model: zeroshot (Topic #13)
+Words: covering, chief, field, covers, official, aspects, scientific, issues, language, culture
+Scores: LLM=2.0000, Word2Vec=0.1277, NPMI=0.2035
+------------------------------
+Model: zeroshot (Topic #11)
+Words: giving, predominantly, fact, poor, completely, possible, hand, rich, cut, speaking
+Scores: LLM=1.0000, Word2Vec=0.1100, NPMI=-0.1184
+------------------------------

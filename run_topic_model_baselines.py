@@ -147,6 +147,7 @@ def run(args):
                     nr_topics=args.num_topics+1,
                     calculate_probabilities=True,
                     verbose=True,
+                    low_memory=False,
                 )
                 text_corpus = [' '.join(word_list) for word_list in bow_corpus]
                 output = model.fit_transform(text_corpus)

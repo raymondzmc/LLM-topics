@@ -1,0 +1,15 @@
+
+=== LLM score ===
+            sum_sq    df         F    PR(>F)
+C(prompt)  0.00102   3.0  3.487179  0.040486
+Residual   0.00156  16.0       NaN       NaN
+σ²_prompt = 4.850000e-05  (33.2 % of total)
+σ²_seed   = 9.750000e-05
+
+
+=== inverted RBO ===
+             sum_sq    df          F    PR(>F)
+C(prompt)  0.000010   3.0  25.451463  0.000002
+Residual   0.000002  16.0        NaN       NaN
+σ²_prompt = 6.578680e-07  (83.0 % of total)
+σ²_seed   = 1.345253e-07

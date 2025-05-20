@@ -1,0 +1,1455 @@
+{
+    "Animal": [
+        {
+            "model": "etm",
+            "topic_id": 0,
+            "words": [
+                "species",
+                "habitat",
+                "tropical",
+                "forests",
+                "moist",
+                "habitats",
+                "genus",
+                "forest",
+                "freshwater",
+                "fish"
+            ],
+            "llm_score": 3.0,
+            "word2vec_score": 0.3822329640388489,
+            "npmi_score": 0.3275332998792752
+        },
+        {
+            "model": "etm",
+            "topic_id": 9,
+            "words": [
+                "species",
+                "extinct",
+                "genera",
+                "habitat",
+                "endemic",
+                "aquatic",
+                "known",
+                "noted",
+                "features",
+                "years"
+            ],
+            "llm_score": 3.0,
+            "word2vec_score": 0.18313392996788025,
+            "npmi_score": 0.03734028634225157
+        },
+        {
+            "model": "etm",
+            "topic_id": 14,
+            "words": [
+                "family",
+                "genus",
+                "small",
+                "families",
+                "genera",
+                "living",
+                "known",
+                "extinct",
+                "life",
+                "lived"
+            ],
+            "llm_score": 3.0,
+            "word2vec_score": 0.20634470880031586,
+            "npmi_score": 0.09217035839322156
+        },
+        {
+            "model": "ours",
+            "topic_id": 6,
+            "words": [
+                "habitat",
+                "endangered",
+                "end",
+                "threatened",
+                "habitats",
+                "species",
+                "bird",
+                "birds",
+                "environmental",
+                "endemic"
+            ],
+            "llm_score": 3.0,
+            "word2vec_score": 0.28043514490127563,
+            "npmi_score": 0.1394642620721273
+        },
+        {
+            "model": "ours",
+            "topic_id": 8,
+            "words": [
+                "marine",
+                "fish",
+                "sea",
+                "ocean",
+                "aquatic",
+                "scientific",
+                "study",
+                "status",
+                "species",
+                "life"
+            ],
+            "llm_score": 3.0,
+            "word2vec_score": 0.233513742685318,
+            "npmi_score": 0.03763594138517449
+        },
+        {
+            "model": "ours",
+            "topic_id": 9,
+            "words": [
+                "moth",
+                "butterfly",
+                "larvae",
+                "beetle",
+                "described",
+                "flies",
+                "said",
+                "distribution",
+                "families",
+                "wing"
+            ],
+            "llm_score": 2.0,
+            "word2vec_score": 0.13782908022403717,
+            "npmi_score": 0.005755135578327742
+        }
+    ],
+    "Film": [
+        {
+            "model": "etm",
+            "topic_id": 1,
+            "words": [
+                "novel",
+                "film",
+                "starring",
+                "adaptation",
+                "directed",
+                "thriller",
+                "screenplay",
+                "drama",
+                "writer",
+                "comedy"
+            ],
+            "llm_score": 3.0,
+            "word2vec_score": 0.3967171907424927,
+            "npmi_score": 0.3061333862164624
+        },
+        {
+            "model": "zeroshot",
+            "topic_id": 19,
+            "words": [
+                "television",
+                "adapted",
+                "life",
+                "movie",
+                "play",
+                "animated",
+                "stars",
+                "role",
+                "films",
+                "adaptation"
+            ],
+            "llm_score": 3.0,
+            "word2vec_score": 0.21660499274730682,
+            "npmi_score": 0.1822376531804132
+        },
+        {
+            "model": "zeroshot",
+            "topic_id": 22,
+            "words": [
+                "entered",
+                "composed",
+                "documentary",
+                "supporting",
+                "comedy",
+                "stars",
+                "drama",
+                "shot",
+                "lost",
+                "language"
+            ],
+            "llm_score": 2.0,
+            "word2vec_score": 0.10353456437587738,
+            "npmi_score": 0.10355668584130223
+        },
+        {
+            "model": "ours",
+            "topic_id": 19,
+            "words": [
+                "film",
+                "cinema",
+                "films",
+                "movie",
+                "silent",
+                "filmmaker",
+                "movies",
+                "director",
+                "directed",
+                "actors"
+            ],
+            "llm_score": 3.0,
+            "word2vec_score": 0.38746926188468933,
+            "npmi_score": 0.2537468933923834
+        }
+    ],
+    "Written Work": [
+        {
+            "model": "etm",
+            "topic_id": 2,
+            "words": [
+                "series",
+                "book",
+                "fiction",
+                "comic",
+                "published",
+                "story",
+                "author",
+                "written",
+                "books",
+                "fictional"
+            ],
+            "llm_score": 3.0,
+            "word2vec_score": 0.3063037097454071,
+            "npmi_score": 0.2598968900229784
+        },
+        {
+            "model": "etm",
+            "topic_id": 10,
+            "words": [
+                "book",
+                "published",
+                "author",
+                "novel",
+                "books",
+                "series",
+                "written",
+                "publisher",
+                "story",
+                "article"
+            ],
+            "llm_score": 3.0,
+            "word2vec_score": 0.3159000277519226,
+            "npmi_score": 0.21069234856314278
+        },
+        {
+            "model": "etm",
+            "topic_id": 11,
+            "words": [
+                "manga",
+                "story",
+                "children",
+                "title",
+                "language",
+                "young",
+                "tells",
+                "man",
+                "sequel",
+                "year"
+            ],
+            "llm_score": 2.0,
+            "word2vec_score": 0.13802461326122284,
+            "npmi_score": 0.09569880533432226
+        },
+        {
+            "model": "etm",
+            "topic_id": 13,
+            "words": [
+                "published",
+                "journal",
+                "collection",
+                "stories",
+                "magazine",
+                "story",
+                "edition",
+                "original",
+                "set",
+                "appeared"
+            ],
+            "llm_score": 3.0,
+            "word2vec_score": 0.19531728327274323,
+            "npmi_score": 0.13725244666286288
+        },
+        {
+            "model": "etm",
+            "topic_id": 17,
+            "words": [
+                "written",
+                "science",
+                "fantasy",
+                "serialized",
+                "literary",
+                "series",
+                "fiction",
+                "fictional",
+                "book",
+                "title"
+            ],
+            "llm_score": 3.0,
+            "word2vec_score": 0.24366730451583862,
+            "npmi_score": 0.20462141816553764
+        },
+        {
+            "model": "etm",
+            "topic_id": 18,
+            "words": [
+                "written",
+                "produced",
+                "illustrated",
+                "form",
+                "television",
+                "short",
+                "known",
+                "history",
+                "included",
+                "war"
+            ],
+            "llm_score": 2.0,
+            "word2vec_score": 0.13421739637851715,
+            "npmi_score": 0.014717920161079511
+        },
+        {
+            "model": "etm",
+            "topic_id": 19,
+            "words": [
+                "book",
+                "volume",
+                "scientific",
+                "historical",
+                "author",
+                "paperback",
+                "fiction",
+                "short",
+                "issue",
+                "books"
+            ],
+            "llm_score": 2.0,
+            "word2vec_score": 0.22706986963748932,
+            "npmi_score": 0.18124891893683268
+        },
+        {
+            "model": "etm",
+            "topic_id": 20,
+            "words": [
+                "newspaper",
+                "weekly",
+                "daily",
+                "magazine",
+                "newspapers",
+                "circulation",
+                "editor",
+                "columns",
+                "news",
+                "published"
+            ],
+            "llm_score": 3.0,
+            "word2vec_score": 0.328313410282135,
+            "npmi_score": 0.3024095682645686
+        },
+        {
+            "model": "etm",
+            "topic_id": 21,
+            "words": [
+                "set",
+                "issues",
+                "work",
+                "imprint",
+                "social",
+                "literary",
+                "political",
+                "created",
+                "works",
+                "art"
+            ],
+            "llm_score": 2.0,
+            "word2vec_score": 0.15300942957401276,
+            "npmi_score": 0.11046273982743443
+        },
+        {
+            "model": "etm",
+            "topic_id": 22,
+            "words": [
+                "novel",
+                "novels",
+                "author",
+                "produced",
+                "director",
+                "film",
+                "writer",
+                "known",
+                "covers",
+                "novelist"
+            ],
+            "llm_score": 3.0,
+            "word2vec_score": 0.24106134474277496,
+            "npmi_score": 0.08895781086242915
+        },
+        {
+            "model": "etm",
+            "topic_id": 23,
+            "words": [
+                "published",
+                "magazine",
+                "editor",
+                "publication",
+                "author",
+                "journal",
+                "based",
+                "written",
+                "edited",
+                "publisher"
+            ],
+            "llm_score": 3.0,
+            "word2vec_score": 0.3372684121131897,
+            "npmi_score": 0.18296110006914493
+        },
+        {
+            "model": "zeroshot",
+            "topic_id": 8,
+            "words": [
+                "volume",
+                "adult",
+                "translated",
+                "set",
+                "young",
+                "short",
+                "character",
+                "follows",
+                "children",
+                "fictional"
+            ],
+            "llm_score": 2.0,
+            "word2vec_score": 0.12048330157995224,
+            "npmi_score": 0.13100717647704502
+        },
+        {
+            "model": "zeroshot",
+            "topic_id": 11,
+            "words": [
+                "giving",
+                "predominantly",
+                "fact",
+                "poor",
+                "completely",
+                "possible",
+                "hand",
+                "rich",
+                "cut",
+                "speaking"
+            ],
+            "llm_score": 1.0,
+            "word2vec_score": 0.11001162976026535,
+            "npmi_score": -0.11843824113113954
+        },
+        {
+            "model": "zeroshot",
+            "topic_id": 13,
+            "words": [
+                "covering",
+                "chief",
+                "field",
+                "covers",
+                "official",
+                "aspects",
+                "scientific",
+                "issues",
+                "language",
+                "culture"
+            ],
+            "llm_score": 2.0,
+            "word2vec_score": 0.12769843637943268,
+            "npmi_score": 0.20353764280764194
+        },
+        {
+            "model": "ours",
+            "topic_id": 15,
+            "words": [
+                "literature",
+                "literary",
+                "authors",
+                "author",
+                "writing",
+                "book",
+                "books",
+                "novels",
+                "fiction",
+                "writers"
+            ],
+            "llm_score": 3.0,
+            "word2vec_score": 0.44892418384552,
+            "npmi_score": 0.2615534514160178
+        },
+        {
+            "model": "ours",
+            "topic_id": 21,
+            "words": [
+                "manga",
+                "themes",
+                "characters",
+                "plot",
+                "protagonist",
+                "character",
+                "drama",
+                "based",
+                "anime",
+                "fictional"
+            ],
+            "llm_score": 3.0,
+            "word2vec_score": 0.30078622698783875,
+            "npmi_score": 0.16215715164831776
+        }
+    ],
+    "Album": [
+        {
+            "model": "etm",
+            "topic_id": 3,
+            "words": [
+                "released",
+                "debut",
+                "album",
+                "second",
+                "release",
+                "recorded",
+                "studio",
+                "band",
+                "compilation",
+                "rock"
+            ],
+            "llm_score": 3.0,
+            "word2vec_score": 0.2296655923128128,
+            "npmi_score": 0.2754319152267463
+        },
+        {
+            "model": "zeroshot",
+            "topic_id": 16,
+            "words": [
+                "reached",
+                "number",
+                "certified",
+                "country",
+                "single",
+                "hit",
+                "week",
+                "peaked",
+                "charts",
+                "debuted"
+            ],
+            "llm_score": 3.0,
+            "word2vec_score": 0.1354825347661972,
+            "npmi_score": 0.27130747702082736
+        },
+        {
+            "model": "zeroshot",
+            "topic_id": 20,
+            "words": [
+                "live",
+                "heavy",
+                "hard",
+                "metal",
+                "progressive",
+                "recorded",
+                "tour",
+                "alternative",
+                "rock",
+                "concert"
+            ],
+            "llm_score": 3.0,
+            "word2vec_score": 0.14438097178936005,
+            "npmi_score": 0.2056133026270378
+        },
+        {
+            "model": "ours",
+            "topic_id": 10,
+            "words": [
+                "lyrics",
+                "hip",
+                "band",
+                "music",
+                "label",
+                "album",
+                "bands",
+                "song",
+                "songs",
+                "albums"
+            ],
+            "llm_score": 3.0,
+            "word2vec_score": 0.41782963275909424,
+            "npmi_score": 0.20676788095141635
+        },
+        {
+            "model": "ours",
+            "topic_id": 18,
+            "words": [
+                "jazz",
+                "recording",
+                "musicians",
+                "musical",
+                "instrumental",
+                "band",
+                "recordings",
+                "albums",
+                "blues",
+                "music"
+            ],
+            "llm_score": 3.0,
+            "word2vec_score": 0.40277162194252014,
+            "npmi_score": 0.21127982250340382
+        }
+    ],
+    "Village": [
+        {
+            "model": "etm",
+            "topic_id": 4,
+            "words": [
+                "families",
+                "population",
+                "census",
+                "village",
+                "children",
+                "people",
+                "villages",
+                "communities",
+                "residents",
+                "living"
+            ],
+            "llm_score": 3.0,
+            "word2vec_score": 0.3488183617591858,
+            "npmi_score": 0.1812789753246648
+        },
+        {
+            "model": "etm",
+            "topic_id": 6,
+            "words": [
+                "born",
+                "married",
+                "lived",
+                "birth",
+                "native",
+                "mother",
+                "suburb",
+                "named",
+                "sister",
+                "childhood"
+            ],
+            "llm_score": 3.0,
+            "word2vec_score": 0.2858218848705292,
+            "npmi_score": 0.025390707025140093
+        },
+        {
+            "model": "etm",
+            "topic_id": 7,
+            "words": [
+                "village",
+                "century",
+                "area",
+                "church",
+                "building",
+                "house",
+                "land",
+                "centuries",
+                "home",
+                "wood"
+            ],
+            "llm_score": 3.0,
+            "word2vec_score": 0.21634960174560547,
+            "npmi_score": 0.0898863988195854
+        },
+        {
+            "model": "etm",
+            "topic_id": 8,
+            "words": [
+                "village",
+                "district",
+                "municipality",
+                "city",
+                "town",
+                "located",
+                "county",
+                "province",
+                "area",
+                "north"
+            ],
+            "llm_score": 3.0,
+            "word2vec_score": 0.3829748034477234,
+            "npmi_score": 0.15378154846809858
+        },
+        {
+            "model": "zeroshot",
+            "topic_id": 6,
+            "words": [
+                "regional",
+                "people",
+                "living",
+                "capital",
+                "central",
+                "approximately",
+                "individual",
+                "administrative",
+                "western",
+                "eastern"
+            ],
+            "llm_score": 2.0,
+            "word2vec_score": 0.19071273505687714,
+            "npmi_score": 0.17175255287396451
+        },
+        {
+            "model": "zeroshot",
+            "topic_id": 14,
+            "words": [
+                "noted",
+                "reported",
+                "existence",
+                "families",
+                "people",
+                "living",
+                "individual",
+                "census",
+                "predominantly",
+                "giving"
+            ],
+            "llm_score": 2.0,
+            "word2vec_score": 0.12093721330165863,
+            "npmi_score": 0.06487346818206312
+        },
+        {
+            "model": "ours",
+            "topic_id": 0,
+            "words": [
+                "town",
+                "place",
+                "rural",
+                "places",
+                "villages",
+                "settlement",
+                "towns",
+                "village",
+                "travel",
+                "location"
+            ],
+            "llm_score": 3.0,
+            "word2vec_score": 0.2569948136806488,
+            "npmi_score": 0.07951551557508299
+        },
+        {
+            "model": "ours",
+            "topic_id": 16,
+            "words": [
+                "village",
+                "population",
+                "rural",
+                "villages",
+                "census",
+                "settlement",
+                "people",
+                "town",
+                "region",
+                "land"
+            ],
+            "llm_score": 3.0,
+            "word2vec_score": 0.278548926115036,
+            "npmi_score": 0.1548238394483296
+        }
+    ],
+    "Company": [
+        {
+            "model": "etm",
+            "topic_id": 5,
+            "words": [
+                "published",
+                "academic",
+                "founded",
+                "years",
+                "based",
+                "life",
+                "second",
+                "year",
+                "publishing",
+                "group"
+            ],
+            "llm_score": 2.0,
+            "word2vec_score": 0.14293280243873596,
+            "npmi_score": 0.032962515661540584
+        },
+        {
+            "model": "zeroshot",
+            "topic_id": 9,
+            "words": [
+                "independent",
+                "developer",
+                "game",
+                "video",
+                "media",
+                "entertainment",
+                "record",
+                "started",
+                "created",
+                "brand"
+            ],
+            "llm_score": 2.0,
+            "word2vec_score": 0.11786133795976639,
+            "npmi_score": 0.11534620050007137
+        },
+        {
+            "model": "zeroshot",
+            "topic_id": 24,
+            "words": [
+                "domestic",
+                "countries",
+                "network",
+                "scheduled",
+                "financial",
+                "base",
+                "provides",
+                "oil",
+                "services",
+                "subsidiary"
+            ],
+            "llm_score": 2.0,
+            "word2vec_score": 0.130062535405159,
+            "npmi_score": 0.1691415240157745
+        },
+        {
+            "model": "ours",
+            "topic_id": 4,
+            "words": [
+                "company",
+                "companies",
+                "business",
+                "industry",
+                "corporate",
+                "businesses",
+                "market",
+                "financial",
+                "brand",
+                "corporation"
+            ],
+            "llm_score": 3.0,
+            "word2vec_score": 0.3816361725330353,
+            "npmi_score": 0.19522273403556906
+        }
+    ],
+    "Building": [
+        {
+            "model": "etm",
+            "topic_id": 12,
+            "words": [
+                "kilometres",
+                "small",
+                "large",
+                "operated",
+                "size",
+                "smaller",
+                "theatre",
+                "purchased",
+                "metre",
+                "range"
+            ],
+            "llm_score": 2.0,
+            "word2vec_score": 0.26654475927352905,
+            "npmi_score": -0.020264994308687258
+        },
+        {
+            "model": "zeroshot",
+            "topic_id": 1,
+            "words": [
+                "home",
+                "style",
+                "listed",
+                "added",
+                "structure",
+                "house",
+                "wood",
+                "architecture",
+                "historic",
+                "century"
+            ],
+            "llm_score": 3.0,
+            "word2vec_score": 0.13786888122558594,
+            "npmi_score": 0.23509369442121636
+        },
+        {
+            "model": "ours",
+            "topic_id": 20,
+            "words": [
+                "church",
+                "churches",
+                "architecture",
+                "religious",
+                "history",
+                "historical",
+                "architectural",
+                "buildings",
+                "architect",
+                "old"
+            ],
+            "llm_score": 3.0,
+            "word2vec_score": 0.2231176644563675,
+            "npmi_score": 0.1371791760598488
+        },
+        {
+            "model": "ours",
+            "topic_id": 23,
+            "words": [
+                "architectural",
+                "architect",
+                "historic",
+                "buildings",
+                "architecture",
+                "downtown",
+                "building",
+                "property",
+                "old",
+                "construction"
+            ],
+            "llm_score": 3.0,
+            "word2vec_score": 0.3022942543029785,
+            "npmi_score": 0.17322776012564203
+        }
+    ],
+    "Plant": [
+        {
+            "model": "etm",
+            "topic_id": 15,
+            "words": [
+                "long",
+                "known",
+                "short",
+                "black",
+                "commonly",
+                "white",
+                "leaves",
+                "high",
+                "green",
+                "best"
+            ],
+            "llm_score": 2.0,
+            "word2vec_score": 0.16036589443683624,
+            "npmi_score": 0.08845263075017723
+        },
+        {
+            "model": "zeroshot",
+            "topic_id": 17,
+            "words": [
+                "common",
+                "native",
+                "commonly",
+                "names",
+                "growing",
+                "green",
+                "annual",
+                "red",
+                "long",
+                "usually"
+            ],
+            "llm_score": 2.0,
+            "word2vec_score": 0.13106384873390198,
+            "npmi_score": 0.1954890736101083
+        },
+        {
+            "model": "ours",
+            "topic_id": 2,
+            "words": [
+                "end",
+                "native",
+                "plant",
+                "plants",
+                "flowering",
+                "trees",
+                "endemic",
+                "tree",
+                "flowers",
+                "names"
+            ],
+            "llm_score": 3.0,
+            "word2vec_score": 0.2145545333623886,
+            "npmi_score": 0.2010202042315184
+        },
+        {
+            "model": "ours",
+            "topic_id": 7,
+            "words": [
+                "flower",
+                "flowers",
+                "herb",
+                "flowering",
+                "cultivated",
+                "plant",
+                "plants",
+                "var",
+                "perennial",
+                "leaves"
+            ],
+            "llm_score": 3.0,
+            "word2vec_score": 0.2921391427516937,
+            "npmi_score": 0.2802876195270166
+        }
+    ],
+    "Natural Place": [
+        {
+            "model": "etm",
+            "topic_id": 16,
+            "words": [
+                "regional",
+                "approximately",
+                "central",
+                "western",
+                "capital",
+                "south",
+                "district",
+                "region",
+                "north",
+                "east"
+            ],
+            "llm_score": 3.0,
+            "word2vec_score": 0.3453270494937897,
+            "npmi_score": 0.3835475943969225
+        },
+        {
+            "model": "zeroshot",
+            "topic_id": 3,
+            "words": [
+                "point",
+                "highest",
+                "surface",
+                "edge",
+                "southwest",
+                "northeast",
+                "northwest",
+                "level",
+                "forms",
+                "island"
+            ],
+            "llm_score": 2.0,
+            "word2vec_score": 0.17474254965782166,
+            "npmi_score": 0.1706300669073689
+        },
+        {
+            "model": "zeroshot",
+            "topic_id": 4,
+            "words": [
+                "natural",
+                "loss",
+                "dry",
+                "bird",
+                "heavily",
+                "land",
+                "tropical",
+                "forests",
+                "threatened",
+                "forest"
+            ],
+            "llm_score": 3.0,
+            "word2vec_score": 0.1685142070055008,
+            "npmi_score": 0.3394994738688242
+        },
+        {
+            "model": "zeroshot",
+            "topic_id": 10,
+            "words": [
+                "regional",
+                "source",
+                "approximately",
+                "central",
+                "capital",
+                "region",
+                "mile",
+                "generally",
+                "runs",
+                "water"
+            ],
+            "llm_score": 2.0,
+            "word2vec_score": 0.1247551366686821,
+            "npmi_score": 0.09981941584460483
+        },
+        {
+            "model": "zeroshot",
+            "topic_id": 12,
+            "words": [
+                "described",
+                "host",
+                "containing",
+                "belonging",
+                "ground",
+                "order",
+                "colour",
+                "belongs",
+                "following",
+                "probably"
+            ],
+            "llm_score": 1.0,
+            "word2vec_score": 0.09238430857658386,
+            "npmi_score": 0.05556286455982761
+        },
+        {
+            "model": "ours",
+            "topic_id": 3,
+            "words": [
+                "river",
+                "rivers",
+                "water",
+                "environmental",
+                "waters",
+                "watershed",
+                "drainage",
+                "streams",
+                "stream",
+                "flow"
+            ],
+            "llm_score": 3.0,
+            "word2vec_score": 0.3519686460494995,
+            "npmi_score": 0.18658617195972596
+        },
+        {
+            "model": "ours",
+            "topic_id": 12,
+            "words": [
+                "mountain",
+                "mountains",
+                "glacier",
+                "peaks",
+                "landscape",
+                "elevation",
+                "natural",
+                "volcanic",
+                "summit",
+                "volcano"
+            ],
+            "llm_score": 3.0,
+            "word2vec_score": 0.29831546545028687,
+            "npmi_score": 0.19080931886747857
+        }
+    ],
+    "Mean Of Transportation": [
+        {
+            "model": "etm",
+            "topic_id": 24,
+            "words": [
+                "class",
+                "designed",
+                "peer",
+                "built",
+                "service",
+                "sponsored",
+                "commissioned",
+                "tree",
+                "laid",
+                "launched"
+            ],
+            "llm_score": 2.0,
+            "word2vec_score": 0.1392667144536972,
+            "npmi_score": 0.10747845389830021
+        },
+        {
+            "model": "zeroshot",
+            "topic_id": 7,
+            "words": [
+                "twin",
+                "light",
+                "developed",
+                "model",
+                "introduced",
+                "multiple",
+                "unit",
+                "design",
+                "mid",
+                "type"
+            ],
+            "llm_score": 2.0,
+            "word2vec_score": 0.13977335393428802,
+            "npmi_score": 0.13972378920080303
+        },
+        {
+            "model": "zeroshot",
+            "topic_id": 23,
+            "words": [
+                "transferred",
+                "sister",
+                "saw",
+                "rate",
+                "honor",
+                "broken",
+                "class",
+                "launched",
+                "ship",
+                "crew"
+            ],
+            "llm_score": 2.0,
+            "word2vec_score": 0.08166656643152237,
+            "npmi_score": 0.22605972725073842
+        },
+        {
+            "model": "ours",
+            "topic_id": 14,
+            "words": [
+                "ship",
+                "ships",
+                "naval",
+                "submarines",
+                "destroyer",
+                "sailing",
+                "submarine",
+                "boats",
+                "vessel",
+                "vessels"
+            ],
+            "llm_score": 3.0,
+            "word2vec_score": 0.5377808809280396,
+            "npmi_score": 0.29767541776599415
+        },
+        {
+            "model": "ours",
+            "topic_id": 17,
+            "words": [
+                "cars",
+                "aircraft",
+                "model",
+                "car",
+                "vehicles",
+                "automobile",
+                "air",
+                "engine",
+                "engines",
+                "vehicle"
+            ],
+            "llm_score": 3.0,
+            "word2vec_score": 0.3765522539615631,
+            "npmi_score": 0.2418634670555458
+        }
+    ],
+    "Office Holder": [
+        {
+            "model": "zeroshot",
+            "topic_id": 0,
+            "words": [
+                "terms",
+                "term",
+                "represents",
+                "party",
+                "leader",
+                "general",
+                "president",
+                "politician",
+                "position",
+                "represent"
+            ],
+            "llm_score": 2.0,
+            "word2vec_score": 0.17522510886192322,
+            "npmi_score": 0.19043624343299645
+        },
+        {
+            "model": "ours",
+            "topic_id": 11,
+            "words": [
+                "political",
+                "elections",
+                "politics",
+                "election",
+                "politician",
+                "elected",
+                "nomination",
+                "candidate",
+                "senator",
+                "leader"
+            ],
+            "llm_score": 3.0,
+            "word2vec_score": 0.36881688237190247,
+            "npmi_score": 0.3040730340092066
+        }
+    ],
+    "Artist": [
+        {
+            "model": "zeroshot",
+            "topic_id": 2,
+            "words": [
+                "better",
+                "stage",
+                "best",
+                "worked",
+                "works",
+                "work",
+                "famous",
+                "age",
+                "classical",
+                "voice"
+            ],
+            "llm_score": 2.0,
+            "word2vec_score": 0.1494535207748413,
+            "npmi_score": 0.10130242610615742
+        },
+        {
+            "model": "ours",
+            "topic_id": 1,
+            "words": [
+                "singing",
+                "famous",
+                "singer",
+                "fame",
+                "performer",
+                "musician",
+                "artist",
+                "songwriter",
+                "musical",
+                "popular"
+            ],
+            "llm_score": 3.0,
+            "word2vec_score": 0.33256033062934875,
+            "npmi_score": 0.18932916872119065
+        },
+        {
+            "model": "ours",
+            "topic_id": 13,
+            "words": [
+                "notable",
+                "birth",
+                "historian",
+                "life",
+                "painting",
+                "early",
+                "painter",
+                "famous",
+                "died",
+                "prominent"
+            ],
+            "llm_score": 3.0,
+            "word2vec_score": 0.17118865251541138,
+            "npmi_score": 0.09943474415239933
+        }
+    ],
+    "Educational Institution": [
+        {
+            "model": "zeroshot",
+            "topic_id": 5,
+            "words": [
+                "high",
+                "serves",
+                "principal",
+                "middle",
+                "secondary",
+                "public",
+                "rated",
+                "colors",
+                "grade",
+                "opened"
+            ],
+            "llm_score": 2.0,
+            "word2vec_score": 0.12267737090587616,
+            "npmi_score": 0.17845571059444637
+        },
+        {
+            "model": "zeroshot",
+            "topic_id": 21,
+            "words": [
+                "higher",
+                "affiliated",
+                "arts",
+                "private",
+                "programs",
+                "program",
+                "courses",
+                "learning",
+                "offers",
+                "technical"
+            ],
+            "llm_score": 2.0,
+            "word2vec_score": 0.1670544445514679,
+            "npmi_score": 0.23302210692283368
+        },
+        {
+            "model": "ours",
+            "topic_id": 5,
+            "words": [
+                "currently",
+                "covering",
+                "articles",
+                "university",
+                "publications",
+                "today",
+                "focuses",
+                "said",
+                "article",
+                "publishes"
+            ],
+            "llm_score": 2.0,
+            "word2vec_score": 0.14408256113529205,
+            "npmi_score": 0.005434509477112039
+        },
+        {
+            "model": "ours",
+            "topic_id": 22,
+            "words": [
+                "school",
+                "schools",
+                "educational",
+                "education",
+                "curriculum",
+                "colleges",
+                "teaching",
+                "students",
+                "student",
+                "campus"
+            ],
+            "llm_score": 3.0,
+            "word2vec_score": 0.4807696044445038,
+            "npmi_score": 0.24235979008231057
+        }
+    ],
+    "Athlete": [
+        {
+            "model": "zeroshot",
+            "topic_id": 15,
+            "words": [
+                "gold",
+                "finished",
+                "silver",
+                "event",
+                "men",
+                "won",
+                "competition",
+                "win",
+                "events",
+                "race"
+            ],
+            "llm_score": 3.0,
+            "word2vec_score": 0.2218163162469864,
+            "npmi_score": 0.2868129354276126
+        },
+        {
+            "model": "zeroshot",
+            "topic_id": 18,
+            "words": [
+                "free",
+                "club",
+                "overall",
+                "agent",
+                "round",
+                "plays",
+                "clubs",
+                "selected",
+                "currently",
+                "youth"
+            ],
+            "llm_score": 2.0,
+            "word2vec_score": 0.13933157920837402,
+            "npmi_score": 0.15116968662489602
+        },
+        {
+            "model": "ours",
+            "topic_id": 24,
+            "words": [
+                "football",
+                "player",
+                "soccer",
+                "athlete",
+                "sports",
+                "players",
+                "sport",
+                "rugby",
+                "hockey",
+                "cricket"
+            ],
+            "llm_score": 3.0,
+            "word2vec_score": 0.4473252296447754,
+            "npmi_score": 0.20217101399750498
+        }
+    ]
+}

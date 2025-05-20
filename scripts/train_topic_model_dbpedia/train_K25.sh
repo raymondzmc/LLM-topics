@@ -4,7 +4,7 @@ export CUDA_VISIBLE_DEVICES=0
 # Set this flag to True to only evaluate the model and not train it
 EVAL_ONLY=False
 RECOMPUTE_METRICS=True
-ALL_TOPICS=(25)
+ALL_TOPICS=(25 50 75 100)
 
 eval_flag=""
 if [ "$EVAL_ONLY" = "True" ]; then
@@ -75,9 +75,33 @@ for NUM_TOPICS in ${ALL_TOPICS[@]}; do
     #     $eval_flag \
     #     $recompute_flag
 
+    # python run_topic_model_ours.py \
+    #     --data_path data/dbpedia_14_Llama-3.2-3B-Instruct_vocab_2000_last \
+    #     --results_path results/dbpedia_14/Llama-3.2-3B-Instruct/${NUM_TOPICS}_CE \
+    #     --num_topics ${NUM_TOPICS} \
+    #     --num_hidden_layers 2 \
+    #     --num_seeds 5 \
+    #     --loss_type CE \
+    #     --temperature 3 \
+    #     --loss_weight 1000 \
+    #     $eval_flag \
+    #     $recompute_flag
+
+    # python run_topic_model_ours.py \
+    #     --data_path data/dbpedia_14_Llama-3.2-3B-Instruct_vocab_2000_last \
+    #     --results_path results/dbpedia_14/Llama-3.2-3B-Instruct/${NUM_TOPICS}_KL \
+    #     --num_topics ${NUM_TOPICS} \
+    #     --num_hidden_layers 2 \
+    #     --num_seeds 5 \
+    #     --loss_type KL \
+    #     --temperature 3 \
+    #     --loss_weight 1000 \
+    #     $eval_flag \
+    #     $recompute_flag
+
     python run_topic_model_ours.py \
-        --data_path data/dbpedia_14_Llama-3.2-3B-Instruct_vocab_2000_last \
-        --results_path results/dbpedia_14/Llama-3.2-3B-Instruct/${NUM_TOPICS}_CE \
+        --data_path data/dbpedia_14_Llama-3.2-11B-Vision-Instruct_vocab_2000_last \
+        --results_path results/dbpedia_14/Llama-3.2-11B-Vision/${NUM_TOPICS}_CE \
         --num_topics ${NUM_TOPICS} \
         --num_hidden_layers 2 \
         --num_seeds 5 \
@@ -88,32 +112,8 @@ for NUM_TOPICS in ${ALL_TOPICS[@]}; do
         $recompute_flag
 
     python run_topic_model_ours.py \
-        --data_path data/dbpedia_14_Llama-3.2-3B-Instruct_vocab_2000_last \
-        --results_path results/dbpedia_14/Llama-3.2-3B-Instruct/${NUM_TOPICS}_KL \
-        --num_topics ${NUM_TOPICS} \
-        --num_hidden_layers 2 \
-        --num_seeds 5 \
-        --loss_type KL \
-        --temperature 3 \
-        --loss_weight 1000 \
-        $eval_flag \
-        $recompute_flag
-
-    python run_topic_model_ours.py \
-        --data_path data/dbpedia_14_Llama-3.2-1B-Instruct_vocab_2000_last \
-        --results_path results/dbpedia_14/Llama-3.2-1B-Instruct/${NUM_TOPICS}_CE \
-        --num_topics ${NUM_TOPICS} \
-        --num_hidden_layers 2 \
-        --num_seeds 5 \
-        --loss_type CE \
-        --temperature 3 \
-        --loss_weight 1000 \
-        $eval_flag \
-        $recompute_flag
-
-    python run_topic_model_ours.py \
-        --data_path data/dbpedia_14_Llama-3.2-1B-Instruct_vocab_2000_last \
-        --results_path results/dbpedia_14/Llama-3.2-1B-Instruct/${NUM_TOPICS}_KL \
+        --data_path data/dbpedia_14_Llama-3.2-11B-Vision-Instruct_vocab_2000_last \
+        --results_path results/dbpedia_14/Llama-3.2-11B-Vision/${NUM_TOPICS}_KL \
         --num_topics ${NUM_TOPICS} \
         --num_hidden_layers 2 \
         --num_seeds 5 \

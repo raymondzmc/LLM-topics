@@ -1,4 +1,4 @@
-export CUDA_VISIBLE_DEVICES=0
+export CUDA_VISIBLE_DEVICES=2
 
 python process_dataset_new.py --dataset fancyzhx/dbpedia_14 \
                               --content_key content \

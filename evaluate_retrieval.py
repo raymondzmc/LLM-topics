@@ -274,11 +274,11 @@ if __name__ == "__main__":
     args = parser.parse_args()
     datasets = ['20_newsgroups', 'stackoverflow']
     label_files = ['data/20_newsgroups_Llama-3.2-1B-Instruct_vocab_2000_last/numeric_labels.txt',
-                   'data/stackoverflow_Llama-3.2-1B-Instruct_vocab_2000_last/numeric_labels.txt',]
-                #    'data/dbpedia_14_Llama-3.2-1B-Instruct_vocab_2000_last/numeric_labels.txt']
+                   'data/stackoverflow_Llama-3.2-1B-Instruct_vocab_2000_last/numeric_labels.txt',
+                   'data/dbpedia_14_Llama-3.2-1B-Instruct_vocab_2000_last/numeric_labels.txt']
     bow_corpus_paths = ['data/20_newsgroups_Llama-3.2-1B-Instruct_vocab_2000_last/bow_dataset.txt',
-                        'data/stackoverflow_Llama-3.2-1B-Instruct_vocab_2000_last/bow_dataset.txt',]
-                        # 'data/dbpedia_14_Llama-3.2-1B-Instruct_vocab_2000_last/bow_dataset.txt']
+                        'data/stackoverflow_Llama-3.2-1B-Instruct_vocab_2000_last/bow_dataset.txt',
+                        'data/dbpedia_14_Llama-3.2-1B-Instruct_vocab_2000_last/bow_dataset.txt']
     # baselines = ['lda', 'prodlda', 'combined', 'zeroshot', 'etm', 'bertopic']
     baselines = ['fastopic']
     # datasets = ['stackoverflow']
@@ -287,7 +287,7 @@ if __name__ == "__main__":
     # ours = ['Llama-3.2-11B-Vision-Instruct-CE', 'Llama-3.2-11B-Vision-Instruct-KL']
     topic_models = baselines
 
-    for dataset, label_file, bow_corpus_path in list(zip(datasets, label_files, bow_corpus_paths)):
+    for dataset, label_file, bow_corpus_path in list(zip(datasets, label_files, bow_corpus_paths))[2:]:
         print(f"Computing retrieval results for {dataset} dataset\n\n\n")
         if dataset == 'dbpedia_14':
             args.subset_size = 70000

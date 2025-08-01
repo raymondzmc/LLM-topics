@@ -1,16 +1,16 @@
 export CUDA_VISIBLE_DEVICES=2
 
-python process_dataset_new.py --dataset fancyzhx/dbpedia_14 \
-                              --content_key content \
-                              --split all \
-                              --vocab_size 2000 \
-                              --model_name meta-llama/Llama-3.2-1B-Instruct \
-                              --hidden_state_layer -1 \
-                              --single_token_only \
-                              --batch_size 32 \
-                              --target_method summary \
-                              --bow_dataset \
-                              --label_key label
+# python process_dataset_new.py --dataset fancyzhx/dbpedia_14 \
+#                               --content_key content \
+#                               --split all \
+#                               --vocab_size 2000 \
+#                               --model_name meta-llama/Llama-3.2-1B-Instruct \
+#                               --hidden_state_layer -1 \
+#                               --single_token_only \
+#                               --batch_size 32 \
+#                               --target_method summary \
+#                               --bow_dataset \
+#                               --label_key label
 
 
 for NUM_TOPICS in 25 50 75 100; do

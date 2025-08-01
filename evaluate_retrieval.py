@@ -272,7 +272,7 @@ if __name__ == "__main__":
     parser.add_argument("--method", type=str, default='topic_distribution', choices=['topic_distribution', 'next_word_probs', 'hidden_states', 'bow'])
     parser.add_argument("--subset_size", type=int, default=-1, help="Number of documents to use for a subset. Default is -1 (use all documents).")
     args = parser.parse_args()
-    datasets = ['20_newsgroups', 'stackoverflow']
+    datasets = ['20_newsgroups', 'stackoverflow', 'dbpedia_14']
     label_files = ['data/20_newsgroups_Llama-3.2-1B-Instruct_vocab_2000_last/numeric_labels.txt',
                    'data/stackoverflow_Llama-3.2-1B-Instruct_vocab_2000_last/numeric_labels.txt',
                    'data/dbpedia_14_Llama-3.2-1B-Instruct_vocab_2000_last/numeric_labels.txt']

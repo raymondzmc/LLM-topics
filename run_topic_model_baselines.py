@@ -169,7 +169,7 @@ def run(args):
                     num_topics=args.num_topics,
                     num_top_words=args.top_words,
                     low_memory=True,
-                    low_memory_batch_size=65536,
+                    low_memory_batch_size=262144,
                 )
                 
                 top_words, doc_topic_dist = trainer.train()

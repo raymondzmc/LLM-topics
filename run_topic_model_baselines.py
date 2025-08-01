@@ -14,7 +14,7 @@ from bertopic import BERTopic
 from utils.metrics import compute_aggregate_results
 from utils.metrics import evaluate_topic_model
 from utils.embeddings import get_openai_embedding
-from topmost.trainers import FASTopicTrainer
+from utils.fastopic_trainer import FASTopicTrainer
 from topmost.data import RawDataset
 
 import torch
@@ -168,8 +168,15 @@ def run(args):
                     dataset=dataset,
                     num_topics=args.num_topics,
                     num_top_words=args.top_words,
+                    low_memory=True,
+                    low_memory_batch_size=args.batch_size,
                 )
+                
                 top_words, doc_topic_dist = trainer.train()
+                
+                # Clear GPU memory after training
+                if torch.cuda.is_available():
+                    torch.cuda.empty_cache()
                 model_output = {
                     'topics': [topic_string.split(' ') for topic_string in top_words],
                     'topic-document-matrix': doc_topic_dist.transpose(),
@@ -227,5 +234,6 @@ if __name__ == '__main__':
     parser.add_argument('--solver', type=str, default='adam')
     parser.add_argument('--eval_only', action='store_true')
     parser.add_argument('--recompute_metrics', action='store_true')
+    parser.add_argument('--fastopic_batch_size', type=int, default=None, help='Override batch size for FASTopic (for memory management)')
     args = parser.parse_args()
     run(args)

@@ -1,4 +1,4 @@
-export CUDA_VISIBLE_DEVICES=2
+export CUDA_VISIBLE_DEVICES=3
 
 # python process_dataset_new.py --dataset fancyzhx/dbpedia_14 \
 #                               --content_key content \
@@ -13,7 +13,7 @@ export CUDA_VISIBLE_DEVICES=2
 #                               --label_key label
 
 
-for NUM_TOPICS in 25 50 75 100; do
+for NUM_TOPICS in 75 100; do
     python run_topic_model_baselines.py \
         --model fastopic \
         --data_path data/dbpedia_14_Llama-3.2-1B-Instruct_vocab_2000_last \

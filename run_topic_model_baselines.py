@@ -14,6 +14,9 @@ from bertopic import BERTopic
 from utils.metrics import compute_aggregate_results
 from utils.metrics import evaluate_topic_model
 from utils.embeddings import get_openai_embedding
+from topmost.trainers import FASTopicTrainer
+from topmost.data import RawDataset
+
 import torch
 import pdb
 
@@ -157,6 +160,20 @@ def run(args):
                     'topics': topics,
                     'topic-document-matrix': output[1].transpose(),
                 }
+            elif args.model == 'fastopic':
+                text_corpus = [' '.join(word_list) for word_list in bow_corpus]
+                device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
+                dataset = RawDataset(text_corpus, device=device)
+                trainer = FASTopicTrainer(
+                    dataset=dataset,
+                    num_topics=args.num_topics,
+                    num_top_words=args.top_words,
+                )
+                top_words, doc_topic_dist = trainer.train()
+                model_output = {
+                    'topics': [topic_string.split(' ') for topic_string in top_words],
+                    'topic-document-matrix': doc_topic_dist.transpose(),
+                }
             else:
                 raise ValueError(f"Model {args.model} not supported")
             torch.save(model_output, os.path.join(seed_dir, 'model_output.pt'))
@@ -197,7 +214,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--data_path', type=str, default=None)
     parser.add_argument('--results_path', type=str, default=None)
-    parser.add_argument('--model', type=str, default='zeroshot', choices=['zeroshot', 'combined', 'prodlda', 'lda', 'etm', 'bertopic'])
+    parser.add_argument('--model', type=str, default='zeroshot', choices=['zeroshot', 'combined', 'prodlda', 'lda', 'etm', 'bertopic', 'fastopic', 'ecrtm'])
     parser.add_argument('--num_topics', type=int, default=25, help='Number of topics')
     parser.add_argument('--num_hidden_layers', type=int, default=2)
     parser.add_argument('--hidden_size', type=int, default=200)

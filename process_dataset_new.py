@@ -51,8 +51,8 @@ def get_hf_dataset(args):
 
 
 def get_local_dataset(args):
-    if not os.path.basename(args.dataset).endswith('.csv'):
-        raise ValueError(f"Dataset {args.dataset} is not a CSV file")
+    if not os.path.basename(args.dataset).endswith('.tsv'):
+        raise ValueError(f"Dataset {args.dataset} is not a TSV file")
     dataset = load_dataset("csv", data_files=args.dataset, delimiter='\t')
     dataset = dataset['train']
     return dataset
@@ -63,7 +63,6 @@ def tokenize_dataset(batch, tokenizer, content_key: str, single_token_only: bool
     words = []
     token_ids = []
     offsets = []
-    
     for text in batch[content_key]:
         doc = nlp(text)
         # encoding = tokenizer(text, return_offsets_mapping=True, return_attention_mask=False)
@@ -146,12 +145,6 @@ def save_processed_examples(processed_examples: list[dict], data_path: str, num_
 def main(args):
 
     login(settings.hf_token)
-
-    model = AutoModelForCausalLM.from_pretrained(
-        args.model_name,
-        torch_dtype=torch.bfloat16,
-        # use_flash_attention_2=args.use_flash_attention_2,
-    ).eval()
     tokenizer = AutoTokenizer.from_pretrained(args.model_name)
     if tokenizer.pad_token_id is None:
         tokenizer.pad_token = tokenizer.eos_token
@@ -222,6 +215,11 @@ def main(args):
             for label in dataset[args.label_key]:
                 f.write(f"{label}\n")
 
+    model = AutoModelForCausalLM.from_pretrained(
+        args.model_name,
+        torch_dtype=torch.bfloat16,
+        # use_flash_attention_2=args.use_flash_attention_2,
+    ).eval()
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     model.to(device)
     processed_examples = []
@@ -251,6 +249,7 @@ def main(args):
     if args.single_token_only and len(multi_token_word_idx) > 0:
         raise ValueError("Single token only is set to True, but there are multi-token words in the vocabulary.")
     
+    return
     num_saved = 0
     for idx, example in enumerate(tqdm(dataset)):
         instruction = jinja_template_manager.render(args.instruction_template)

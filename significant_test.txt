@@ -1,0 +1,938 @@
+Loading results for dataset: dbpedia_14
+Warning: File not found: /Users/raymond/Research/LLM-topics/results/dbpedia_14/fastopic_K25/seed_0/evaluation_results.json
+Warning: File not found: /Users/raymond/Research/LLM-topics/results/dbpedia_14/fastopic_K25/seed_1/evaluation_results.json
+Warning: File not found: /Users/raymond/Research/LLM-topics/results/dbpedia_14/fastopic_K25/seed_2/evaluation_results.json
+Warning: File not found: /Users/raymond/Research/LLM-topics/results/dbpedia_14/fastopic_K25/seed_3/evaluation_results.json
+Warning: File not found: /Users/raymond/Research/LLM-topics/results/dbpedia_14/fastopic_K25/seed_4/evaluation_results.json
+Warning: Directory not found: /Users/raymond/Research/LLM-topics/results/dbpedia_14/fastopic_K50
+Warning: Directory not found: /Users/raymond/Research/LLM-topics/results/dbpedia_14/fastopic_K75
+Warning: Directory not found: /Users/raymond/Research/LLM-topics/results/dbpedia_14/fastopic_K100
+Extracting metrics into DataFrame...
+Saved raw metrics to statistical_analysis_results/dbpedia_14_all_metrics.csv
+
+================================================================================
+Analyzing K=25
+================================================================================
+
+Metric: llm_rating
+----------------------------------------
+Llama-3.2-1B-Instruct         : 2.9360 ± 0.0219
+Llama-3.2-3B-Instruct         : 2.9040 ± 0.0219
+combined                      : 2.6480 ± 0.0657
+etm                           : 2.6160 ± 0.0358
+prodlda                       : 2.6080 ± 0.0912
+zeroshot                      : 2.5680 ± 0.0867
+bertopic                      : 2.3040 ± 0.0607
+lda                           : 2.0640 ± 0.0669
+
+Best method(s) (statistically): Llama-3.2-1B-Instruct
+
+Metric: npmi
+----------------------------------------
+combined                      : 0.1504 ± 0.0063
+zeroshot                      : 0.1486 ± 0.0031
+prodlda                       : 0.1451 ± 0.0093
+Llama-3.2-1B-Instruct         : 0.1311 ± 0.0025
+Llama-3.2-3B-Instruct         : 0.0990 ± 0.0021
+etm                           : 0.0865 ± 0.0151
+bertopic                      : 0.0065 ± 0.0103
+lda                           : -0.0223 ± 0.0022
+
+Best method(s) (statistically): combined, zeroshot, prodlda
+
+Metric: inverted_rbo
+----------------------------------------
+lda                           : 0.9991 ± 0.0003
+combined                      : 0.9987 ± 0.0009
+prodlda                       : 0.9984 ± 0.0007
+zeroshot                      : 0.9980 ± 0.0012
+Llama-3.2-3B-Instruct         : 0.9938 ± 0.0004
+Llama-3.2-1B-Instruct         : 0.9935 ± 0.0003
+bertopic                      : 0.9868 ± 0.0017
+etm                           : 0.9728 ± 0.0036
+
+Best method(s) (statistically): lda, combined, prodlda, zeroshot
+
+Metric: purity
+----------------------------------------
+Llama-3.2-3B-Instruct         : 0.9179 ± 0.0066
+Llama-3.2-1B-Instruct         : 0.8894 ± 0.0097
+zeroshot                      : 0.8434 ± 0.0102
+combined                      : 0.8385 ± 0.0036
+prodlda                       : 0.8257 ± 0.0043
+lda                           : 0.4763 ± 0.0141
+etm                           : 0.3723 ± 0.0118
+bertopic                      : 0.2191 ± 0.0178
+
+Best method(s) (statistically): Llama-3.2-3B-Instruct
+
+Metric: word2vec_word_embeddings
+----------------------------------------
+Llama-3.2-1B-Instruct         : 0.2588 ± 0.0030
+Llama-3.2-3B-Instruct         : 0.2256 ± 0.0026
+etm                           : 0.2133 ± 0.0042
+zeroshot                      : 0.1530 ± 0.0026
+combined                      : 0.1504 ± 0.0032
+prodlda                       : 0.1479 ± 0.0053
+bertopic                      : 0.1422 ± 0.0041
+lda                           : 0.1092 ± 0.0012
+
+Best method(s) (statistically): Llama-3.2-1B-Instruct
+
+================================================================================
+Analyzing K=50
+================================================================================
+
+Metric: llm_rating
+----------------------------------------
+Llama-3.2-1B-Instruct         : 2.9440 ± 0.0167
+Llama-3.2-3B-Instruct         : 2.8920 ± 0.0303
+zeroshot                      : 2.6560 ± 0.0410
+etm                           : 2.6280 ± 0.0576
+combined                      : 2.5960 ± 0.0590
+prodlda                       : 2.5720 ± 0.0460
+bertopic                      : 2.3240 ± 0.0623
+lda                           : 2.0080 ± 0.0303
+
+Best method(s) (statistically): Llama-3.2-1B-Instruct
+
+Metric: npmi
+----------------------------------------
+combined                      : 0.1464 ± 0.0033
+zeroshot                      : 0.1446 ± 0.0048
+prodlda                       : 0.1335 ± 0.0058
+Llama-3.2-1B-Instruct         : 0.1262 ± 0.0031
+Llama-3.2-3B-Instruct         : 0.0865 ± 0.0043
+etm                           : 0.0823 ± 0.0021
+bertopic                      : -0.0100 ± 0.0047
+lda                           : -0.0422 ± 0.0027
+
+Best method(s) (statistically): combined, zeroshot
+
+Metric: inverted_rbo
+----------------------------------------
+lda                           : 0.9999 ± 0.0000
+prodlda                       : 0.9968 ± 0.0004
+zeroshot                      : 0.9966 ± 0.0007
+combined                      : 0.9966 ± 0.0006
+bertopic                      : 0.9909 ± 0.0008
+Llama-3.2-1B-Instruct         : 0.9908 ± 0.0005
+Llama-3.2-3B-Instruct         : 0.9894 ± 0.0006
+etm                           : 0.9733 ± 0.0025
+
+Best method(s) (statistically): lda
+
+Metric: purity
+----------------------------------------
+Llama-3.2-3B-Instruct         : 0.9121 ± 0.0054
+Llama-3.2-1B-Instruct         : 0.9067 ± 0.0084
+zeroshot                      : 0.8498 ± 0.0095
+combined                      : 0.8472 ± 0.0059
+prodlda                       : 0.8222 ± 0.0062
+lda                           : 0.5248 ± 0.0214
+etm                           : 0.3627 ± 0.0174
+bertopic                      : 0.2774 ± 0.0260
+
+Best method(s) (statistically): Llama-3.2-3B-Instruct, Llama-3.2-1B-Instruct
+
+Metric: word2vec_word_embeddings
+----------------------------------------
+Llama-3.2-1B-Instruct         : 0.2433 ± 0.0028
+etm                           : 0.2325 ± 0.0082
+Llama-3.2-3B-Instruct         : 0.2086 ± 0.0039
+zeroshot                      : 0.1480 ± 0.0020
+combined                      : 0.1452 ± 0.0013
+prodlda                       : 0.1421 ± 0.0030
+bertopic                      : 0.1393 ± 0.0024
+lda                           : 0.0995 ± 0.0016
+
+Best method(s) (statistically): Llama-3.2-1B-Instruct
+
+================================================================================
+Analyzing K=75
+================================================================================
+
+Metric: llm_rating
+----------------------------------------
+Llama-3.2-1B-Instruct         : 2.9467 ± 0.0163
+Llama-3.2-3B-Instruct         : 2.8613 ± 0.0292
+zeroshot                      : 2.6720 ± 0.0292
+etm                           : 2.6667 ± 0.0189
+combined                      : 2.6613 ± 0.0242
+prodlda                       : 2.6373 ± 0.0475
+bertopic                      : 2.3413 ± 0.0538
+lda                           : 1.9547 ± 0.0260
+
+Best method(s) (statistically): Llama-3.2-1B-Instruct
+
+Metric: npmi
+----------------------------------------
+combined                      : 0.1474 ± 0.0018
+zeroshot                      : 0.1474 ± 0.0019
+prodlda                       : 0.1410 ± 0.0029
+Llama-3.2-1B-Instruct         : 0.1092 ± 0.0046
+etm                           : 0.0768 ± 0.0047
+Llama-3.2-3B-Instruct         : 0.0692 ± 0.0014
+bertopic                      : -0.0144 ± 0.0034
+lda                           : -0.0557 ± 0.0028
+
+Best method(s) (statistically): combined, zeroshot
+
+Metric: inverted_rbo
+----------------------------------------
+lda                           : 0.9982 ± 0.0004
+prodlda                       : 0.9958 ± 0.0001
+combined                      : 0.9952 ± 0.0005
+zeroshot                      : 0.9949 ± 0.0002
+bertopic                      : 0.9927 ± 0.0003
+Llama-3.2-3B-Instruct         : 0.9892 ± 0.0004
+Llama-3.2-1B-Instruct         : 0.9888 ± 0.0003
+etm                           : 0.9748 ± 0.0028
+
+Best method(s) (statistically): lda
+
+Metric: purity
+----------------------------------------
+Llama-3.2-1B-Instruct         : 0.9237 ± 0.0044
+Llama-3.2-3B-Instruct         : 0.9145 ± 0.0042
+zeroshot                      : 0.8642 ± 0.0048
+combined                      : 0.8495 ± 0.0085
+prodlda                       : 0.8387 ± 0.0091
+lda                           : 0.5470 ± 0.0075
+bertopic                      : 0.3593 ± 0.0158
+etm                           : 0.3213 ± 0.0318
+
+Best method(s) (statistically): Llama-3.2-1B-Instruct
+
+Metric: word2vec_word_embeddings
+----------------------------------------
+etm                           : 0.2397 ± 0.0048
+Llama-3.2-1B-Instruct         : 0.2304 ± 0.0031
+Llama-3.2-3B-Instruct         : 0.2011 ± 0.0018
+zeroshot                      : 0.1526 ± 0.0021
+combined                      : 0.1495 ± 0.0014
+prodlda                       : 0.1469 ± 0.0033
+bertopic                      : 0.1384 ± 0.0024
+lda                           : 0.0964 ± 0.0017
+
+Best method(s) (statistically): etm
+
+================================================================================
+Analyzing K=100
+================================================================================
+
+Metric: llm_rating
+----------------------------------------
+Llama-3.2-1B-Instruct         : 2.9400 ± 0.0212
+Llama-3.2-3B-Instruct         : 2.8560 ± 0.0134
+zeroshot                      : 2.7100 ± 0.0265
+combined                      : 2.7000 ± 0.0316
+prodlda                       : 2.6540 ± 0.0288
+etm                           : 2.6320 ± 0.0559
+bertopic                      : 2.3420 ± 0.0449
+lda                           : 1.9820 ± 0.0217
+
+Best method(s) (statistically): Llama-3.2-1B-Instruct
+
+Metric: npmi
+----------------------------------------
+combined                      : 0.1476 ± 0.0024
+zeroshot                      : 0.1472 ± 0.0043
+prodlda                       : 0.1368 ± 0.0056
+Llama-3.2-1B-Instruct         : 0.1024 ± 0.0013
+etm                           : 0.0731 ± 0.0079
+Llama-3.2-3B-Instruct         : 0.0579 ± 0.0013
+bertopic                      : -0.0180 ± 0.0068
+lda                           : -0.0440 ± 0.0010
+
+Best method(s) (statistically): combined, zeroshot
+
+Metric: inverted_rbo
+----------------------------------------
+prodlda                       : 0.9946 ± 0.0002
+combined                      : 0.9941 ± 0.0003
+bertopic                      : 0.9935 ± 0.0003
+zeroshot                      : 0.9934 ± 0.0005
+Llama-3.2-3B-Instruct         : 0.9896 ± 0.0003
+Llama-3.2-1B-Instruct         : 0.9886 ± 0.0002
+lda                           : 0.9852 ± 0.0007
+etm                           : 0.9783 ± 0.0010
+
+Best method(s) (statistically): prodlda
+
+Metric: purity
+----------------------------------------
+Llama-3.2-1B-Instruct         : 0.9226 ± 0.0023
+Llama-3.2-3B-Instruct         : 0.9148 ± 0.0032
+zeroshot                      : 0.8646 ± 0.0078
+combined                      : 0.8573 ± 0.0107
+prodlda                       : 0.8480 ± 0.0073
+lda                           : 0.5722 ± 0.0165
+bertopic                      : 0.4098 ± 0.0114
+etm                           : 0.3288 ± 0.0330
+
+Best method(s) (statistically): Llama-3.2-1B-Instruct
+
+Metric: word2vec_word_embeddings
+----------------------------------------
+etm                           : 0.2406 ± 0.0046
+Llama-3.2-1B-Instruct         : 0.2253 ± 0.0022
+Llama-3.2-3B-Instruct         : 0.1942 ± 0.0013
+zeroshot                      : 0.1550 ± 0.0018
+combined                      : 0.1528 ± 0.0020
+prodlda                       : 0.1483 ± 0.0024
+bertopic                      : 0.1373 ± 0.0020
+lda                           : 0.1014 ± 0.0013
+
+Best method(s) (statistically): etm
+
+================================================================================
+Results saved to statistical_analysis_results
+================================================================================
+
+Summary table saved to statistical_analysis_results/dbpedia_14_summary_table.md
+Loading results for dataset: 20_newsgroups
+Extracting metrics into DataFrame...
+Saved raw metrics to statistical_analysis_results/20_newsgroups_all_metrics.csv
+
+================================================================================
+Analyzing K=25
+================================================================================
+
+Metric: llm_rating
+----------------------------------------
+Llama-3.2-1B-Instruct         : 2.8880 ± 0.0335
+Llama-3.2-3B-Instruct         : 2.8880 ± 0.0522
+fastopic                      : 2.5840 ± 0.0456
+zeroshot                      : 2.5760 ± 0.0219
+combined                      : 2.5520 ± 0.0522
+prodlda                       : 2.4880 ± 0.0657
+etm                           : 2.3280 ± 0.0335
+bertopic                      : 2.2800 ± 0.0632
+lda                           : 2.2240 ± 0.0876
+
+Best method(s) (statistically): Llama-3.2-1B-Instruct, Llama-3.2-3B-Instruct
+
+Metric: npmi
+----------------------------------------
+etm                           : 0.0519 ± 0.0053
+zeroshot                      : 0.0453 ± 0.0140
+combined                      : 0.0423 ± 0.0112
+prodlda                       : 0.0363 ± 0.0056
+Llama-3.2-1B-Instruct         : 0.0233 ± 0.0023
+lda                           : 0.0202 ± 0.0105
+fastopic                      : 0.0122 ± 0.0075
+Llama-3.2-3B-Instruct         : 0.0047 ± 0.0038
+bertopic                      : 0.0045 ± 0.0161
+
+Best method(s) (statistically): etm, zeroshot, combined
+
+Metric: inverted_rbo
+----------------------------------------
+fastopic                      : 0.9981 ± 0.0010
+Llama-3.2-3B-Instruct         : 0.9951 ± 0.0006
+Llama-3.2-1B-Instruct         : 0.9945 ± 0.0008
+zeroshot                      : 0.9908 ± 0.0027
+combined                      : 0.9901 ± 0.0017
+prodlda                       : 0.9898 ± 0.0013
+bertopic                      : 0.9879 ± 0.0019
+lda                           : 0.9487 ± 0.0027
+etm                           : 0.9406 ± 0.0089
+
+Best method(s) (statistically): fastopic
+
+Metric: purity
+----------------------------------------
+Llama-3.2-1B-Instruct         : 0.5399 ± 0.0071
+Llama-3.2-3B-Instruct         : 0.5024 ± 0.0126
+fastopic                      : 0.3812 ± 0.0190
+zeroshot                      : 0.3417 ± 0.0113
+etm                           : 0.3324 ± 0.0141
+combined                      : 0.3318 ± 0.0141
+prodlda                       : 0.3127 ± 0.0098
+lda                           : 0.3004 ± 0.0134
+bertopic                      : 0.2248 ± 0.0163
+
+Best method(s) (statistically): Llama-3.2-1B-Instruct
+
+Metric: word2vec_word_embeddings
+----------------------------------------
+Llama-3.2-1B-Instruct         : 0.2116 ± 0.0026
+etm                           : 0.2032 ± 0.0045
+Llama-3.2-3B-Instruct         : 0.1912 ± 0.0038
+fastopic                      : 0.1898 ± 0.0015
+zeroshot                      : 0.1643 ± 0.0038
+combined                      : 0.1619 ± 0.0030
+prodlda                       : 0.1612 ± 0.0033
+lda                           : 0.1597 ± 0.0058
+bertopic                      : 0.1414 ± 0.0043
+
+Best method(s) (statistically): Llama-3.2-1B-Instruct
+
+================================================================================
+Analyzing K=50
+================================================================================
+
+Metric: llm_rating
+----------------------------------------
+Llama-3.2-1B-Instruct         : 2.8920 ± 0.0110
+Llama-3.2-3B-Instruct         : 2.8840 ± 0.0261
+combined                      : 2.5600 ± 0.0721
+zeroshot                      : 2.5440 ± 0.0607
+fastopic                      : 2.5400 ± 0.0424
+prodlda                       : 2.4520 ± 0.0716
+etm                           : 2.3480 ± 0.0363
+bertopic                      : 2.3320 ± 0.0363
+lda                           : 2.2080 ± 0.0687
+
+Best method(s) (statistically): Llama-3.2-1B-Instruct, Llama-3.2-3B-Instruct
+
+Metric: npmi
+----------------------------------------
+etm                           : 0.0474 ± 0.0009
+combined                      : 0.0365 ± 0.0055
+zeroshot                      : 0.0310 ± 0.0071
+prodlda                       : 0.0118 ± 0.0042
+lda                           : 0.0045 ± 0.0068
+Llama-3.2-1B-Instruct         : 0.0029 ± 0.0062
+fastopic                      : -0.0067 ± 0.0059
+bertopic                      : -0.0080 ± 0.0028
+Llama-3.2-3B-Instruct         : -0.0119 ± 0.0047
+
+Best method(s) (statistically): etm
+
+Metric: inverted_rbo
+----------------------------------------
+fastopic                      : 0.9959 ± 0.0010
+zeroshot                      : 0.9914 ± 0.0013
+prodlda                       : 0.9913 ± 0.0008
+bertopic                      : 0.9911 ± 0.0009
+combined                      : 0.9908 ± 0.0013
+Llama-3.2-3B-Instruct         : 0.9906 ± 0.0006
+Llama-3.2-1B-Instruct         : 0.9896 ± 0.0003
+lda                           : 0.9754 ± 0.0030
+etm                           : 0.9281 ± 0.0029
+
+Best method(s) (statistically): fastopic
+
+Metric: purity
+----------------------------------------
+Llama-3.2-1B-Instruct         : 0.5602 ± 0.0052
+Llama-3.2-3B-Instruct         : 0.5384 ± 0.0043
+fastopic                      : 0.4019 ± 0.0061
+zeroshot                      : 0.3849 ± 0.0087
+combined                      : 0.3780 ± 0.0069
+etm                           : 0.3762 ± 0.0110
+prodlda                       : 0.3431 ± 0.0084
+lda                           : 0.3071 ± 0.0085
+bertopic                      : 0.2831 ± 0.0150
+
+Best method(s) (statistically): Llama-3.2-1B-Instruct
+
+Metric: word2vec_word_embeddings
+----------------------------------------
+etm                           : 0.2020 ± 0.0016
+Llama-3.2-1B-Instruct         : 0.1970 ± 0.0024
+fastopic                      : 0.1857 ± 0.0030
+Llama-3.2-3B-Instruct         : 0.1827 ± 0.0023
+zeroshot                      : 0.1557 ± 0.0027
+combined                      : 0.1547 ± 0.0029
+prodlda                       : 0.1506 ± 0.0029
+lda                           : 0.1498 ± 0.0023
+bertopic                      : 0.1399 ± 0.0020
+
+Best method(s) (statistically): etm
+
+================================================================================
+Analyzing K=75
+================================================================================
+
+Metric: llm_rating
+----------------------------------------
+Llama-3.2-1B-Instruct         : 2.8853 ± 0.0396
+Llama-3.2-3B-Instruct         : 2.8453 ± 0.0276
+zeroshot                      : 2.5200 ± 0.0411
+fastopic                      : 2.5173 ± 0.0146
+combined                      : 2.4640 ± 0.0484
+prodlda                       : 2.4080 ± 0.0348
+bertopic                      : 2.3387 ± 0.0223
+etm                           : 2.2853 ± 0.0260
+lda                           : 2.1493 ± 0.0318
+
+Best method(s) (statistically): Llama-3.2-1B-Instruct, Llama-3.2-3B-Instruct
+
+Metric: npmi
+----------------------------------------
+etm                           : 0.0422 ± 0.0019
+zeroshot                      : 0.0202 ± 0.0064
+combined                      : 0.0186 ± 0.0082
+prodlda                       : 0.0037 ± 0.0037
+Llama-3.2-1B-Instruct         : -0.0061 ± 0.0023
+bertopic                      : -0.0145 ± 0.0033
+fastopic                      : -0.0150 ± 0.0041
+Llama-3.2-3B-Instruct         : -0.0203 ± 0.0046
+lda                           : -0.0242 ± 0.0068
+
+Best method(s) (statistically): etm
+
+Metric: inverted_rbo
+----------------------------------------
+fastopic                      : 0.9965 ± 0.0006
+bertopic                      : 0.9930 ± 0.0003
+zeroshot                      : 0.9908 ± 0.0002
+combined                      : 0.9908 ± 0.0008
+prodlda                       : 0.9906 ± 0.0005
+Llama-3.2-3B-Instruct         : 0.9893 ± 0.0006
+Llama-3.2-1B-Instruct         : 0.9879 ± 0.0003
+lda                           : 0.9858 ± 0.0009
+etm                           : 0.9289 ± 0.0041
+
+Best method(s) (statistically): fastopic
+
+Metric: purity
+----------------------------------------
+Llama-3.2-1B-Instruct         : 0.5664 ± 0.0038
+Llama-3.2-3B-Instruct         : 0.5572 ± 0.0055
+fastopic                      : 0.4161 ± 0.0080
+zeroshot                      : 0.3941 ± 0.0042
+combined                      : 0.3851 ± 0.0065
+etm                           : 0.3758 ± 0.0164
+bertopic                      : 0.3597 ± 0.0229
+prodlda                       : 0.3525 ± 0.0075
+lda                           : 0.3081 ± 0.0060
+
+Best method(s) (statistically): Llama-3.2-1B-Instruct
+
+Metric: word2vec_word_embeddings
+----------------------------------------
+etm                           : 0.1999 ± 0.0016
+Llama-3.2-1B-Instruct         : 0.1917 ± 0.0024
+fastopic                      : 0.1832 ± 0.0026
+Llama-3.2-3B-Instruct         : 0.1773 ± 0.0016
+zeroshot                      : 0.1516 ± 0.0011
+combined                      : 0.1501 ± 0.0029
+prodlda                       : 0.1454 ± 0.0013
+lda                           : 0.1416 ± 0.0019
+bertopic                      : 0.1394 ± 0.0020
+
+Best method(s) (statistically): etm
+
+================================================================================
+Analyzing K=100
+================================================================================
+
+Metric: llm_rating
+----------------------------------------
+Llama-3.2-1B-Instruct         : 2.8900 ± 0.0283
+Llama-3.2-3B-Instruct         : 2.8340 ± 0.0114
+fastopic                      : 2.5140 ± 0.0207
+combined                      : 2.4900 ± 0.0400
+zeroshot                      : 2.4860 ± 0.0297
+prodlda                       : 2.3900 ± 0.0552
+bertopic                      : 2.3440 ± 0.0305
+etm                           : 2.2660 ± 0.0288
+lda                           : 2.0980 ± 0.0164
+
+Best method(s) (statistically): Llama-3.2-1B-Instruct
+
+Metric: npmi
+----------------------------------------
+etm                           : 0.0389 ± 0.0018
+zeroshot                      : 0.0195 ± 0.0043
+combined                      : 0.0132 ± 0.0025
+prodlda                       : 0.0010 ± 0.0023
+Llama-3.2-1B-Instruct         : -0.0167 ± 0.0024
+bertopic                      : -0.0194 ± 0.0049
+fastopic                      : -0.0227 ± 0.0034
+Llama-3.2-3B-Instruct         : -0.0278 ± 0.0030
+lda                           : -0.0336 ± 0.0012
+
+Best method(s) (statistically): etm
+
+Metric: inverted_rbo
+----------------------------------------
+fastopic                      : 0.9958 ± 0.0008
+bertopic                      : 0.9933 ± 0.0004
+prodlda                       : 0.9906 ± 0.0005
+zeroshot                      : 0.9896 ± 0.0006
+combined                      : 0.9896 ± 0.0005
+lda                           : 0.9889 ± 0.0004
+Llama-3.2-3B-Instruct         : 0.9887 ± 0.0005
+Llama-3.2-1B-Instruct         : 0.9873 ± 0.0003
+etm                           : 0.9335 ± 0.0014
+
+Best method(s) (statistically): fastopic
+
+Metric: purity
+----------------------------------------
+Llama-3.2-1B-Instruct         : 0.5782 ± 0.0057
+Llama-3.2-3B-Instruct         : 0.5645 ± 0.0038
+fastopic                      : 0.4381 ± 0.0065
+bertopic                      : 0.3961 ± 0.0053
+zeroshot                      : 0.3944 ± 0.0063
+combined                      : 0.3831 ± 0.0094
+etm                           : 0.3691 ± 0.0096
+prodlda                       : 0.3537 ± 0.0056
+lda                           : 0.3029 ± 0.0043
+
+Best method(s) (statistically): Llama-3.2-1B-Instruct
+
+Metric: word2vec_word_embeddings
+----------------------------------------
+etm                           : 0.1980 ± 0.0019
+Llama-3.2-1B-Instruct         : 0.1850 ± 0.0014
+fastopic                      : 0.1804 ± 0.0016
+Llama-3.2-3B-Instruct         : 0.1753 ± 0.0019
+zeroshot                      : 0.1534 ± 0.0011
+combined                      : 0.1480 ± 0.0015
+prodlda                       : 0.1439 ± 0.0019
+lda                           : 0.1363 ± 0.0017
+bertopic                      : 0.1359 ± 0.0018
+
+Best method(s) (statistically): etm
+
+================================================================================
+Results saved to statistical_analysis_results
+================================================================================
+
+Summary table saved to statistical_analysis_results/20_newsgroups_summary_table.md
+Loading results for dataset: stackoverflow
+Extracting metrics into DataFrame...
+Saved raw metrics to statistical_analysis_results/stackoverflow_all_metrics.csv
+
+================================================================================
+Analyzing K=25
+================================================================================
+
+Metric: llm_rating
+----------------------------------------
+Llama-3.2-1B-Instruct         : 2.9680 ± 0.0335
+Llama-3.2-3B-Instruct         : 2.9520 ± 0.0438
+bertopic                      : 2.8800 ± 0.0283
+zeroshot                      : 2.8160 ± 0.0607
+combined                      : 2.7680 ± 0.0657
+prodlda                       : 2.6240 ± 0.0829
+etm                           : 2.4160 ± 0.0829
+fastopic                      : 2.0640 ± 0.0219
+lda                           : 2.0160 ± 0.0219
+
+Best method(s) (statistically): Llama-3.2-1B-Instruct, Llama-3.2-3B-Instruct
+
+Metric: npmi
+----------------------------------------
+zeroshot                      : -0.1968 ± 0.0069
+combined                      : -0.2024 ± 0.0081
+prodlda                       : -0.2251 ± 0.0076
+etm                           : -0.2453 ± 0.0144
+bertopic                      : -0.2723 ± 0.0108
+fastopic                      : -0.2990 ± 0.0774
+Llama-3.2-1B-Instruct         : -0.3486 ± 0.0038
+Llama-3.2-3B-Instruct         : -0.3613 ± 0.0059
+lda                           : -0.3940 ± 0.0089
+
+Best method(s) (statistically): zeroshot, combined
+
+Metric: inverted_rbo
+----------------------------------------
+lda                           : 0.9974 ± 0.0012
+bertopic                      : 0.9965 ± 0.0005
+Llama-3.2-3B-Instruct         : 0.9956 ± 0.0007
+combined                      : 0.9941 ± 0.0009
+Llama-3.2-1B-Instruct         : 0.9939 ± 0.0004
+prodlda                       : 0.9934 ± 0.0006
+zeroshot                      : 0.9931 ± 0.0010
+etm                           : 0.9426 ± 0.0082
+fastopic                      : 0.5640 ± 0.0586
+
+Best method(s) (statistically): lda, bertopic
+
+Metric: purity
+----------------------------------------
+Llama-3.2-1B-Instruct         : 0.6150 ± 0.0199
+Llama-3.2-3B-Instruct         : 0.5844 ± 0.0260
+zeroshot                      : 0.2576 ± 0.0021
+combined                      : 0.2498 ± 0.0094
+bertopic                      : 0.2242 ± 0.0066
+prodlda                       : 0.2197 ± 0.0070
+etm                           : 0.1547 ± 0.0127
+lda                           : 0.1313 ± 0.0068
+fastopic                      : 0.1092 ± 0.0052
+
+Best method(s) (statistically): Llama-3.2-1B-Instruct, Llama-3.2-3B-Instruct
+
+Metric: word2vec_word_embeddings
+----------------------------------------
+Llama-3.2-1B-Instruct         : 0.1818 ± 0.0040
+Llama-3.2-3B-Instruct         : 0.1808 ± 0.0035
+etm                           : 0.1625 ± 0.0030
+bertopic                      : 0.1457 ± 0.0042
+zeroshot                      : 0.1416 ± 0.0018
+combined                      : 0.1327 ± 0.0056
+prodlda                       : 0.1237 ± 0.0030
+fastopic                      : 0.1081 ± 0.0094
+lda                           : 0.1040 ± 0.0012
+
+Best method(s) (statistically): Llama-3.2-1B-Instruct, Llama-3.2-3B-Instruct
+
+================================================================================
+Analyzing K=50
+================================================================================
+
+Metric: llm_rating
+----------------------------------------
+Llama-3.2-3B-Instruct         : 2.9760 ± 0.0089
+Llama-3.2-1B-Instruct         : 2.9560 ± 0.0089
+zeroshot                      : 2.8240 ± 0.0261
+combined                      : 2.7920 ± 0.0593
+bertopic                      : 2.7600 ± 0.0510
+prodlda                       : 2.6200 ± 0.0316
+etm                           : 2.2440 ± 0.0219
+fastopic                      : 2.1120 ± 0.0179
+lda                           : 1.9920 ± 0.0179
+
+Best method(s) (statistically): Llama-3.2-3B-Instruct
+
+Metric: npmi
+----------------------------------------
+combined                      : -0.1984 ± 0.0073
+zeroshot                      : -0.2004 ± 0.0116
+prodlda                       : -0.2300 ± 0.0077
+etm                           : -0.2661 ± 0.0081
+bertopic                      : -0.2911 ± 0.0031
+Llama-3.2-1B-Instruct         : -0.3562 ± 0.0018
+Llama-3.2-3B-Instruct         : -0.3666 ± 0.0025
+fastopic                      : -0.3799 ± 0.0114
+lda                           : -0.4084 ± 0.0054
+
+Best method(s) (statistically): combined, zeroshot
+
+Metric: inverted_rbo
+----------------------------------------
+lda                           : 0.9986 ± 0.0006
+bertopic                      : 0.9966 ± 0.0004
+Llama-3.2-3B-Instruct         : 0.9932 ± 0.0003
+Llama-3.2-1B-Instruct         : 0.9904 ± 0.0005
+prodlda                       : 0.9859 ± 0.0015
+zeroshot                      : 0.9838 ± 0.0025
+combined                      : 0.9827 ± 0.0011
+etm                           : 0.9227 ± 0.0032
+fastopic                      : 0.6152 ± 0.0247
+
+Best method(s) (statistically): lda
+
+Metric: purity
+----------------------------------------
+Llama-3.2-1B-Instruct         : 0.6548 ± 0.0072
+Llama-3.2-3B-Instruct         : 0.6534 ± 0.0086
+zeroshot                      : 0.2775 ± 0.0057
+combined                      : 0.2588 ± 0.0036
+bertopic                      : 0.2547 ± 0.0135
+prodlda                       : 0.2321 ± 0.0105
+fastopic                      : 0.1710 ± 0.0064
+lda                           : 0.1645 ± 0.0034
+etm                           : 0.1497 ± 0.0097
+
+Best method(s) (statistically): Llama-3.2-1B-Instruct, Llama-3.2-3B-Instruct
+
+Metric: word2vec_word_embeddings
+----------------------------------------
+Llama-3.2-3B-Instruct         : 0.1832 ± 0.0013
+Llama-3.2-1B-Instruct         : 0.1821 ± 0.0013
+etm                           : 0.1667 ± 0.0009
+bertopic                      : 0.1457 ± 0.0025
+zeroshot                      : 0.1403 ± 0.0010
+combined                      : 0.1339 ± 0.0019
+prodlda                       : 0.1209 ± 0.0006
+fastopic                      : 0.1018 ± 0.0033
+lda                           : 0.0979 ± 0.0014
+
+Best method(s) (statistically): Llama-3.2-3B-Instruct, Llama-3.2-1B-Instruct
+
+================================================================================
+Analyzing K=75
+================================================================================
+
+Metric: llm_rating
+----------------------------------------
+Llama-3.2-3B-Instruct         : 2.9653 ± 0.0152
+Llama-3.2-1B-Instruct         : 2.9520 ± 0.0202
+zeroshot                      : 2.8320 ± 0.0223
+bertopic                      : 2.6667 ± 0.0211
+combined                      : 2.6453 ± 0.1349
+prodlda                       : 2.5760 ± 0.0751
+etm                           : 2.2053 ± 0.0307
+fastopic                      : 2.1093 ± 0.0916
+lda                           : 2.0320 ± 0.0242
+
+Best method(s) (statistically): Llama-3.2-3B-Instruct, Llama-3.2-1B-Instruct
+
+Metric: npmi
+----------------------------------------
+combined                      : -0.1840 ± 0.0130
+zeroshot                      : -0.2012 ± 0.0019
+prodlda                       : -0.2249 ± 0.0075
+fastopic                      : -0.2600 ± 0.1772
+etm                           : -0.2907 ± 0.0031
+bertopic                      : -0.2960 ± 0.0030
+lda                           : -0.2961 ± 0.0073
+Llama-3.2-1B-Instruct         : -0.3605 ± 0.0021
+Llama-3.2-3B-Instruct         : -0.3705 ± 0.0024
+
+Best method(s) (statistically): combined, fastopic
+
+Metric: inverted_rbo
+----------------------------------------
+bertopic                      : 0.9966 ± 0.0002
+Llama-3.2-3B-Instruct         : 0.9914 ± 0.0002
+lda                           : 0.9907 ± 0.0011
+Llama-3.2-1B-Instruct         : 0.9890 ± 0.0006
+prodlda                       : 0.9804 ± 0.0037
+zeroshot                      : 0.9797 ± 0.0005
+combined                      : 0.9338 ± 0.0513
+etm                           : 0.9262 ± 0.0044
+fastopic                      : 0.4170 ± 0.3149
+
+Best method(s) (statistically): bertopic
+
+Metric: purity
+----------------------------------------
+Llama-3.2-1B-Instruct         : 0.6667 ± 0.0039
+Llama-3.2-3B-Instruct         : 0.6568 ± 0.0098
+bertopic                      : 0.2849 ± 0.0078
+zeroshot                      : 0.2766 ± 0.0041
+prodlda                       : 0.2352 ± 0.0057
+combined                      : 0.2081 ± 0.0621
+lda                           : 0.1872 ± 0.0049
+etm                           : 0.1463 ± 0.0114
+fastopic                      : 0.1434 ± 0.0463
+
+Best method(s) (statistically): Llama-3.2-1B-Instruct, Llama-3.2-3B-Instruct
+
+Metric: word2vec_word_embeddings
+----------------------------------------
+Llama-3.2-1B-Instruct         : 0.1795 ± 0.0020
+Llama-3.2-3B-Instruct         : 0.1781 ± 0.0009
+etm                           : 0.1690 ± 0.0022
+zeroshot                      : 0.1398 ± 0.0017
+bertopic                      : 0.1373 ± 0.0021
+combined                      : 0.1310 ± 0.0030
+prodlda                       : 0.1219 ± 0.0018
+fastopic                      : 0.1177 ± 0.0261
+lda                           : 0.1021 ± 0.0019
+
+Best method(s) (statistically): Llama-3.2-1B-Instruct, Llama-3.2-3B-Instruct
+
+================================================================================
+Analyzing K=100
+================================================================================
+
+Metric: llm_rating
+----------------------------------------
+Llama-3.2-3B-Instruct         : 2.9580 ± 0.0045
+Llama-3.2-1B-Instruct         : 2.9580 ± 0.0130
+zeroshot                      : 2.8180 ± 0.0228
+combined                      : 2.7560 ± 0.0740
+bertopic                      : 2.6280 ± 0.0356
+prodlda                       : 2.5540 ± 0.0789
+etm                           : 2.2240 ± 0.0270
+fastopic                      : 2.0360 ± 0.0391
+lda                           : 1.7780 ± 0.0228
+
+Best method(s) (statistically): Llama-3.2-3B-Instruct, Llama-3.2-1B-Instruct
+
+Metric: npmi
+----------------------------------------
+fastopic                      : -0.1519 ± 0.1206
+combined                      : -0.1927 ± 0.0069
+zeroshot                      : -0.1995 ± 0.0027
+prodlda                       : -0.2176 ± 0.0110
+bertopic                      : -0.2997 ± 0.0035
+etm                           : -0.3019 ± 0.0035
+lda                           : -0.3559 ± 0.0029
+Llama-3.2-1B-Instruct         : -0.3640 ± 0.0009
+Llama-3.2-3B-Instruct         : -0.3755 ± 0.0039
+
+Best method(s) (statistically): fastopic, combined, zeroshot, prodlda
+
+Metric: inverted_rbo
+----------------------------------------
+bertopic                      : 0.9967 ± 0.0002
+Llama-3.2-3B-Instruct         : 0.9908 ± 0.0003
+Llama-3.2-1B-Instruct         : 0.9886 ± 0.0003
+zeroshot                      : 0.9757 ± 0.0008
+prodlda                       : 0.9753 ± 0.0048
+combined                      : 0.9633 ± 0.0111
+etm                           : 0.9319 ± 0.0017
+lda                           : 0.8721 ± 0.0125
+fastopic                      : 0.3192 ± 0.3541
+
+Best method(s) (statistically): bertopic
+
+Metric: purity
+----------------------------------------
+Llama-3.2-1B-Instruct         : 0.6752 ± 0.0051
+Llama-3.2-3B-Instruct         : 0.6621 ± 0.0071
+bertopic                      : 0.2974 ± 0.0027
+zeroshot                      : 0.2791 ± 0.0034
+combined                      : 0.2460 ± 0.0315
+prodlda                       : 0.2410 ± 0.0068
+lda                           : 0.1766 ± 0.0019
+etm                           : 0.1518 ± 0.0045
+fastopic                      : 0.1068 ± 0.0294
+
+Best method(s) (statistically): Llama-3.2-1B-Instruct
+
+Metric: word2vec_word_embeddings
+----------------------------------------
+Llama-3.2-1B-Instruct         : 0.1783 ± 0.0019
+Llama-3.2-3B-Instruct         : 0.1774 ± 0.0026
+etm                           : 0.1689 ± 0.0026
+zeroshot                      : 0.1391 ± 0.0020
+combined                      : 0.1332 ± 0.0015
+bertopic                      : 0.1327 ± 0.0011
+fastopic                      : 0.1321 ± 0.0198
+prodlda                       : 0.1218 ± 0.0014
+lda                           : 0.0970 ± 0.0005
+
+Best method(s) (statistically): Llama-3.2-1B-Instruct, Llama-3.2-3B-Instruct
+
+================================================================================
+Results saved to statistical_analysis_results
+================================================================================
+
+Summary table saved to statistical_analysis_results/stackoverflow_summary_table.md
+================================================================================
+Statistical Analysis Runner
+================================================================================
+✓ Dependencies found
+
+================================================================================
+Analyzing dbpedia_14...
+================================================================================
+
+
+✓ dbpedia_14 analysis complete
+
+================================================================================
+Analyzing 20_newsgroups...
+================================================================================
+
+
+✓ 20_newsgroups analysis complete
+
+================================================================================
+Analyzing stackoverflow...
+================================================================================
+
+
+✓ stackoverflow analysis complete
+
+================================================================================
+Analysis Complete!
+================================================================================
+
+✓ dbpedia_14
+✓ 20_newsgroups
+✓ stackoverflow
+
+Results saved in: statistical_analysis_results/

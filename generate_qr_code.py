@@ -8,12 +8,12 @@ qr = qrcode.QRCode(
     box_size=10,
     border=0,                 # <-- remove white border
 )
-qr.add_data("https://aclanthology.org/2025.findings-acl.1123")
+qr.add_data("https://aclanthology.org/2025.newsum-main.2")
 qr.make(fit=True)
 qr_img = qr.make_image(fill_color="black", back_color="white").convert("RGB")
 
 # 2. Load & resize your logo
-logo = Image.open("/Users/raymond/Desktop/acl-logo.png")
+logo = Image.open("/Users/raymond/Downloads/acl-logo.png")
 qr_w, qr_h = qr_img.size
 logo_size = int(qr_w * 0.25)
 logo = logo.resize((logo_size, logo_size), Image.LANCZOS)
@@ -40,5 +40,5 @@ bbox = qr_img.getbbox()          # bounding box of all non-white pixels
 qr_img = qr_img.crop(bbox)
 
 # 6. Save
-qr_img.save("acl2025-findings-QR.png")
-print("Saved → acl2025-findings-QR.png")
+qr_img.save("/Users/raymond/Downloads/newsumm_QR.png")
+print("Saved → ~/Downloads/newsumm_QR.png")

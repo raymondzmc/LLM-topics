@@ -1,0 +1,192 @@
+================================================================================
+QUICK GUIDE: Statistical Significance for K-Averaged Results
+================================================================================
+
+WHEN TO USE THIS:
+  Your main table shows performance AVERAGED across K ∈ {25, 50, 75, 100}
+  You need statistical significance tests for those averaged values
+
+================================================================================
+QUICKEST WAY (3 steps)
+================================================================================
+
+1. Run the analysis:
+   python run_averaged_k_analysis.py
+
+2. View results:
+   cat statistical_analysis_results/dbpedia_14_averaged_K_summary_averaged.md
+
+3. Use in your paper!
+
+================================================================================
+WHAT YOU GET
+================================================================================
+
+For each dataset × metric, you get:
+  • Mean ± Std (averaged across K)
+  • Statistical significance (p-values from t-tests)
+  • Best method(s) identified
+  • n = 5 per method (one averaged value per seed)
+
+Example output:
+  llm_rating
+  ──────────────────────────────────────
+  Llama-3.2-1B    : 2.9360 ± 0.0219 ⭐
+  Llama-3.2-3B    : 2.9040 ± 0.0219 ⭐
+  combined        : 2.6480 ± 0.0657
+
+  Best: Llama-3.2-1B, Llama-3.2-3B (not significantly different, p > 0.05)
+
+================================================================================
+TWO STRATEGIES AVAILABLE
+================================================================================
+
+STRATEGY 1: "averaged" (RECOMMENDED FOR MAIN TABLES)
+  • Average performance across K for each seed first
+  • Then test those averaged values
+  • n = 5 per method
+  • Use this for your main results table!
+
+STRATEGY 2: "expanded" (CONSERVATIVE)
+  • Treat each K × seed as independent observation
+  • n = 20 per method (5 seeds × 4 K values)
+  • More conservative, larger sample size
+  • Use for sensitivity analysis
+
+================================================================================
+HOW IT WORKS (Strategy 1 - Recommended)
+================================================================================
+
+For each method:
+  Seed 1: Average(K=25, K=50, K=75, K=100) → Value 1
+  Seed 2: Average(K=25, K=50, K=75, K=100) → Value 2
+  Seed 3: Average(K=25, K=50, K=75, K=100) → Value 3
+  Seed 4: Average(K=25, K=50, K=75, K=100) → Value 4
+  Seed 5: Average(K=25, K=50, K=75, K=100) → Value 5
+
+Then: t-test between methods using these 5 values
+
+Result: "Method A averaged across K is significantly better than Method B"
+
+================================================================================
+PAPER TEXT EXAMPLES
+================================================================================
+
+METHODS SECTION:
+───────────────
+"To assess statistical significance, we computed the mean performance across 
+K ∈ {25, 50, 75, 100} for each random seed, yielding 5 averaged observations 
+per method. Pairwise two-sample t-tests (Welch's t-test, α = 0.05) identified 
+statistically best methods."
+
+RESULTS SECTION:
+────────────────
+"When averaged across all K values, our method (Llama-3.2-1B) achieved 
+2.94 ± 0.02, significantly outperforming all baselines (p < 0.05)."
+
+TABLE CAPTION:
+──────────────
+"Performance averaged across K ∈ {25, 50, 75, 100}. Values show mean ± std 
+over 5 seeds. Bold indicates statistically best methods (pairwise t-tests 
+on K-averaged results, α = 0.05)."
+
+================================================================================
+COMMANDS
+================================================================================
+
+# Run all datasets (recommended)
+python run_averaged_k_analysis.py
+
+# Individual dataset
+python statistical_analysis_averaged_k.py --dataset dbpedia_14 --strategy averaged
+
+# Try both strategies (for comparison)
+python statistical_analysis_averaged_k.py --dataset dbpedia_14 --strategy averaged
+python statistical_analysis_averaged_k.py --dataset dbpedia_14 --strategy expanded
+
+# View results
+cat statistical_analysis_results/dbpedia_14_averaged_K_summary_averaged.md
+cat statistical_analysis_results/20_newsgroups_averaged_K_summary_averaged.md
+cat statistical_analysis_results/stackoverflow_averaged_K_summary_averaged.md
+
+================================================================================
+OUTPUT FILES (per dataset)
+================================================================================
+
+{dataset}_averaged_K_metrics_averaged.csv
+  → Raw data (5 rows per method)
+
+{dataset}_averaged_K_summary_averaged.json
+  → Complete statistics + p-values
+
+{dataset}_averaged_K_summary_averaged.md  ← READ THIS!
+  → Human-readable summary with rankings
+
+================================================================================
+COMPARISON: Per-K vs K-Averaged Analysis
+================================================================================
+
+ORIGINAL SCRIPT (statistical_analysis.py):
+  • Tests each K separately
+  • "Method A is best at K=25"
+  • "Method B is best at K=50"
+  • Good for: K-specific claims
+
+NEW SCRIPT (statistical_analysis_averaged_k.py):
+  • Tests averaged across K
+  • "Method A is best when averaged across all K"
+  • Good for: Main table with K-averaged results ✓
+
+USE BOTH:
+  • Original for per-K results (supplementary tables)
+  • New script for main table (K-averaged)
+
+================================================================================
+FAQ
+================================================================================
+
+Q: Which script for my main results table?
+A: Use statistical_analysis_averaged_k.py with --strategy averaged
+
+Q: What sample size to report?
+A: n = 5 (for averaged strategy)
+
+Q: Can I use both scripts?
+A: Yes! Use original for per-K analysis, new for K-averaged table
+
+Q: Different p-values than per-K analysis?
+A: Expected! You're testing different hypotheses
+
+Q: What if "averaged" and "expanded" give different results?
+A: Informative! Means performance varies across K. Discuss in paper.
+
+================================================================================
+STATISTICAL VALIDITY
+================================================================================
+
+This approach is valid because:
+  ✓ Each seed provides independent averaged observation
+  ✓ Averaging across K is meaningful for your application
+  ✓ Welch's t-test doesn't assume equal variances
+  ✓ n = 5 is standard in ML/NLP research
+  ✓ Tests the hypothesis your main table claims
+
+Citations to include:
+  • Welch (1947) - for Welch's t-test
+  • Dror et al. (2018) - for significance testing in NLP
+
+================================================================================
+READY TO USE!
+================================================================================
+
+Run this now:
+  python run_averaged_k_analysis.py
+
+Then check:
+  statistical_analysis_results/*_averaged_K_summary_averaged.md
+
+For detailed explanation:
+  Read AVERAGED_K_ANALYSIS_README.md
+
+================================================================================
+
